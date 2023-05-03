@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 
-  const userLoggedIn = false
+  const userLoggedIn = true
 
   return (
     <div className="App">
