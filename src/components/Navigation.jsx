@@ -2,6 +2,7 @@ import { Col, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 export const Navigation = () => {
+
   return (
     <Navbar bg="light" variant="light" className="px-5">
         <Container fluid>
@@ -41,7 +42,7 @@ export const Navigation = () => {
                         alt="user image"
                         />
                     </Navbar.Brand>
-                    <Nav.Link style={{fontSize: "9px"}} className="fw-bold pt-3 ps-0">Hello, <strong>Mitch!</strong></Nav.Link>
+                    <Nav.Link style={{fontSize: "9px"}} className="fw-bold pt-3 ps-0">Hello, <strong>userName</strong></Nav.Link>
                 </Nav>
             </Col>
         </Container>

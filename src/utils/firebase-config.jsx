@@ -3,17 +3,15 @@ import { getAuth } from "firebase/auth"
 import { getFirestore } from "@firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyByAaOFfbPtuLPdBBsR_59GP4WydYr-FBg",
-    authDomain: "apollo-9beed.firebaseapp.com",
-    projectId: "apollo-9beed",
-    storageBucket: "apollo-9beed.appspot.com",
-    messagingSenderId: "33609584926",
-    appId: "1:33609584926:web:a3c8a0e85743fc2bd8390f",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: "G-RLM6XKTT7P"
   };
 
-  const app = initializeApp(firebaseConfig)
-
-  export const auth = getAuth(app)
-
-  export const db = getFirestore(app)
+export const app = initializeApp(firebaseConfig)
+export const auth = getAuth(app)
+export const db = getFirestore(app)
