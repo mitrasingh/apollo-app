@@ -25,7 +25,6 @@ export const SignIn = () => {
             })
             .catch((error) => {
                 setError(true)
-                // ..
         });
     }
 
