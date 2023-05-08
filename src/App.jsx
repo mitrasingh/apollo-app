@@ -8,7 +8,6 @@ import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 function App() {
 
   const currentUser = false
