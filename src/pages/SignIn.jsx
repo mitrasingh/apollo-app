@@ -1,38 +1,17 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react'
 import { Button, Card, Container, Form } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../utils/firebase-config'
+import { Link } from 'react-router-dom'
 
 export const SignIn = () => {
 
-    const [error, setError] = useState(false)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState(false)
 
-    const navigate = useNavigate()
-
-    const handleSignIn = (e) => {
-        e.preventDefault()
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
-                navigate("/")
-                console.log(user)
-                // ...
-            })
-            .catch((error) => {
-                setError(true)
-        });
-    }
-
-
-  
     return (
         <Container style={{fontSize: "10px", maxWidth: "400px"}} className="mt-4">
-        <Form onSubmit={handleSignIn}>
+        <Form>
             <Card className="px-4 py-4">
                 <h4 className="fw-bold d-flex justify-content-center">Sign In</h4>
                 <p className="d-flex justify-content-center">Not registered?&nbsp; 
@@ -43,7 +22,7 @@ export const SignIn = () => {
                 <Form.Group className="mb-3" controlId="progress">
                     <Form.Control 
                         style={{fontSize: "10px"}} 
-                        type="text"
+                        type="email"
                         placeholder="Enter email"
                         onChange={e => setEmail(e.target.value)} />
                 </Form.Group>
