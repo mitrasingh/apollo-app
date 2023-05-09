@@ -6,19 +6,20 @@ import { Shoutboard } from './pages/Shoutboard';
 import { Profile } from './pages/Profile';
 import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
+import { useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 
-  const currentUser = false
+  const user = useSelector((state) => state.data.user.user)  
 
   const RequireAuth = ({ children }) => {
-    return currentUser ? children : <Navigate to="/signin" />
+    return user ? children : <Navigate to="/signin" />
   }
 
   return (
     <div className="App">
-        {currentUser && <Navigation />}
+        {user && <Navigation />}
           <Routes>
               <Route path="/">
                 <Route path="signin" element={<SignIn />} />
@@ -32,5 +33,6 @@ function App() {
     </div>
   )
 }
+
 
 export default App
