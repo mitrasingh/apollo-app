@@ -1,7 +1,18 @@
 import { Col, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { auth } from '../utils/firebase-config'
+import { logoutUser } from '../features/user/userSlice'
+import { signOut } from 'firebase/auth'
 
 export const Navigation = () => {
+    const user = useSelector((state) => state.user.user)
+    const dispatch = useDispatch()
+    
+    const handleLogout = () => {
+        dispatch(logoutUser())
+        signOut(auth)
+    }
 
   return (
     <Navbar bg="light" variant="light" className="px-5">
@@ -31,7 +42,7 @@ export const Navigation = () => {
                 <Nav>
                     <NavDropdown drop="down-centered" title="" menuVariant="light">
                             <NavDropdown.Item style={{fontSize: "9px"}} as={Link} to="/profile">Edit Profile</NavDropdown.Item>
-                            <NavDropdown.Item style={{fontSize: "9px"}} as={Link} to="/">Logout</NavDropdown.Item>
+                            <NavDropdown.Item style={{fontSize: "9px"}} onClick={handleLogout}>Logout</NavDropdown.Item>
                     </NavDropdown>
                     <Navbar.Brand>
                         <img
@@ -42,7 +53,7 @@ export const Navigation = () => {
                         alt="user image"
                         />
                     </Navbar.Brand>
-                    <Nav.Link style={{fontSize: "9px"}} className="fw-bold pt-3 ps-0">Hello, <strong>userName</strong></Nav.Link>
+                    <Nav.Link style={{fontSize: "9px"}} className="fw-bold pt-3 ps-0">Hello, <strong>{user.firstName}</strong></Nav.Link>
                 </Nav>
             </Col>
         </Container>
