@@ -1,8 +1,12 @@
 import { TaskCard } from '../components/TaskCard'
 import { SearchBar } from '../components/SearchBar'
-import { Filter } from '../components/FIlter'
+import { Filter } from '../components/Filter'
+import { useSelector } from 'react-redux'
 
 export const Home = () => {
+
+  const user = useSelector((state) => state.user.user);
+  console.log(user)
   return (
     <>
         <SearchBar />
@@ -10,4 +14,4 @@ export const Home = () => {
         <TaskCard />
     </>
   )
-}
+} 
