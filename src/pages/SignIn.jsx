@@ -1,13 +1,51 @@
-/* eslint-disable no-unused-vars */
 import { useState } from 'react'
 import { Button, Card, Container, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { logoutUser } from '../features/user/userSlice'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 export const SignIn = () => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [error, setError] = useState(false)
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    const auth = getAuth()
+    const handleLogin = async (event) => {
+        event.preventDefault()
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password)
+            console.log(userCredential)
+            navigate("/")
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
+    // const handleLogin = (event) => {
+    //     event.preventDefault()
+    //     signInWithEmailAndPassword(auth, email, password)
+    //         .then ((userCredential) => {
+    //             console.log(userCredential)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    // }
+    
+    // const handleLogin = (event) => {
+    //     event.preventDefault();
+    //     signInWithEmailAndPassword(auth, email, password)
+    // }
+    
+    const handleLogout = () => {
+        dispatch(logoutUser())
+        signOut(auth)
+    } 
 
     return (
         <Container style={{fontSize: "10px", maxWidth: "400px"}} className="mt-4">
@@ -24,7 +62,7 @@ export const SignIn = () => {
                         style={{fontSize: "10px"}} 
                         type="email"
                         placeholder="Enter email"
-                        onChange={e => setEmail(e.target.value)} />
+                        onChange={(e) => setEmail(e.target.value)} />
                 </Form.Group>
 
                 <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>Password</p>
@@ -33,28 +71,29 @@ export const SignIn = () => {
                         style={{fontSize: "10px"}} 
                         type="password"
                         placeholder="Enter password" 
-                        onChange={e => setPassword(e.target.value)}/>
+                        onChange={(e) => setPassword(e.target.value)}/>
                 </Form.Group>
 
                 <Button 
                     style={{fontSize: "10px", maxHeight: "30px"}} 
                     variant="primary"  
                     size="sm" 
-                    type="submit">
+                    type="submit"
+                    onClick={handleLogin}>
                     Login
                 </Button>
 
-                <Button 
+                {/* <Button 
                     style={{fontSize: "10px", maxHeight: "30px"}} 
                     variant="secondary"  
                     size="sm" 
                     className="mt-2"
                     as={Link} to="/signup">
                     Cancel
-                </Button>
+                </Button> */}
 
                 <p className="d-flex justify-content-center link-primary mt-3">Forgot password?&nbsp;</p>
-                {error && <span>Wrong email or password!</span>}
+                <Button onClick={handleLogout}>Logout</Button> 
             </Card>
         </Form>
         </Container>
