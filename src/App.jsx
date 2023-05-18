@@ -1,38 +1,68 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
-import { Navigation } from './components/Navigation';
+import { auth } from './utils/firebase-config';
+import { loginUser } from "./features/user/userSlice"
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Routes, Route } from 'react-router';
 import { Home } from './pages/Home';
 import { CreateTask } from './pages/CreateTask';
-import { Shoutboard } from './pages/Shoutboard';
 import { Profile } from './pages/Profile';
+import { Shoutboard } from './pages/Shoutboard';
 import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
-import { useSelector } from 'react-redux';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { ProtectedRoute } from './components/ProtectedRoute';
+
 
 function App() {
+  
+  const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.data.user.user)  
-
-  const RequireAuth = ({ children }) => {
-    return user ? children : <Navigate to="/signin" />
-  }
+  useEffect(() => {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        dispatch(
+          loginUser({
+            uid: authUser.uid,
+            firstName: authUser.displayName,
+            email: authUser.email,
+          })
+        );
+      } else {
+        console.log("User is not logged in.");
+      }
+    })
+  },[])
+  
 
   return (
-    <div className="App">
-        {user && <Navigation />}
-          <Routes>
-              <Route path="/">
-                <Route path="signin" element={<SignIn />} />
-                <Route path="signup" element={<SignUp />} />
-                <Route index element={<RequireAuth><Home /></RequireAuth>} />
-                <Route path="createtask" element={<RequireAuth><CreateTask /></RequireAuth>} />
-                <Route path="shoutboard" element={<RequireAuth><Shoutboard /></RequireAuth>} />
-                <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>} />
-            </Route>
-          </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={
+        <ProtectedRoute>
+          <Home />
+        </ProtectedRoute>
+        } 
+      />
+      <Route path="createtask" element={
+        <ProtectedRoute>
+          <CreateTask />
+        </ProtectedRoute>
+        } 
+      />
+      <Route path="shoutboard" element={
+        <ProtectedRoute>
+          <Shoutboard />
+        </ProtectedRoute>  
+        } 
+      />
+      <Route path="profile" element={
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+        } 
+      />
+      <Route path="signin" element={<SignIn />} />
+      <Route path="signup" element={<SignUp />} />
+    </Routes>
   )
 }
 
-
-export default App
+export default App  
