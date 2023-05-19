@@ -1,17 +1,19 @@
 import { Col, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { auth } from '../utils/firebase-config'
 import { logoutUser } from '../features/user/userSlice'
 import { signOut } from 'firebase/auth'
 
 export const Navigation = () => {
-    const user = useSelector((state) => state.user.user)
+    const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     
     const handleLogout = () => {
         dispatch(logoutUser())
         signOut(auth)
+        navigate("/signin")
     }
 
   return (
