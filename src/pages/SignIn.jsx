@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { Button, Card, Container, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { logoutUser } from '../features/user/userSlice'
-import { useDispatch } from 'react-redux'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
 export const SignIn = () => {
@@ -11,7 +9,6 @@ export const SignIn = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const auth = getAuth()
@@ -26,26 +23,6 @@ export const SignIn = () => {
         }
     }
     
-    // const handleLogin = (event) => {
-    //     event.preventDefault()
-    //     signInWithEmailAndPassword(auth, email, password)
-    //         .then ((userCredential) => {
-    //             console.log(userCredential)
-    //         })
-    //         .catch((error) => {
-    //             console.log(error)
-    //         })
-    // }
-    
-    // const handleLogin = (event) => {
-    //     event.preventDefault();
-    //     signInWithEmailAndPassword(auth, email, password)
-    // }
-    
-    const handleLogout = () => {
-        dispatch(logoutUser())
-        signOut(auth)
-    } 
 
     return (
         <Container style={{fontSize: "10px", maxWidth: "400px"}} className="mt-4">
@@ -83,17 +60,7 @@ export const SignIn = () => {
                     Login
                 </Button>
 
-                {/* <Button 
-                    style={{fontSize: "10px", maxHeight: "30px"}} 
-                    variant="secondary"  
-                    size="sm" 
-                    className="mt-2"
-                    as={Link} to="/signup">
-                    Cancel
-                </Button> */}
-
                 <p className="d-flex justify-content-center link-primary mt-3">Forgot password?&nbsp;</p>
-                <Button onClick={handleLogout}>Logout</Button> 
             </Card>
         </Form>
         </Container>
