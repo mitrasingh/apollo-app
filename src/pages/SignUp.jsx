@@ -7,14 +7,17 @@ import { Link } from "react-router-dom"
 export const SignUp = () => {
 
     const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [title, setTitle] = useState("")
     const [email, setEmail] = useState("")
+    const [location, setLocation] = useState("")
     const [password, setPassword] = useState("")
+    const [verifyPassword, setVerifyPassword] = useState("")
 
     const handleSignUp = (event) => {
         event.preventDefault();
         createUserWithEmailAndPassword(auth, email, password)
-          // eslint-disable-next-line no-unused-vars
-          .then((authUser) => {
+          .then((auth) => {
             signInWithEmailAndPassword(auth, email, password).then(
               updateProfile(auth.currentUser, {
                 displayName: firstName,
@@ -44,6 +47,24 @@ export const SignUp = () => {
                         onChange={(e) => setFirstName(e.target.value)}/>
                 </Form.Group>
 
+                <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>Last Name</p>
+                <Form.Group className="mb-3" controlId="progress">
+                    <Form.Control 
+                        style={{fontSize: "10px"}} 
+                        type="text" 
+                        placeholder="Enter last name" 
+                        onChange={(e) => setLastName(e.target.value)}/>
+                </Form.Group>
+
+                <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>Title</p>
+                <Form.Group className="mb-3" controlId="progress">
+                    <Form.Control 
+                        style={{fontSize: "10px"}} 
+                        type="text" 
+                        placeholder="Enter your company title" 
+                        onChange={(e) => setTitle(e.target.value)}/>
+                </Form.Group>
+
                 <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>Email Address</p>
                 <Form.Group className="mb-3" controlId="progress">
                     <Form.Control 
@@ -60,6 +81,15 @@ export const SignUp = () => {
                         type="password" 
                         placeholder="Enter password" 
                         onChange={(e) => setPassword(e.target.value)}/>
+                </Form.Group>
+
+                <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>Confirm Password</p>
+                <Form.Group className="mb-3" controlId="progress">
+                    <Form.Control 
+                        style={{fontSize: "10px"}} 
+                        type="password" 
+                        placeholder="Enter password again" 
+                        onChange={(e) => setVerifyPassword(e.target.value)}/>
                 </Form.Group>
 
                 <Button 
