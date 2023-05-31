@@ -15,18 +15,17 @@ export const SignUp = () => {
     const [password, setPassword] = useState("")
     const [verifyPassword, setVerifyPassword] = useState("")
     
-    const [alert, setAlert] = useState(true)
+    const [alert, setAlert] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const auth = getAuth()
-
     const handleSignUp = async (event) => {
         event.preventDefault();
-        if (password === verifyPassword) {
-            try {
+        try {
+            if (password === verifyPassword) {
                 await createUserWithEmailAndPassword(auth, email, password)
                 await updateProfile(auth.currentUser, {
                     displayName: firstName,
@@ -34,20 +33,22 @@ export const SignUp = () => {
                 console.log(`User profile updated`)
                 console.log(auth)
                 navigate("/")
-            } catch (error) {
-                setAlertMessage(error)
-                console.log(error)
-            } finally {
-                if (auth) {
-                    dispatch(loginUser({
-                        userId: auth.currentUser.uid,
-                        firstName: auth.currentUser.displayName,
-                        email: auth.currentUser.email
-                        }))
-                } 
+            } else {
+                setAlert(true)
+                setAlertMessage("Reason: Passwords do not match")
             }
-        } else {
-            setAlertMessage("Passwords do not match!")
+        } catch (error) {
+            setAlert(true)
+            setAlertMessage(`Reason: ${error.code}`)
+            console.log(error.code)
+        } finally {
+            if (auth) {
+                dispatch(loginUser({
+                    userId: auth.currentUser.uid,
+                    firstName: auth.currentUser.displayName,
+                    email: auth.currentUser.email
+                    }))
+            } 
         }
     }
 
@@ -55,7 +56,7 @@ export const SignUp = () => {
         <>
         {alert ? (
                 <Alert variant="danger" onClose={() => setAlert(false)} dismissible>
-                    <Alert.Heading>You got an error!</Alert.Heading>
+                    <Alert.Heading>There is an error!</Alert.Heading>
                     <p>{alertMessage}</p>
                 </Alert>
             ) : ( 
