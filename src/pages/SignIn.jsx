@@ -12,16 +12,32 @@ export const SignIn = () => {
     const navigate = useNavigate()
 
     const auth = getAuth()
-    const handleLogin = async (event) => {
+    const handleLogin = (event) => {
         event.preventDefault()
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password)
-            console.log(userCredential)
-            navigate("/")
-        } catch (error) {
-            console.log(error)
-        }
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user
+                console.log(user)
+                navigate("/")
+            })
+            .catch((error) => {
+                const errorCode = error.code
+                const errorMessage = error.message 
+                console.log({errorCode, errorMessage})
+            })
     }
+
+
+    // const handleLogin = async (event) => {
+    //     event.preventDefault()
+    //     try {
+    //         const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    //         console.log(userCredential)
+    //         navigate("/")
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
     
 
     return (
@@ -34,7 +50,7 @@ export const SignIn = () => {
                 </p>
 
                 <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>Email Address</p>
-                <Form.Group className="mb-3" controlId="progress">
+                <Form.Group className="mb-3">
                     <Form.Control 
                         style={{fontSize: "10px"}} 
                         type="email"
@@ -43,7 +59,7 @@ export const SignIn = () => {
                 </Form.Group>
 
                 <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>Password</p>
-                <Form.Group className="mb-3" controlId="progress">
+                <Form.Group className="mb-3">
                     <Form.Control 
                         style={{fontSize: "10px"}} 
                         type="password"
