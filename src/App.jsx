@@ -1,4 +1,4 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { loginUser } from "./features/user/userSlice"
 import { useDispatch } from 'react-redux';
 import { Routes, Route } from 'react-router';
@@ -10,15 +10,24 @@ import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
 import { ProtectedRoute } from './components/ProtectedRoute'; 
 import { useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from './utils/firebase-config';
 
 function App() {
-  
+
   const dispatch = useDispatch();
 
-  const auth = getAuth();
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    getAuth().onAuthStateChanged(async (user) => {
       if (user) {
+        const docRef = doc(db,"users",user.uid)
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+          console.log("Document data:", docSnap.data())
+        } else {
+          console.log("No document!")
+        }
+
         dispatch(loginUser({
           userId: user.uid,
           firstName: user.displayName,
@@ -29,6 +38,7 @@ function App() {
       }
     })
   },[])
+
   
 
   return (
