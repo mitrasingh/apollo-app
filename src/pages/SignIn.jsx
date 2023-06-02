@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Card, Container, Form } from 'react-bootstrap'
+import { Button, Card, Container, Form, Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
@@ -9,38 +9,53 @@ export const SignIn = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
+    const [alert, setAlert] = useState(false)
+    const [alertMessage, setAlertMessage] = useState("")
+
     const navigate = useNavigate()
 
     const auth = getAuth()
-    const handleLogin = (event) => {
+
+    const handleLogin = async (event) => {
         event.preventDefault()
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user
-                console.log(user)
-                navigate("/")
-            })
-            .catch((error) => {
-                const errorCode = error.code
-                const errorMessage = error.message 
-                console.log({errorCode, errorMessage})
-            })
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password)
+            const user = userCredential.user
+            console.log(user)
+            navigate("/")
+        } catch (error) {
+            setAlert(true)
+            setAlertMessage(error.code)
+            console.log(error.code)
+        }
     }
 
-
-    // const handleLogin = async (event) => {
+    // const handleLogin = (event) => {
     //     event.preventDefault()
-    //     try {
-    //         const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    //         console.log(userCredential)
-    //         navigate("/")
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
+    //     signInWithEmailAndPassword(auth, email, password)
+    //         .then((userCredential) => {
+    //             const user = userCredential.user
+    //             console.log(user)
+    //             navigate("/")
+    //         })
+    //         .catch((error) => {
+    //             const errorCode = error.code
+    //             const errorMessage = error.message 
+    //             console.log({errorCode, errorMessage})
+    //         })
     // }
-    
 
     return (
+        <>
+        {alert ? (
+                <Alert variant="danger" onClose={() => setAlert(false)} dismissible>
+                    <Alert.Heading>There is an error!</Alert.Heading>
+                    <p>Reason: {alertMessage}</p>
+                </Alert>
+            ) : ( 
+                null
+        )}
+        
         <Container style={{fontSize: "10px", maxWidth: "400px"}} className="mt-4">
         <Form>
             <Card className="px-4 py-4">
@@ -80,6 +95,7 @@ export const SignIn = () => {
             </Card>
         </Form>
         </Container>
+        </>
     )
 }
 
