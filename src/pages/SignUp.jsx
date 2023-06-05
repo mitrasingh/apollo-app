@@ -1,11 +1,12 @@
 import { createUserWithEmailAndPassword, updateProfile, getAuth } from "firebase/auth"
-import { doc, setDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 import { useState } from "react"
 import { Container, Form, Card, Button, Alert } from "react-bootstrap"
 import { useDispatch } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
 import { loginUser } from "../features/user/userSlice"
+import { Link, useNavigate } from "react-router-dom"
+
 
 export const SignUp = () => {
 
@@ -36,7 +37,6 @@ export const SignUp = () => {
                     title: title,
                 })
                 console.log(`User profile updated`)
-                console.log(auth)
                 navigate("/")
             } else {
                 setAlert(true)
@@ -47,17 +47,34 @@ export const SignUp = () => {
             setAlertMessage(error.code)
             console.log(error.code)
         } finally {
-            if (auth) {
+            const docRef = doc(db, "users", auth.currentUser.uid)
+            const docSnap = await getDoc(docRef)
+            if (auth && docSnap.exists()) {
+                const data = docSnap.data()
                 dispatch(loginUser({
                     userId: auth.currentUser.uid,
                     firstName: auth.currentUser.displayName,
-                    lastName: lastName,
-                    title: title,
-                    email: auth.currentUser.email,
-                    }))
-            } 
+                    lastName: data.lastname,
+                    title: data.title,
+                    email: auth.currentUser.email
+                }))
+            }
         }
     }
+
+    /*
+    finally {
+        if (auth) {
+            dispatch(loginUser({
+                userId: auth.currentUser.uid,
+                firstName: auth.currentUser.displayName,
+                lastName: "testlastname",
+                title: "testtitle",
+                email: auth.currentUser.email,
+                }))
+        } 
+    }
+    */
 
     return (
         <>
