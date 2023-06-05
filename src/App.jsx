@@ -24,12 +24,12 @@ function App() {
         if (user && docSnap.exists()) {
           const data = docSnap.data()
           console.log(user.uid, user.email, user.displayName, data.lastname, data.title)
-          console.log(data.lastname)
+          console.log(data)
           dispatch(loginUser({
             userId: user.uid,
             firstName: user.displayName,
-            lastName: data.lastname, //not loading to redux
-            title: data.title, // not loading to redux
+            lastName: data.lastname, 
+            title: data.title,
             email: user.email
           }))
         }
@@ -39,32 +39,7 @@ function App() {
       }
     )})
 
-
-  // useEffect(() => {
-  //   getAuth().onAuthStateChanged(async (user) => {
-  //     if (user) {
-  //       const docRef = doc(db,"users",user.uid)
-  //       const docSnap = await getDoc(docRef)
-  //       if (docSnap.exists()) {
-  //         const data = docSnap.data()
-  //         console.log(data.lastname)
-  //       } else {
-  //         console.log("No document!")
-  //       }
-  //       dispatch(loginUser({
-  //         userId: user.uid,
-  //         firstName: user.displayName,
-  //         email: user.email
-  //       }))
-  //     } else {
-  //       console.log("User is not logged in.")
-  //     }
-  //   })
-  // },[])
-
-  
-
-  return (
+    return (
     <Routes>
       <Route path="/" element={
         <ProtectedRoute>
