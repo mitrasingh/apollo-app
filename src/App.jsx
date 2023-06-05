@@ -16,28 +16,51 @@ import { db } from './utils/firebase-config';
 function App() {
 
   const dispatch = useDispatch();
-
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
-      if (user) {
-        const docRef = doc(db,"users",user.uid)
+      try {
+        const docRef = doc(db, "users", user.uid)
         const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-          console.log("Document data:", docSnap.data())
-        } else {
-          console.log("No document!")
+        if (user && docSnap.exists()) {
+          const data = docSnap.data()
+          console.log(user.uid, user.email, user.displayName, data.lastname, data.title)
+          console.log(data.lastname)
+          dispatch(loginUser({
+            userId: user.uid,
+            firstName: user.displayName,
+            lastName: data.lastname, //not loading to redux
+            title: data.title, // not loading to redux
+            email: user.email
+          }))
         }
-
-        dispatch(loginUser({
-          userId: user.uid,
-          firstName: user.displayName,
-          email: user.email
-        }))
-      } else {
-        console.log("User is not logged in.")
+      } catch (error) {
+        console.log(error.code)
       }
-    })
-  },[])
+      }
+    )})
+
+
+  // useEffect(() => {
+  //   getAuth().onAuthStateChanged(async (user) => {
+  //     if (user) {
+  //       const docRef = doc(db,"users",user.uid)
+  //       const docSnap = await getDoc(docRef)
+  //       if (docSnap.exists()) {
+  //         const data = docSnap.data()
+  //         console.log(data.lastname)
+  //       } else {
+  //         console.log("No document!")
+  //       }
+  //       dispatch(loginUser({
+  //         userId: user.uid,
+  //         firstName: user.displayName,
+  //         email: user.email
+  //       }))
+  //     } else {
+  //       console.log("User is not logged in.")
+  //     }
+  //   })
+  // },[])
 
   
 
