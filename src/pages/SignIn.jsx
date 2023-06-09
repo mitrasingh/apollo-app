@@ -3,6 +3,10 @@ import { Button, Card, Container, Form, Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../features/user/userSlice'
+import { doc, getDoc } from "firebase/firestore"
+import { db } from "../utils/firebase-config"
 
 export const SignIn = () => {
 
@@ -15,35 +19,33 @@ export const SignIn = () => {
     const navigate = useNavigate()
 
     const auth = getAuth()
+    const dispatch = useDispatch();
 
     const handleLogin = async (event) => {
         event.preventDefault()
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password)
-            const user = userCredential.user
-            console.log(user)
+            await signInWithEmailAndPassword(auth, email, password)
             navigate("/")
         } catch (error) {
             setAlert(true)
             setAlertMessage(error.code)
             console.log(error.code)
+        } finally {
+            const docRef = doc(db, "users", auth.currentUser.uid)
+            const docSnap = await getDoc(docRef)
+            if (auth && docSnap.exists()) {
+                const data = docSnap.data()
+                console.log(data)
+                dispatch(loginUser({
+                    userId: auth.currentUser.uid,
+                    firstName: auth.currentUser.displayName,
+                    lastName: data.lastname,
+                    title: data.title,
+                    email: auth.currentUser.email    
+                }))
+            }
         }
     }
-
-    // const handleLogin = (event) => {
-    //     event.preventDefault()
-    //     signInWithEmailAndPassword(auth, email, password)
-    //         .then((userCredential) => {
-    //             const user = userCredential.user
-    //             console.log(user)
-    //             navigate("/")
-    //         })
-    //         .catch((error) => {
-    //             const errorCode = error.code
-    //             const errorMessage = error.message 
-    //             console.log({errorCode, errorMessage})
-    //         })
-    // }
 
     return (
         <>
