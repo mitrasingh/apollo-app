@@ -1,4 +1,4 @@
-import { Col, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap'
+import { Col, Container, Nav, NavDropdown, Navbar, Image } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { auth } from '../utils/firebase-config'
@@ -47,13 +47,15 @@ export const Navigation = () => {
                             <NavDropdown.Item style={{fontSize: "9px"}} onClick={handleLogout}>Logout</NavDropdown.Item>
                     </NavDropdown>
                     <Navbar.Brand>
-                        <img
-                        src="src/img/default-profile.png"
-                        width="30"
-                        height="30"
-                        className="d-inline-block align-top"
-                        alt="user image"
-                        />
+                        <Image
+                            style={{
+                                height: "30px",
+                                width: "30px",
+                                objectFit: "cover",
+                                borderRadius: "50%"
+                            }} 
+                            src={user.userPhoto} // user photo will be placed here
+                            roundedCircle />
                     </Navbar.Brand>
                     <Nav.Link style={{fontSize: "9px"}} className="fw-bold pt-3 ps-0">Hello, <strong>{user.firstName}</strong></Nav.Link>
                 </Nav>
