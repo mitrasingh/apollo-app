@@ -12,21 +12,29 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase-config';
+import { PhotoUpload } from './pages/PhotoUpload';
+import { getStorage, ref, getDownloadURL } from "firebase/storage"
 
 function App() {
 
   const dispatch = useDispatch();
+  
+
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
       try {
+        const storage = getStorage()
+        const storageRef = ref(storage)
         const docRef = doc(db, "users", user.uid)
         const docSnap = await getDoc(docRef)
         if (user && docSnap.exists()) {
           const data = docSnap.data()
+          const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`))
           console.log(user.uid, user.email, user.displayName, data.lastname, data.title)
           console.log(data)
           dispatch(loginUser({
             userId: user.uid,
+            userPhoto: userPhotoURL,
             firstName: user.displayName,
             lastName: data.lastname, 
             title: data.title,
@@ -67,6 +75,7 @@ function App() {
       />
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />
+      <Route path="photoupload" element={<PhotoUpload />} />
     </Routes>
   )
 }
