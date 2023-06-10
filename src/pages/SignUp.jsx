@@ -7,6 +7,7 @@ import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "re
 import { useDispatch } from "react-redux"
 import { loginUser } from "../features/user/userSlice"
 import { Link, useNavigate } from "react-router-dom"
+import { v4 } from "uuid"
 
 
 export const SignUp = () => {
@@ -25,6 +26,7 @@ export const SignUp = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    
     const auth = getAuth()
 
     const storage = getStorage()
@@ -42,11 +44,9 @@ export const SignUp = () => {
                     lastname: lastName,
                     title: title,
                 })
-                if (auth) {
-                    const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
-                    await uploadBytes(imageRef, userPhoto)
-                    navigate("/")
-                }
+                const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
+                await uploadBytes(imageRef, userPhoto)
+                navigate("/")
             } else {
                 setAlert(true)
                 setAlertMessage("Passwords do not match")
@@ -54,7 +54,6 @@ export const SignUp = () => {
         } catch (error) {
             setAlert(true)
             setAlertMessage(error.code)
-            console.log(error.code)
         } finally {
             const docRef = doc(db, "users", auth.currentUser.uid)
             const docSnap = await getDoc(docRef)
@@ -73,17 +72,16 @@ export const SignUp = () => {
         }
     }
 
-    // temporary upload allowing user to see how photo will appear
+    // temporary upload to display photo which allows user to preview avatar
     const uploadPhoto = async (e) => {
         e.preventDefault()
         try {
             if (userPhoto == null) return null
-
-            const imageRef = ref(storageRef, "user-photo/temp")
+            const generatedID = v4()
+            const imageRef = ref(storageRef, `user-photo/temp + ${generatedID}`)
             await uploadBytes(imageRef, userPhoto)
-            const getURL = await getDownloadURL(ref(storageRef, "user-photo/temp"))
-            console.log(getURL)
-            setPhotoURL(`${getURL}`)
+            const getURL = await getDownloadURL(ref(storageRef, `user-photo/temp + ${generatedID}`))
+            setPhotoURL(getURL)
         } catch (error) {
             setAlert(true)
             setAlertMessage(error.code)
