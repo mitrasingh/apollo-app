@@ -1,6 +1,9 @@
 import { Button, Col, Container, Form, Row, Stack, Image } from 'react-bootstrap'
+import { useSelector } from "react-redux"
 
 export const Profile = () => {
+
+    const user = useSelector((state) => state.user)
 
     return (
         <>
@@ -10,16 +13,16 @@ export const Profile = () => {
                     <Stack direction="vertical">
                         <Image
                             style={{
-                                height: "80px",
-                                width: "80px",
+                                height: "180px",
+                                width: "180px",
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            src=""
+                            src={user.userPhoto}
                             roundedCircle />
                         <Button 
                             style={{fontSize: "8px", maxHeight: "30px", maxWidth: "75px"}} 
-                            className="ms-1 mt-1" 
+                            className="ms-5 mt-2" 
                             variant="secondary" 
                             size="sm" 
                             type="submit">Update Photo
@@ -32,23 +35,19 @@ export const Profile = () => {
                 <Stack>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>First Name</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value="Mitch" />
+                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.firstName} />
                     </Form.Group>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>Last Name</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value="Singh" />
+                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.lastName} />
                     </Form.Group>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>Title</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value="Marketing Director" />
+                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.title} />
                     </Form.Group>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>E-mail</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value="mitch@apollo.com" />
-                    </Form.Group>
-                    <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>Location</p>
-                    <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value="New York" />
+                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.email} />
                     </Form.Group>
                 </Stack>
             </Row>
