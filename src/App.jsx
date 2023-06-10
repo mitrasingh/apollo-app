@@ -18,20 +18,17 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage"
 function App() {
 
   const dispatch = useDispatch();
-  
+  const storage = getStorage()
+  const storageRef = ref(storage)
 
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
       try {
-        const storage = getStorage()
-        const storageRef = ref(storage)
         const docRef = doc(db, "users", user.uid)
         const docSnap = await getDoc(docRef)
         if (user && docSnap.exists()) {
           const data = docSnap.data()
           const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`))
-          console.log(user.uid, user.email, user.displayName, data.lastname, data.title)
-          console.log(data)
           dispatch(loginUser({
             userId: user.uid,
             userPhoto: userPhotoURL,
