@@ -35,7 +35,6 @@ export const SignIn = () => {
             const docSnap = await getDoc(docRef)
             if (auth && docSnap.exists()) {
                 const data = docSnap.data()
-                console.log(data)
                 dispatch(loginUser({
                     userId: auth.currentUser.uid,
                     firstName: auth.currentUser.displayName,
