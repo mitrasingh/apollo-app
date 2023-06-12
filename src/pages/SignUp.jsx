@@ -7,7 +7,6 @@ import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "re
 import { useDispatch } from "react-redux"
 import { loginUser } from "../features/user/userSlice"
 import { Link, useNavigate } from "react-router-dom"
-import { v4 } from "uuid"
 
 
 export const SignUp = () => {
@@ -46,15 +45,11 @@ export const SignUp = () => {
                 })
                 const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
                 await uploadBytes(imageRef, userPhoto)
-                navigate("/")
+
             } else {
                 setAlert(true)
                 setAlertMessage("Passwords do not match")
             }
-        } catch (error) {
-            setAlert(true)
-            setAlertMessage(error.code)
-        } finally {
             const docRef = doc(db, "users", auth.currentUser.uid)
             const docSnap = await getDoc(docRef)
             const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
@@ -69,6 +64,10 @@ export const SignUp = () => {
                     email: auth.currentUser.email
                 }))
             }
+            navigate("/")
+        } catch (error) {
+            setAlert(true)
+            setAlertMessage(error.code)
         }
     }
 
@@ -77,10 +76,9 @@ export const SignUp = () => {
         e.preventDefault()
         try {
             if (userPhoto == null) return null
-            const generatedID = v4()
-            const imageRef = ref(storageRef, `user-photo/temp + ${generatedID}`)
+            const imageRef = ref(storageRef, "user-photo/temp")
             await uploadBytes(imageRef, userPhoto)
-            const getURL = await getDownloadURL(ref(storageRef, `user-photo/temp + ${generatedID}`))
+            const getURL = await getDownloadURL(imageRef)
             setPhotoURL(getURL)
         } catch (error) {
             setAlert(true)
