@@ -25,12 +25,7 @@ export const SignIn = () => {
         event.preventDefault()
         try {
             await signInWithEmailAndPassword(auth, email, password)
-            navigate("/")
-        } catch (error) {
-            setAlert(true)
-            setAlertMessage(error.code)
-            console.log(error.code)
-        } finally {
+
             const docRef = doc(db, "users", auth.currentUser.uid)
             const docSnap = await getDoc(docRef)
             if (auth && docSnap.exists()) {
@@ -43,6 +38,10 @@ export const SignIn = () => {
                     email: auth.currentUser.email    
                 }))
             }
+            navigate("/")
+        } catch (error) {
+            setAlert(true)
+            setAlertMessage(error.code)
         }
     }
 
