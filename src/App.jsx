@@ -12,7 +12,6 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase-config';
-import { PhotoUpload } from './pages/PhotoUpload';
 import { getStorage, ref, getDownloadURL } from "firebase/storage"
 
 function App() {
@@ -24,11 +23,14 @@ function App() {
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
       try {
+        const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) 
         const docRef = doc(db, "users", user.uid)
         const docSnap = await getDoc(docRef)
-        if (user && docSnap.exists()) {
+        console.log(user.uid)
+        //error received from userPhotoURL storage/object not found, try moving userPhotoURL from SignUp
+        console.log(userPhotoURL)
+        if (user && userPhotoURL && docSnap.exists()) {
           const data = docSnap.data()
-          const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`))
           dispatch(loginUser({
             userId: user.uid,
             userPhoto: userPhotoURL,
@@ -42,7 +44,7 @@ function App() {
         console.log(error.code)
       }
       }
-    )})
+    )},[])
 
     return (
     <Routes>
@@ -72,7 +74,6 @@ function App() {
       />
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />
-      <Route path="photoupload" element={<PhotoUpload />} />
     </Routes>
   )
 }
