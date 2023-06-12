@@ -23,12 +23,9 @@ function App() {
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
       try {
-        const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) 
+        const userPhotoURL = await getDownloadURL.snapshot(ref(storageRef, `user-photo/${user.uid}`)) 
         const docRef = doc(db, "users", user.uid)
         const docSnap = await getDoc(docRef)
-        console.log(user.uid)
-        //error received from userPhotoURL storage/object not found, try moving userPhotoURL from SignUp
-        console.log(userPhotoURL)
         if (user && userPhotoURL && docSnap.exists()) {
           const data = docSnap.data()
           dispatch(loginUser({
@@ -44,7 +41,7 @@ function App() {
         console.log(error.code)
       }
       }
-    )},[])
+    )})
 
     return (
     <Routes>
