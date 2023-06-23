@@ -4,7 +4,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 import { useNavigate } from "react-router-dom"
 import { getAuth } from "firebase/auth"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { loginUser } from "../features/user/userSlice"
 import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "react-bootstrap"
 
@@ -17,6 +17,7 @@ export const PhotoUpload = () => {
     const [alertMessage, setAlertMessage] = useState("")
 
     const auth = getAuth()
+    const userState = useSelector((state) => state.user)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -49,6 +50,7 @@ export const PhotoUpload = () => {
 
             const docRef = doc(db,"users", auth.currentUser.uid)
             const docSnap = await getDoc(docRef)
+
             if (auth && userPhotoURL && docSnap) {
                 const data = docSnap.data()
                 dispatch(loginUser({
@@ -105,7 +107,7 @@ export const PhotoUpload = () => {
 
                         <Row className="mb-3">
                             <Form.Group>
-                                <Form.Label style={{fontSize: "10px"}} className="mb-4">Current Photo for first and last name.</Form.Label>
+                                <Form.Label style={{fontSize: "10px"}} className="mb-4">Current photo for {userState.firstName} {userState.lastName}</Form.Label>
                                 <Form.Control
                                     type="file"
                                     size="sm"
