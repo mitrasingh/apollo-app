@@ -1,6 +1,6 @@
 import { getAuth } from 'firebase/auth';
 import { loginUser } from "./features/user/userSlice"
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router';
 import { Home } from './pages/Home';
 import { CreateTask } from './pages/CreateTask';
@@ -17,21 +17,22 @@ import { PhotoUpload } from './pages/PhotoUpload';
 
 function App() {
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const userState = useSelector((state) => state.user)
   const storage = getStorage()
   const storageRef = ref(storage)
 
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
       try {
-        const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) 
+        const userPhotoURL = !userState.userPhoto ? null : await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`))
         const docRef = doc(db, "users", user.uid)
         const docSnap = await getDoc(docRef)
         if (user && docSnap.exists()) {
           const data = docSnap.data()
           dispatch(loginUser({
             userId: user.uid,
-            userPhoto: userPhotoURL || null,
+            userPhoto: userPhotoURL,
             firstName: user.displayName,
             lastName: data.lastname, 
             title: data.title,
@@ -39,7 +40,7 @@ function App() {
           }))
         }
       } catch (error) {
-        console.log(error.code)
+        console.log(error)
       }
       }
     )})
@@ -70,9 +71,14 @@ function App() {
         </ProtectedRoute>
         } 
       />
+      <Route path="photoupload" element={
+        <ProtectedRoute>
+          <PhotoUpload />
+        </ProtectedRoute>
+        } 
+      />
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />
-      <Route path="photoupload" element={<PhotoUpload />} />
     </Routes>
   )
 }
