@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase-config';
 import { getStorage, ref, getDownloadURL } from "firebase/storage"
+import { PhotoUpload } from './pages/PhotoUpload';
 
 function App() {
 
@@ -23,14 +24,14 @@ function App() {
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
       try {
-        const userPhotoURL = await getDownloadURL.snapshot(ref(storageRef, `user-photo/${user.uid}`)) 
+        const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) 
         const docRef = doc(db, "users", user.uid)
         const docSnap = await getDoc(docRef)
-        if (user && userPhotoURL && docSnap.exists()) {
+        if (user && docSnap.exists()) {
           const data = docSnap.data()
           dispatch(loginUser({
             userId: user.uid,
-            userPhoto: userPhotoURL,
+            userPhoto: userPhotoURL || null,
             firstName: user.displayName,
             lastName: data.lastname, 
             title: data.title,
@@ -71,6 +72,7 @@ function App() {
       />
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />
+      <Route path="photoupload" element={<PhotoUpload />} />
     </Routes>
   )
 }
