@@ -1,9 +1,9 @@
 import { createUserWithEmailAndPassword, updateProfile, getAuth } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { useState } from "react"
-import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "react-bootstrap"
+import { Container, Form, Card, Button, Alert } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { loginUser } from "../features/user/userSlice"
 import { Link, useNavigate } from "react-router-dom"
@@ -12,13 +12,13 @@ import { Link, useNavigate } from "react-router-dom"
 export const SignUp = () => {
 
     const [firstName, setFirstName] = useState("")
-    const [userPhoto, setUserPhoto] = useState(null)
+    // const [userPhoto, setUserPhoto] = useState(null)
     const [lastName, setLastName] = useState("")
     const [title, setTitle] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [verifyPassword, setVerifyPassword] = useState("")
-    const [photoURL, setPhotoURL] = useState("")
+    // const [photoURL, setPhotoURL] = useState("")
     
     const [alert, setAlert] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
@@ -28,8 +28,8 @@ export const SignUp = () => {
     
     const auth = getAuth()
 
-    const storage = getStorage()
-    const storageRef = ref(storage)
+    // const storage = getStorage()
+    // const storageRef = ref(storage)
     
     const handleSignUp = async (event) => {
         event.preventDefault();
@@ -43,8 +43,8 @@ export const SignUp = () => {
                     lastname: lastName,
                     title: title,
                 })
-                const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
-                await uploadBytes(imageRef, userPhoto)
+                // const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
+                // await uploadBytes(imageRef, userPhoto)
 
             } else {
                 setAlert(true)
@@ -52,19 +52,19 @@ export const SignUp = () => {
             }
             const docRef = doc(db, "users", auth.currentUser.uid)
             const docSnap = await getDoc(docRef)
-            const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
-            if (auth && userPhotoURL && docSnap.exists()) {
+            // const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
+            if (auth && docSnap.exists()) { // userPhotoURL has been removed
                 const data = docSnap.data()
                 dispatch(loginUser({
                     userId: auth.currentUser.uid,
-                    userPhoto: userPhotoURL,
+                    userPhoto: null,
                     firstName: auth.currentUser.displayName,
                     lastName: data.lastname,
                     title: data.title,
                     email: auth.currentUser.email
                 }))
             }
-            navigate("/")
+            navigate("/photoupload")
         } catch (error) {
             setAlert(true)
             setAlertMessage(error.code)
@@ -72,20 +72,20 @@ export const SignUp = () => {
     }
 
     // temporary upload to display photo which allows user to preview avatar
-    const uploadPhoto = async (e) => {
-        e.preventDefault()
-        try {
-            if (userPhoto == null) return null
-            const imageRef = ref(storageRef, "user-photo/temp")
-            await uploadBytes(imageRef, userPhoto)
-            const getURL = await getDownloadURL(imageRef)
-            setPhotoURL(getURL)
-        } catch (error) {
-            setAlert(true)
-            setAlertMessage(error.code)
-            console.log(error.code)
-        }
-    }
+    // const uploadPhoto = async (e) => {
+    //     e.preventDefault()
+    //     try {
+    //         if (userPhoto == null) return null
+    //         const imageRef = ref(storageRef, "user-photo/temp")
+    //         await uploadBytes(imageRef, userPhoto)
+    //         const getURL = await getDownloadURL(imageRef)
+    //         setPhotoURL(getURL)
+    //     } catch (error) {
+    //         setAlert(true)
+    //         setAlertMessage(error.code)
+    //         console.log(error.code)
+    //     }
+    // }
 
     return (
         <>
@@ -106,7 +106,7 @@ export const SignUp = () => {
                         <Link className="link-primary fw-bold" style={{cursor: "pointer"}} to="/signin">Sign In</Link> 
                     </p>
 
-                    <Row className="mb-4 d-flex justify-content-center">
+                    {/* <Row className="mb-4 d-flex justify-content-center">
                         <Col xs lg="2">
                             <Stack direction="vertical">
                                 <Image
@@ -121,9 +121,9 @@ export const SignUp = () => {
                                 />
                             </Stack>
                         </Col>
-                    </Row>
+                    </Row> */}
                     
-                    <Row className="d-flex justify-content-center">
+                    {/* <Row className="d-flex justify-content-center">
                         <Form.Group controlId="formFileSm" className="mb-3">
                             <Form.Label style={{fontSize: "10px"}}>Square image recommended for better fitment.</Form.Label>
                             <Form.Control 
@@ -132,9 +132,9 @@ export const SignUp = () => {
                                 onChange={(event) => setUserPhoto(event.target.files[0])} 
                             />
                         </Form.Group>
-                    </Row>
+                    </Row> */}
 
-                    <Row className="justify-content-center">
+                    {/* <Row className="justify-content-center">
                         <Button 
                             style={{fontSize: "10px", maxHeight: "30px", maxWidth: "130px"}} 
                             variant="primary"  
@@ -144,7 +144,7 @@ export const SignUp = () => {
                             >
                             Upload Photo
                         </Button>
-                    </Row>
+                    </Row> */}
 
                     <p className="fw-bold mb-1" style={{fontSize: "10px", margin: "0px"}}>First Name</p>
                     <Form.Group className="mb-3">
