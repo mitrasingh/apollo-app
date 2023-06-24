@@ -9,7 +9,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../utils/firebase-config';
 import { getStorage, ref, getDownloadURL } from "firebase/storage"
 import { loginUser } from "../features/user/userSlice"
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export const ProtectedRoute = ({ children }) => {
     const location = useLocation();
@@ -17,16 +17,13 @@ export const ProtectedRoute = ({ children }) => {
     const [user, loading] = useAuthState(auth)
 
     const dispatch = useDispatch()
-    const userState = useSelector((state) => state.user)
     const storage = getStorage()
     const storageRef = ref(storage)
   
     useEffect(() => {
       getAuth().onAuthStateChanged(async (user) => {
         try {
-        //   const userPhotoURL = !userState.userPhoto ? null : await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`))
           const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`))
-          console.log(userState.userPhoto)
           const docRef = doc(db, "users", user.uid)
           const docSnap = await getDoc(docRef)
           if (user && docSnap.exists()) {
