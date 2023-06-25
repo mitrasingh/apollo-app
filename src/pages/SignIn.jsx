@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { loginUser } from '../features/user/userSlice'
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
+import { ForgotPasswordModal } from '../components/ForgotPasswordModal'
 
 export const SignIn = () => {
 
@@ -15,6 +16,8 @@ export const SignIn = () => {
 
     const [alert, setAlert] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
+
+    const [show, setShow] = useState(false)
 
     const navigate = useNavigate()
 
@@ -43,6 +46,10 @@ export const SignIn = () => {
             setAlert(true)
             setAlertMessage(error.code)
         }
+    }
+
+    const handleCloseForgotPasswordModal = () => {
+        setShow(false)
     }
 
     return (
@@ -91,7 +98,13 @@ export const SignIn = () => {
                     Login
                 </Button>
 
-                <p className="d-flex justify-content-center link-primary mt-3">Forgot password?&nbsp;</p>
+                <Link
+                    className="d-flex justify-content-center link-primary mt-3"
+                    onClick={() => setShow(true)}
+                    >Forgot password?
+                </Link>
+
+                <ForgotPasswordModal show={show} handleCloseForgotPasswordModal={handleCloseForgotPasswordModal} />
             </Card>
         </Form>
         </Container>
