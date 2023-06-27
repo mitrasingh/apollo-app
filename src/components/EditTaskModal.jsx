@@ -1,4 +1,5 @@
 import { Button, Form, Modal, Stack } from 'react-bootstrap'
+import PropTypes from 'prop-types';
 
 
 export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
@@ -82,4 +83,9 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
         </Modal>     
         </>
   )
+}
+
+EditTaskModal.propTypes = {
+    showEditModal: PropTypes.any,
+    handleEditModalClose: PropTypes.any
 }
