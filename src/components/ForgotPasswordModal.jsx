@@ -1,6 +1,8 @@
 import { getAuth, sendPasswordResetEmail } from "firebase/auth"
 import { Stack, Form, Modal, Button } from "react-bootstrap"
 import { useState } from "react"
+import PropTypes from 'prop-types';
+
 
 export const ForgotPasswordModal = ({ show, handleCloseForgotPasswordModal }) => {
 
@@ -9,19 +11,15 @@ export const ForgotPasswordModal = ({ show, handleCloseForgotPasswordModal }) =>
 
     const auth = getAuth()
 
-    const handleForgotPassword = () => {
+    const handleForgotPassword = async () => {
         try {
-            sendPasswordResetEmail(auth, email)
-            setAlert("Email has been sent!") 
-            setTimeout(() => {
-                handleCloseForgotPasswordModal()
-                console.log("test")
-            }, 4000)
+            await sendPasswordResetEmail(auth, email)
         } catch (error) {
-            console.log(error)
-            setAlert(error.message)
+            console.log(error.message)
+            setAlert(error.code)
         } 
     }
+    
 
     return (
         <>
@@ -71,3 +69,7 @@ export const ForgotPasswordModal = ({ show, handleCloseForgotPasswordModal }) =>
     )
 }
 
+ForgotPasswordModal.propTypes = {
+    show: PropTypes.any,
+    handleCloseForgotPasswordModal: PropTypes.func
+}
