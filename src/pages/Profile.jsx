@@ -35,19 +35,19 @@ export const Profile = () => {
                 <Stack>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>First Name</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.firstName} />
+                        <Form.Control style={{fontSize: "10px"}} type="text" placeholder={user.firstName} />
                     </Form.Group>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>Last Name</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.lastName} />
+                        <Form.Control style={{fontSize: "10px"}} type="text" placeholder={user.lastName} />
                     </Form.Group>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>Title</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.title} />
+                        <Form.Control style={{fontSize: "10px"}} type="text" placeholder={user.title} />
                     </Form.Group>
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>E-mail</p>
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Control style={{fontSize: "10px"}} type="text" value={user.email} />
+                        <Form.Control style={{fontSize: "10px"}} type="text" placeholder={user.email} />
                     </Form.Group>
                 </Stack>
             </Row>
