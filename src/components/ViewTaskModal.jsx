@@ -1,4 +1,5 @@
 import { Button, Modal, Stack } from 'react-bootstrap'
+import PropTypes from 'prop-types';
 
 
 export const ViewTaskModal = ({ show, handleClose }) => {
@@ -52,4 +53,9 @@ export const ViewTaskModal = ({ show, handleClose }) => {
         </Modal>     
         </>
     )
+}
+
+ViewTaskModal.propTypes = {
+    show: PropTypes.any,
+    handleClose: PropTypes.func
 }
