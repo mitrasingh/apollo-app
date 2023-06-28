@@ -8,7 +8,6 @@ export const ForgotPasswordModal = ({ show, handleCloseForgotPasswordModal }) =>
 
     const [email, setEmail] = useState("")
     const [modalAlertMessage, setModalAlertMessage] = useState("")
-    
     const auth = getAuth()
 
     const handleForgotPassword = async () => {
@@ -23,7 +22,7 @@ export const ForgotPasswordModal = ({ show, handleCloseForgotPasswordModal }) =>
         }
     }
 
-    // Resets alerts if Forgot Password is clicked again
+    // Resets alerts if Forgot Password (from SignIn component) is clicked again
     useEffect(() => {
         setModalAlertMessage("")
     }, [show])
