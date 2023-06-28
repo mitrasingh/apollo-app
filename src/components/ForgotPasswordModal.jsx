@@ -1,35 +1,42 @@
 import { getAuth, sendPasswordResetEmail } from "firebase/auth"
 import { Stack, Form, Modal, Button } from "react-bootstrap"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import PropTypes from 'prop-types';
 
 
 export const ForgotPasswordModal = ({ show, handleCloseForgotPasswordModal }) => {
 
     const [email, setEmail] = useState("")
-    const [alert, setAlert] = useState("")
-
+    const [modalAlertMessage, setModalAlertMessage] = useState("")
+    
     const auth = getAuth()
 
     const handleForgotPassword = async () => {
         try {
             await sendPasswordResetEmail(auth, email)
+            setModalAlertMessage("Email has been sent!")
+            setTimeout(() => {
+                handleCloseForgotPasswordModal()
+            }, 2000)
         } catch (error) {
-            console.log(error.message)
-            setAlert(error.code)
-        } 
+            setModalAlertMessage(error.message.includes("auth/invalid-email") ? "Email not registered" : "")
+        }
     }
-    
+
+    // Resets alerts if Forgot Password is clicked again
+    useEffect(() => {
+        setModalAlertMessage("")
+    }, [show])
 
     return (
         <>
-        <Modal show={show}>
+        <Modal show={show} onHide={handleCloseForgotPasswordModal}>
         <Modal.Body>
             <Modal.Header style={{ display: "flex", justifyContent: "center"}}>
                 <Modal.Title>Forgot your password?</Modal.Title>
             </Modal.Header>
 
-            <p style={{fontSize: "11px", display:"flex", justifyContent:"center"}}>{alert}</p>
+            {modalAlertMessage ? <p style={{fontSize: "11px", display:"flex", justifyContent:"center"}}>{modalAlertMessage}</p> : ""}
 
             <Form.Group>
                 <Form.Label style={{fontSize:"12px"}}>We will email you a link to reset your password.</Form.Label>
