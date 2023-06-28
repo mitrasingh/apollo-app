@@ -77,6 +77,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
                             style={{fontSize: "10px"}} 
                             type="text" 
                             placeholder="75%"
+                            value={statusProject === "Done" ? "100%" : null} 
                             onChange={(e) => setPercentComplete(e.target.value)}
                             />
                     </Form.Group>
