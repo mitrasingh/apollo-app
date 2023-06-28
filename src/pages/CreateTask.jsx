@@ -10,16 +10,18 @@ export const CreateTask = () => {
   const [dueDate, setDueDate] = useState("")
 
   const handleSetStatusProjectChange = (e) => {
+    e.preventDefault()
     setStatusProject(e.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
     console.log(taskName)
     console.log(descriptionTask)
     console.log(statusProject)
     console.log(percentComplete)
     console.log(dueDate)
-}
+  }
 
 
   return (
@@ -66,7 +68,8 @@ export const CreateTask = () => {
         <Form.Control 
           style={{fontSize: "10px"}} 
           type="text" 
-          placeholder="i.e. 25%" 
+          placeholder="i.e 25%"
+          value={statusProject === "Done" ? "100%" : null} 
           onChange={(e) => setPercentComplete(e.target.value)}
           />
       </Form.Group>
