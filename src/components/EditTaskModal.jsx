@@ -16,9 +16,9 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
     }
 
     const handleSubmit = () => {
-        console.log(statusProject)
         console.log(projectName)
         console.log(descriptionTask)
+        console.log(statusProject)
         console.log(percentComplete)
         console.log(dueDate)
 
