@@ -1,46 +1,97 @@
+import { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
 
 export const CreateTask = () => {
+  
+  const [taskName, setTaskName] = useState("")
+  const [descriptionTask, setDescriptionTask] = useState("")
+  const [statusProject, setStatusProject] = useState("")
+  const [percentComplete, setPercentComplete] = useState("")
+  const [dueDate, setDueDate] = useState("")
+
+  const handleSetStatusProjectChange = (e) => {
+    setStatusProject(e.target.value)
+  }
+
+  const handleSubmit = () => {
+    console.log(taskName)
+    console.log(descriptionTask)
+    console.log(statusProject)
+    console.log(percentComplete)
+    console.log(dueDate)
+}
+
+
   return (
     <Container className="mt-4">
     <Form>
 
       <Form.Group className="mb-3" controlId="taskName">
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">Task name</Form.Label>
-        <Form.Control style={{fontSize: "10px"}} type="text" placeholder="Enter the name of task" />
+        <Form.Control 
+          style={{fontSize: "10px"}} 
+          type="text" 
+          placeholder="Enter the name of task" 
+          onChange={(e) => setTaskName(e.target.value)}
+          />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">Description of task</Form.Label>
-        <Form.Control style={{fontSize: "10px", resize: "none"}} as="textarea" rows={3} placeholder="Give a short description of the task you are requesting."/>
+        <Form.Control 
+          style={{fontSize: "10px", resize: "none"}} 
+          as="textarea" rows={3} 
+          placeholder="Give a short description of the task you are requesting."
+          onChange={(e) => setDescriptionTask(e.target.value)}
+          />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="progress">
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">What is the status of this project?</Form.Label>
-        <Form.Select style={{fontSize: "10px"}} aria-label="Default select example">
-          <option>Select options</option>
-          <option value="1">On Hold</option>
-          <option value="2">In Progress</option>
-          <option value="3">Done</option>
-          <option value="4">Cancelled</option>
+        <Form.Select 
+          style={{fontSize: "10px"}} 
+          aria-label="Default select example"
+          value={statusProject}
+          onChange={handleSetStatusProjectChange}>
+            <option value="">Select options</option>
+            <option value="On Hold">On Hold</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+            <option value="Cancelled">Cancelled</option>
         </Form.Select>
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="progress">
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">What percent of the task is complete?</Form.Label>
-        <Form.Control style={{fontSize: "10px"}} type="text" placeholder="i.e. 25%" />
+        <Form.Control 
+          style={{fontSize: "10px"}} 
+          type="text" 
+          placeholder="i.e. 25%" 
+          onChange={(e) => setPercentComplete(e.target.value)}
+          />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="dueDate">
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">Due date</Form.Label>
-        <Form.Control style={{fontSize: "10px"}} type="text" placeholder="mm/dd/yyyy" />
+        <Form.Control 
+          style={{fontSize: "10px"}} 
+          type="text" 
+          placeholder="mm/dd/yyyy" 
+          onChange={(e) => setDueDate(e.target.value)}
+          />
       </Form.Group>
 
       <Button style={{fontSize: "10px", maxHeight: "30px"}} variant="secondary" size="sm" href="/">
         Cancel
       </Button>
 
-      <Button style={{fontSize: "10px", maxHeight: "30px"}} className="ms-2" variant="primary" size="sm" type="submit">
+      <Button 
+        style={{fontSize: "10px", maxHeight: "30px"}} 
+        className="ms-2" variant="primary" 
+        size="sm" 
+        type="submit"
+        onClick={handleSubmit}
+        >
         Submit
       </Button>
     </Form>
