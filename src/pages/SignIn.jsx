@@ -9,6 +9,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 import { ForgotPasswordModal } from '../components/ForgotPasswordModal'
 
+
 export const SignIn = () => {
 
     const [email, setEmail] = useState("")
@@ -111,4 +112,3 @@ export const SignIn = () => {
         </>
     )
 }
-
