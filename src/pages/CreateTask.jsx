@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'
 
 export const CreateTask = () => {
   
@@ -8,6 +10,8 @@ export const CreateTask = () => {
   const [statusProject, setStatusProject] = useState("")
   const [percentComplete, setPercentComplete] = useState("")
   const [dueDate, setDueDate] = useState("")
+
+  const [startDate, setStartDate] = useState(new Date());
 
   const handleSetStatusProjectChange = (e) => {
     e.preventDefault()
@@ -83,6 +87,13 @@ export const CreateTask = () => {
           onChange={(e) => setDueDate(e.target.value)}
           />
       </Form.Group>
+
+      <DatePicker
+        style={{fontSize: "10px"}} 
+        selected={startDate} 
+        onChange={(date) => setStartDate(date)} 
+      />
+
 
       <Button style={{fontSize: "10px", maxHeight: "30px"}} variant="secondary" size="sm" href="/">
         Cancel
