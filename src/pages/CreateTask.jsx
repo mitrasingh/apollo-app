@@ -73,8 +73,8 @@ export const CreateTask = () => {
         <Form.Control 
           style={{fontSize: "10px"}} 
           type="text" 
-          placeholder="i.e 25%"
-          value={statusProject === "Done" ? "100%" : null} 
+          placeholder="What is the project percent completion?"
+          value={statusProject === "Done" ? "100%" : "What is the project percent completion?"} 
           onChange={(e) => setPercentComplete(e.target.value)}
           />
       </Form.Group>
