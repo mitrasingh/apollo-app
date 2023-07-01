@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
-// import DatePicker from 'react-datepicker';
-// import 'react-datepicker/dist/react-datepicker.css'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 export const CreateTask = () => {
   
@@ -9,9 +9,8 @@ export const CreateTask = () => {
   const [descriptionTask, setDescriptionTask] = useState("")
   const [statusProject, setStatusProject] = useState("")
   const [percentComplete, setPercentComplete] = useState("")
-  const [dueDate, setDueDate] = useState("")
 
-  // const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date()); //react-datepicker
 
   const handleSetStatusProjectChange = (e) => {
     e.preventDefault()
@@ -24,10 +23,13 @@ export const CreateTask = () => {
     console.log(descriptionTask)
     console.log(statusProject)
     console.log(percentComplete)
-    // console.log(startDate)
-    console.log(dueDate)
+    console.log(startDate)
   }
 
+  // changing the input font size so it matches the other form fields font size
+  const datePickerStyle = {
+    fontSize: "10px",
+  };
 
   return (
     <Container className="mt-4">
@@ -81,17 +83,20 @@ export const CreateTask = () => {
 
       <Form.Group className="mb-3" controlId="dueDate">
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">Due date</Form.Label>
-        <Form.Control 
+        {/* <Form.Control 
           style={{fontSize: "10px"}} 
           type="text" 
           placeholder="mm/dd/yyyy" 
           onChange={(e) => setDueDate(e.target.value)}
-        />
-          
-        {/* <DatePicker
-          selected={startDate} 
-          onChange={(date) => setStartDate(date)} 
         /> */}
+        <div style={datePickerStyle}>
+          <DatePicker
+            className="form-control"
+            selected={startDate} 
+            onChange={(date) => setStartDate(date)} 
+          />
+        </div>
+          
       </Form.Group>
 
 
