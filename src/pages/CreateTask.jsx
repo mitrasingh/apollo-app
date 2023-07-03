@@ -12,7 +12,7 @@ export const CreateTask = () => {
   const [taskName, setTaskName] = useState("")
   const [descriptionTask, setDescriptionTask] = useState("")
   const [statusProject, setStatusProject] = useState("")
-  const [percentComplete, setPercentComplete] = useState("")
+  const [priorityLevel, setPriorityLevel] = useState("")
   const [dueDate, setDueDate] = useState("")
 
   const navigate = useNavigate()
@@ -26,6 +26,11 @@ export const CreateTask = () => {
     setStatusProject(e.target.value)
   }
 
+  const handleSetPriorityLevel = (e) => {
+    e.preventDefault()
+    setPriorityLevel(e.target.value)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -33,7 +38,7 @@ export const CreateTask = () => {
         taskName,
         descriptionTask,
         statusProject,
-        percentComplete,
+        priorityLevel,
         dueDate,
         userId: user.userId,
         taskId: generateTaskId
@@ -75,7 +80,7 @@ export const CreateTask = () => {
           aria-label="Default select example"
           value={statusProject}
           onChange={handleSetStatusProjectChange}>
-            <option value="">Select options</option>
+            <option value="">Select status options</option>
             <option value="On Hold">On Hold</option>
             <option value="In Progress">In Progress</option>
             <option value="Done">Done</option>
@@ -84,14 +89,18 @@ export const CreateTask = () => {
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="progress">
-        <Form.Label style={{fontSize: "10px"}} className="fw-bold">What percent of the task is complete?</Form.Label>
-        <Form.Control 
+        <Form.Label style={{fontSize: "10px"}} className="fw-bold">What is the priority level of this project?</Form.Label>
+        <Form.Select 
           style={{fontSize: "10px"}} 
-          type="text" 
-          placeholder="What is the project percent completion?"
-          value={statusProject === "Done" ? "100%" : percentComplete} //if done, console.log shows blank value
-          onChange={(e) => setPercentComplete(e.target.value)}
-          />
+          aria-label="Default select example"
+          value={priorityLevel}
+          onChange={handleSetPriorityLevel}>
+            <option value="">Select priority level options</option>
+            <option value="Urgent">Urgent</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </Form.Select>
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="dueDate">
