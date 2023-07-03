@@ -2,26 +2,14 @@ import { useState } from 'react'
 import { ViewTaskModal } from './ViewTaskModal'
 import { EditTaskModal } from './EditTaskModal'
 import { Button, Card, Col, Container, Row } from 'react-bootstrap'
-import { collection, query, getDocs } from "firebase/firestore"
-import { db } from "../utils/firebase-config"
+
 
 export const TaskCard = () => {
 
     const [show, setShow] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
     const handleClose = () => setShow(false)
-    const handleEditModalClose = () => setShowEditModal(false)
-
-    // retrieving data from database
-    const queryTasks = query(collection(db, "tasks"))
-    const retrieveTasks = async () => {
-        const querySnapshot = await getDocs(queryTasks)
-        querySnapshot.forEach((doc) => {
-            console.log(doc.data())
-        })
-    }
-    
-    retrieveTasks()
+    const handleEditModalClose = () => setShowEditModal(false)    
 
     return (
     <>
