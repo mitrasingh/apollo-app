@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import { useNavigate } from "react-router-dom"  
+import { useSelector } from "react-redux"
+import { v4 as uuidv4 } from 'uuid'
+import { doc, setDoc } from "firebase/firestore"
+import { db } from "../utils/firebase-config"
+
 
 export const CreateTask = () => {
   
@@ -9,27 +13,36 @@ export const CreateTask = () => {
   const [descriptionTask, setDescriptionTask] = useState("")
   const [statusProject, setStatusProject] = useState("")
   const [percentComplete, setPercentComplete] = useState("")
+  const [dueDate, setDueDate] = useState("")
 
-  const [startDate, setStartDate] = useState(new Date()); //react-datepicker
+  const navigate = useNavigate()
+
+  const user = useSelector((state) => state.user)
+
+  const generateTaskId = uuidv4()
 
   const handleSetStatusProjectChange = (e) => {
     e.preventDefault()
     setStatusProject(e.target.value)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(taskName)
-    console.log(descriptionTask)
-    console.log(statusProject)
-    console.log(percentComplete)
-    console.log(startDate)
+    try {
+      await setDoc(doc(db,"tasks", `${user.userId}}`), {
+        taskName,
+        descriptionTask,
+        statusProject,
+        percentComplete,
+        dueDate,
+        userId: user.userId,
+        taskId: generateTaskId
+      })
+      navigate("/")
+    } catch (error) {
+        console.log(error)
+    }
   }
-
-  // changing the input font size so it matches the other form fields font size
-  const datePickerStyle = {
-    fontSize: "10px",
-  };
 
   return (
     <Container className="mt-4">
@@ -76,27 +89,19 @@ export const CreateTask = () => {
           style={{fontSize: "10px"}} 
           type="text" 
           placeholder="What is the project percent completion?"
-          value={statusProject === "Done" ? "100%" : "What is the project percent completion?"} 
+          value={statusProject === "Done" ? "100%" : percentComplete} //if done, console.log shows blank value
           onChange={(e) => setPercentComplete(e.target.value)}
           />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="dueDate">
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">Due date</Form.Label>
-        {/* <Form.Control 
+        <Form.Control 
           style={{fontSize: "10px"}} 
           type="text" 
           placeholder="mm/dd/yyyy" 
           onChange={(e) => setDueDate(e.target.value)}
-        /> */}
-        <div style={datePickerStyle}>
-          <DatePicker
-            className="form-control"
-            selected={startDate} 
-            onChange={(date) => setStartDate(date)} 
-          />
-        </div>
-          
+        />
       </Form.Group>
 
 
