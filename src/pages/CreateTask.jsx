@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
 import { useNavigate } from "react-router-dom"  
 import { useSelector } from "react-redux"
-import { v4 as uuidv4 } from 'uuid'
-import { doc, setDoc } from "firebase/firestore"
+//import { v4 as uuidv4 } from 'uuid'
+import { collection, addDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 
-
+// fully validate this form, ensure not fields are empty for tomorrow
 export const CreateTask = () => {
   
   const [taskName, setTaskName] = useState("")
@@ -19,7 +19,7 @@ export const CreateTask = () => {
 
   const user = useSelector((state) => state.user)
 
-  const generateTaskId = uuidv4()
+  //const generateTaskId = uuidv4()
 
   const handleSetStatusProjectChange = (e) => {
     e.preventDefault()
@@ -34,15 +34,16 @@ export const CreateTask = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await setDoc(doc(db,"tasks", `${user.userId}}`), {
+      const taskRef = await addDoc(collection(db,"tasks"), { //using firestore to generate task ID
         taskName,
         descriptionTask,
         statusProject,
         priorityLevel,
         dueDate,
         userId: user.userId,
-        taskId: generateTaskId
+        //taskId: generateTaskId
       })
+      console.log(`The task id is: ${taskRef.id}`)
       navigate("/")
     } catch (error) {
         console.log(error)
@@ -57,6 +58,7 @@ export const CreateTask = () => {
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">Task name</Form.Label>
         <Form.Control 
           style={{fontSize: "10px"}} 
+          maxLength={50}
           type="text" 
           placeholder="Enter the name of task" 
           onChange={(e) => setTaskName(e.target.value)}
@@ -67,7 +69,10 @@ export const CreateTask = () => {
         <Form.Label style={{fontSize: "10px"}} className="fw-bold">Description of task</Form.Label>
         <Form.Control 
           style={{fontSize: "10px", resize: "none"}} 
-          as="textarea" rows={3} 
+          as="textarea" 
+          rows={3}
+          maxLength={450}
+          type="text" 
           placeholder="Give a short description of the task you are requesting."
           onChange={(e) => setDescriptionTask(e.target.value)}
           />
