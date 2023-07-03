@@ -8,18 +8,22 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
     const [projectName, setProjectName] = useState("")
     const [descriptionTask, setDescriptionTask] = useState("")
     const [statusProject, setStatusProject] = useState("")
-    const [percentComplete, setPercentComplete] = useState("")
+    const [priorityLevel, setPriorityLevel] = useState("")
     const [dueDate, setDueDate] = useState("")
 
     const handleSetStatusProjectChange = (e) => {
         setStatusProject(e.target.value)
     }
 
+    const handleSetPriorityLevel = (e) => {
+        setPriorityLevel(e.target.value)
+    }
+
     const handleSubmit = () => {
         console.log(projectName)
         console.log(descriptionTask)
         console.log(statusProject)
-        console.log(percentComplete)
+        console.log(priorityLevel)
         console.log(dueDate)
 
         setTimeout(() => {
@@ -63,7 +67,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
                             aria-label="Default select example"
                             value={statusProject}
                             onChange={handleSetStatusProjectChange}>
-                                <option value="">Select options</option>
+                                <option value="">Select status options</option>
                                 <option value="On Hold">On Hold</option>
                                 <option value="In Progress">In Progress</option>
                                 <option value="Done">Done</option>
@@ -72,14 +76,18 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
                     </Form.Group>
                 
                     <Form.Group className="mb-3" controlId="progress">
-                        <Form.Label className="fw-bold" style={{margin: "2px"}}>Percent Completed</Form.Label>
-                        <Form.Control 
-                            style={{fontSize: "10px"}} 
-                            type="text" 
-                            placeholder="75%"
-                            value={statusProject === "Done" ? "100%" : "75%"} 
-                            onChange={(e) => setPercentComplete(e.target.value)}
-                            />
+                        <Form.Label style={{fontSize: "10px"}} className="fw-bold">What is the priority level of this project?</Form.Label>
+                        <Form.Select 
+                        style={{fontSize: "10px"}} 
+                        aria-label="Default select example"
+                        value={priorityLevel}
+                        onChange={handleSetPriorityLevel}>
+                            <option value="">Select priority level options</option>
+                            <option value="Urgent">Urgent</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </Form.Select>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="progress">
