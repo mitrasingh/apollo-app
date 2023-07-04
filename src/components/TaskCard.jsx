@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { ViewTaskModal } from './ViewTaskModal'
 import { EditTaskModal } from './EditTaskModal'
 import { Button, Card, Col, Container, Row } from 'react-bootstrap'
+import PropTypes from 'prop-types';
 
 
-export const TaskCard = () => {
+
+export const TaskCard = ({ docId, taskName, statusProject, priorityLevel, dueDate, userId }) => {
 
     const [show, setShow] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
@@ -13,21 +15,21 @@ export const TaskCard = () => {
 
     return (
     <>
-    <Container className="mt-1">
+    <Container className="mt-3">
         <Card>
-            <Card.Header style={{fontSize: "9px", height: "30px"}}>Task ID: 432564363</Card.Header>
+            <Card.Header style={{fontSize: "9px", height: "30px"}}>Task ID: {docId}</Card.Header>
             <Card.Body>
                 <Row style={{fontSize: "9px"}} className="fw-bold">
                     <Col xs lg="5">Name</Col>
                     <Col xs lg="3">Status</Col>
-                    <Col xs lg="2">Percentage</Col>
+                    <Col xs lg="2">Priority Level</Col>
                     <Col xs lg="2">Due</Col>
                 </Row>
                 <Row style={{fontSize: "12px"}}>
-                    <Col xs lg="5">Administer employee benefits</Col>
-                    <Col xs lg="3">In Progress</Col>
-                    <Col xs lg="2">75%</Col>
-                    <Col xs lg="2">June 14, 2023</Col>
+                    <Col xs lg="5">{taskName}</Col>
+                    <Col xs lg="3">{statusProject}</Col>
+                    <Col xs lg="2">{priorityLevel}</Col>
+                    <Col xs lg="2">{dueDate}</Col>
                 </Row>
                 <Row style={{height: "55px"}}>
                     <hr className="mt-2"></hr>
@@ -39,7 +41,7 @@ export const TaskCard = () => {
                             className="d-inline-block align-top"
                             alt="Apollo Logo"
                             />
-                        <p style={{fontSize: "10px"}} className="mt-2 ms-2">Created by: UserName</p>
+                        <p style={{fontSize: "10px"}} className="mt-2 ms-2">Created by: {userId}</p>
                     </Col>
                     <Col xs lg="2" className="d-flex mt-1">
 
@@ -72,4 +74,13 @@ export const TaskCard = () => {
     </Container>
     </> 
     )
+}
+
+TaskCard.propTypes = {
+    docId: PropTypes.any,
+    taskName: PropTypes.any,
+    statusProject: PropTypes.any,
+    priorityLevel: PropTypes.any,
+    dueDate: PropTypes.any,
+    userId: PropTypes.any
 }
