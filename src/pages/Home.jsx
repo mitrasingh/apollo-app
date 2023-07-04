@@ -19,25 +19,16 @@ export const Home = () => {
       setTasks(data.docs.map((doc) => ({...doc.data(), taskId: doc.id})))
     }
     getTasks()
-  }, [])
+  },[])
   
   return (
     <>
       <SearchBar />
       <Filter />
       {tasks.map((task) => {
+        console.log(task)
         return (
-          <>
-            <TaskCard 
-              descriptionTask={task.descriptionTask}
-              dueDate={task.dueDate}
-              priorityLevel={task.priorityLevel}
-              statusProject={task.statusProject}
-              taskId={task.taskId}
-              taskName={task.taskName}
-              userId={task.userId}       
-            />
-          </>
+            <TaskCard task={task} key={task.taskId} />
         )
       })}
     </>
