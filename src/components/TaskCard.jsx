@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { ViewTaskModal } from './ViewTaskModal'
 import { EditTaskModal } from './EditTaskModal'
-import { Button, Card, Col, Container, Row } from 'react-bootstrap'
+import { Button, Card, Col, Container, Row, Image } from 'react-bootstrap'
 import PropTypes from 'prop-types';
-
+import { getStorage, getDownloadURL, ref } from 'firebase/storage';
+// import { db } from '../utils/firebase-config';
+// import { doc, getDoc } from 'firebase/firestore'
 
 
 export const TaskCard = ( props ) => {
@@ -12,8 +14,29 @@ export const TaskCard = ( props ) => {
 
     const [show, setShow] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
+    const [creatorPhoto, setCreatorPhoto] = useState("")
+    // const [creatorName, setCreatorName] = useState("")
+
     const handleClose = () => setShow(false)
-    const handleEditModalClose = () => setShowEditModal(false)    
+    const handleEditModalClose = () => setShowEditModal(false)
+
+    const storage = getStorage()
+    const storageRef = ref(storage)
+    
+    const creatorInfo = async () => {
+        try {
+            const creatorPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${userId}`))
+            if (creatorPhotoURL) {
+                setCreatorPhoto(creatorPhotoURL)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    creatorInfo()
+
+    console.log(creatorPhoto)
+
 
     return (
     <>
@@ -36,14 +59,24 @@ export const TaskCard = ( props ) => {
                 <Row style={{height: "55px"}}>
                     <hr className="mt-2"></hr>
                     <Col xs lg="10" className="d-flex">
-                        <img
-                            src="src/img/default-profile.png"
+                        <Image
+                            style={{
+                                height: "35px",
+                                width: "35px",
+                                objectFit: "cover",
+                                borderRadius: "50%"
+                            }} 
+                            src={creatorPhoto} // user photo will be placed here
+                            roundedCircle 
+                        />
+                        {/* <img
+                            src={creatorPhoto}
                             width="35"
                             height="35"
                             className="d-inline-block align-top"
-                            alt="Apollo Logo"
-                            />
-                        <p style={{fontSize: "10px"}} className="mt-2 ms-2">Created by: {userId}</p>
+                            alt="Creator Photo"
+                            /> */}
+                        <p style={{fontSize: "10px"}} className="mt-2 ms-2">Created by: UserName</p>
                     </Col>
                     <Col xs lg="2" className="d-flex mt-1">
 
