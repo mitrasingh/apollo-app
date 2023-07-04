@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 
 
 
-export const TaskCard = ({ docId, taskName, statusProject, priorityLevel, dueDate, userId }) => {
+export const TaskCard = ( props ) => {
+
+    const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task
 
     const [show, setShow] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
@@ -17,7 +19,7 @@ export const TaskCard = ({ docId, taskName, statusProject, priorityLevel, dueDat
     <>
     <Container className="mt-3">
         <Card>
-            <Card.Header style={{fontSize: "9px", height: "30px"}}>Task ID: {docId}</Card.Header>
+            <Card.Header style={{fontSize: "9px", height: "30px"}}>Task ID: {taskId}</Card.Header>
             <Card.Body>
                 <Row style={{fontSize: "9px"}} className="fw-bold">
                     <Col xs lg="5">Name</Col>
@@ -77,10 +79,11 @@ export const TaskCard = ({ docId, taskName, statusProject, priorityLevel, dueDat
 }
 
 TaskCard.propTypes = {
-    docId: PropTypes.any,
+    task: PropTypes.object,
     taskName: PropTypes.any,
     statusProject: PropTypes.any,
     priorityLevel: PropTypes.any,
     dueDate: PropTypes.any,
-    userId: PropTypes.any
+    userId: PropTypes.any,
+    taskId: PropTypes.any
 }
