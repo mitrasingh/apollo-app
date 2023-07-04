@@ -34,6 +34,7 @@ export const SignUp = () => {
                     displayName: firstName,
                 })
                 await setDoc(doc(db,"users", `${auth.currentUser.uid}`), {
+                    firstname: firstName, // allows access for current auth user's name to be available throughout app
                     lastname: lastName,
                     title: title,
                 })
