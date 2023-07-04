@@ -2,11 +2,9 @@ import { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
 import { useNavigate } from "react-router-dom"  
 import { useSelector } from "react-redux"
-//import { v4 as uuidv4 } from 'uuid'
 import { collection, addDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 
-// fully validate this form, ensure not fields are empty for tomorrow
 export const CreateTask = () => {
   
   const [taskName, setTaskName] = useState("")
@@ -18,8 +16,6 @@ export const CreateTask = () => {
   const navigate = useNavigate()
 
   const user = useSelector((state) => state.user)
-
-  //const generateTaskId = uuidv4()
 
   const handleSetStatusProjectChange = (e) => {
     e.preventDefault()
@@ -41,7 +37,6 @@ export const CreateTask = () => {
         priorityLevel,
         dueDate,
         userId: user.userId,
-        //taskId: generateTaskId
       })
       console.log(`The task id is: ${taskRef.id}`)
       navigate("/")
