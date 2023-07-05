@@ -38,7 +38,6 @@ export const CreateTask = () => {
         dueDate,
         userId: user.userId,
       })
-      console.log(`The task id is: ${taskRef.id}`)
       navigate("/")
     } catch (error) {
         console.log(error)
