@@ -3,9 +3,10 @@ import { ViewTaskModal } from './ViewTaskModal'
 import { EditTaskModal } from './EditTaskModal'
 import { Button, Card, Col, Container, Row, Image } from 'react-bootstrap'
 import PropTypes from 'prop-types';
-import { getStorage, getDownloadURL, ref } from 'firebase/storage';
-// import { db } from '../utils/firebase-config';
-// import { doc, getDoc } from 'firebase/firestore'
+import { getStorage, getDownloadURL, ref } from 'firebase/storage'
+import { db } from '../utils/firebase-config'
+import { doc, getDoc } from 'firebase/firestore'
+
 
 
 export const TaskCard = ( props ) => {
@@ -15,7 +16,7 @@ export const TaskCard = ( props ) => {
     const [show, setShow] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
     const [creatorPhoto, setCreatorPhoto] = useState("")
-    // const [creatorName, setCreatorName] = useState("")
+    const [creatorName, setCreatorName] = useState("")
 
     const handleClose = () => setShow(false)
     const handleEditModalClose = () => setShowEditModal(false)
@@ -29,13 +30,17 @@ export const TaskCard = ( props ) => {
             if (creatorPhotoURL) {
                 setCreatorPhoto(creatorPhotoURL)
             }
+            const docRef = doc(db, "users", userId)
+            const docSnap = await getDoc(docRef)
+            if (docSnap.exists()) {
+                const data = docSnap.data()
+                setCreatorName(`${data.firstname} ${data.lastname}`)
+            }
         } catch (error) {
             console.log(error)
         }
     }
     creatorInfo()
-
-    console.log(creatorPhoto)
 
 
     return (
@@ -76,7 +81,7 @@ export const TaskCard = ( props ) => {
                             className="d-inline-block align-top"
                             alt="Creator Photo"
                             /> */}
-                        <p style={{fontSize: "10px"}} className="mt-2 ms-2">Created by: UserName</p>
+                        <p style={{fontSize: "10px"}} className="mt-2 ms-2">Created by: {creatorName}</p>
                     </Col>
                     <Col xs lg="2" className="d-flex mt-1">
 
