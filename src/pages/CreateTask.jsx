@@ -30,7 +30,7 @@ export const CreateTask = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const taskRef = await addDoc(collection(db,"tasks"), { //using firestore to generate task ID
+      await addDoc(collection(db,"tasks"), { //using firestore to generate task ID
         taskName,
         descriptionTask,
         statusProject,
