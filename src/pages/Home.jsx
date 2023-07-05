@@ -4,9 +4,6 @@ import { Filter } from '../components/Filter'
 import { useEffect, useState } from 'react'
 import { collection, getDocs, query } from 'firebase/firestore'
 import { db } from '../utils/firebase-config'
-// import { collection, query, getDocs } from "firebase/firestore"
-// import { db } from "../utils/firebase-config"
-// import { useEffect } from 'react'
 
 export const Home = () => {
 
@@ -26,7 +23,6 @@ export const Home = () => {
       <SearchBar />
       <Filter />
       {tasks.map((task) => {
-        console.log(task)
         return (
             <TaskCard task={task} key={task.taskId} />
         )
