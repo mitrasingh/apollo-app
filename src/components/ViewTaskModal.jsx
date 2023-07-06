@@ -33,7 +33,6 @@ export const ViewTaskModal = ({ show, handleClose, taskId, creatorPhoto, creator
         }
         if (show) {
             taskContent()
-            console.log(creatorName)
         }
     }, [show])
 
