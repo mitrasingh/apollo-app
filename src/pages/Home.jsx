@@ -8,11 +8,10 @@ import { db } from '../utils/firebase-config'
 export const Home = () => {
 
   const [tasks, setTasks] = useState([])
-  const queryTasks = query(collection(db, "tasks"))
 
   useEffect(() => {
     const getTasks = async () => {
-      const data = await getDocs(queryTasks)
+      const data = await getDocs(query(collection(db, "tasks")))
       setTasks(data.docs.map((doc) => ({...doc.data(), taskId: doc.id})))
     }
     getTasks()
@@ -22,6 +21,7 @@ export const Home = () => {
     <>
       <SearchBar />
       <Filter />
+
       {tasks.map((task) => {
         return (
             <TaskCard task={task} key={task.taskId} />
