@@ -11,6 +11,7 @@ import { doc, getDoc } from 'firebase/firestore'
 
 export const TaskCard = ( props ) => {
 
+    //retrieving prop data from Home.jsx
     const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task
 
     const [show, setShow] = useState(false)
@@ -71,16 +72,9 @@ export const TaskCard = ( props ) => {
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            src={creatorPhoto} // user photo will be placed here
+                            src={creatorPhoto}
                             roundedCircle 
                         />
-                        {/* <img
-                            src={creatorPhoto}
-                            width="35"
-                            height="35"
-                            className="d-inline-block align-top"
-                            alt="Creator Photo"
-                            /> */}
                         <p style={{fontSize: "10px"}} className="mt-2 ms-2">Created by: {creatorName}</p>
                     </Col>
                     <Col xs lg="2" className="d-flex mt-1">
@@ -89,6 +83,7 @@ export const TaskCard = ( props ) => {
                         <EditTaskModal 
                             showEditModal={showEditModal} 
                             handleEditModalClose={handleEditModalClose}
+                            taskId={taskId}
                             creatorPhoto={creatorPhoto}
                             creatorName={creatorName}/> 
                         <Button 
