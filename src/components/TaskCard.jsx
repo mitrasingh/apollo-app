@@ -86,7 +86,11 @@ export const TaskCard = ( props ) => {
                     <Col xs lg="2" className="d-flex mt-1">
 
                         {/* IF EDIT BUTTON IS CLICKED AND MATCHES LOGGED IN USER - MODAL IS SHOWN */}
-                        <EditTaskModal showEditModal={showEditModal} handleEditModalClose={handleEditModalClose}/> 
+                        <EditTaskModal 
+                            showEditModal={showEditModal} 
+                            handleEditModalClose={handleEditModalClose}
+                            creatorPhoto={creatorPhoto}
+                            creatorName={creatorName}/> 
                         <Button 
                             style={{fontSize: "10px", maxHeight: "30px"}} 
                             variant="primary" 
