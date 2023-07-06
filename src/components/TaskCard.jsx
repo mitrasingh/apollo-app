@@ -97,7 +97,12 @@ export const TaskCard = ( props ) => {
                         </Button>
 
                         {/* IF VIEW BUTTON IS CLICKED MODAL IS SHOWN */}
-                        <ViewTaskModal show={show} handleClose={handleClose}/> 
+                        <ViewTaskModal 
+                            show={show} 
+                            handleClose={handleClose} 
+                            taskId={taskId} 
+                            creatorPhoto={creatorPhoto}
+                            creatorName={creatorName}/> 
                         <Button 
                             style={{fontSize: "10px", maxHeight: "30px"}} 
                             variant="primary" 
