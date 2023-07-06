@@ -1,11 +1,11 @@
-import { Button, Form, Modal, Stack } from 'react-bootstrap'
+import { Button, Form, Modal, Stack, Image } from 'react-bootstrap'
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 
-export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
+export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhoto, creatorName }) => {
 
-    const [projectName, setProjectName] = useState("")
+    const [taskName, setTaskName] = useState("")
     const [descriptionTask, setDescriptionTask] = useState("")
     const [statusProject, setStatusProject] = useState("")
     const [priorityLevel, setPriorityLevel] = useState("")
@@ -20,7 +20,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
     }
 
     const handleSubmit = () => {
-        console.log(projectName)
+        console.log(taskName)
         console.log(descriptionTask)
         console.log(statusProject)
         console.log(priorityLevel)
@@ -45,7 +45,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
                             style={{fontSize: "10px"}} 
                             type="text" 
                             placeholder="Current Name"
-                            onChange={(e) => setProjectName(e.target.value)} />
+                            onChange={(e) => setTaskName(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="progress">
@@ -101,14 +101,17 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
                     </Form.Group>
 
                     <Stack direction="horizontal">
-                        <img
-                            src="src/img/default-profile.png"
-                            width="35"
-                            height="35"
-                            className="d-inline-block align-top"
-                            alt="user photo"
+                        <Image
+                            style={{
+                                height: "35px",
+                                width: "35px",
+                                objectFit: "cover",
+                                borderRadius: "50%"
+                            }} 
+                            src={creatorPhoto} // user photo will be placed here
+                            roundedCircle 
                         />
-                        <p style={{fontSize: "10px"}} className="mt-3 ms-2">Created by: UserName</p>
+                        <p style={{fontSize: "10px"}} className="mt-3 ms-2">Created by: {creatorName}</p>
                     </Stack>
 
                 </Modal.Body>
@@ -140,5 +143,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose }) => {
 
 EditTaskModal.propTypes = {
     showEditModal: PropTypes.any,
-    handleEditModalClose: PropTypes.any
+    handleEditModalClose: PropTypes.any,
+    creatorPhoto: PropTypes.any,
+    creatorName: PropTypes.any
 }
