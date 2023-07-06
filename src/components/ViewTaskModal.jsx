@@ -1,41 +1,75 @@
-import { Button, Modal, Stack } from 'react-bootstrap'
+import { Button, Modal, Stack, Image } from 'react-bootstrap'
 import PropTypes from 'prop-types';
+import { db } from '../utils/firebase-config'
+import { doc, getDoc } from 'firebase/firestore'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 
-export const ViewTaskModal = ({ show, handleClose }) => {
+export const ViewTaskModal = ({ show, handleClose, taskId, creatorPhoto, creatorName }) => {
+
+    const [taskName, setTaskName] = useState("")
+    const [descriptionTask, setDescriptionTask] = useState("")
+    const [statusProject, setStatusProject] = useState("")
+    const [priorityLevel, setPriorityLevel] = useState("")
+    const [dueDate, setDueDate] = useState("")
+
+    useEffect(() => {
+        const taskContent = async () => {
+            try {
+                const docRef = doc(db, "tasks", taskId)
+                const docSnap = await getDoc(docRef)   
+                if (docSnap.exists()) {
+                    const data = docSnap.data()
+                    setTaskName(data.taskName)
+                    setDescriptionTask(data.descriptionTask)
+                    setStatusProject(data.statusProject)
+                    setPriorityLevel(data.priorityLevel)
+                    setDueDate(data.dueDate)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        if (show) {
+            taskContent()
+            console.log(creatorName)
+        }
+    }, [show])
+
 
     return (
         <>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Project Name</Modal.Title>
+                <Modal.Title style={{fontSize:"15px"}} className="fw-bold">{taskName}</Modal.Title>
             </Modal.Header>
 
             <Modal.Body style={{fontSize:"11px"}}>
                 <p className="fw-bold" style={{margin: "0px"}}>Description of Task</p>
-                <p> Here will be the description of the individual task. Will put a limit on
-                    how many characters will be in this area. Maybe will implement a scroll 
-                    feature if its too long.
-                </p>
+                <p>{descriptionTask}</p>
 
                 <p className="fw-bold" style={{margin: "0px"}}>Status of Project</p>
-                <p>In Progress</p>
+                <p>{statusProject}</p>
                
                 <p className="fw-bold" style={{margin: "0px"}}>Percent Completed</p>
-                <p>75%</p>
+                <p>{priorityLevel}</p>
 
                 <p className="fw-bold" style={{margin: "0px"}}>Due Date</p>
-                <p>06/14/2023</p>
+                <p>{dueDate}</p>
 
                 <Stack direction="horizontal">
-                    <img
-                        src="src/img/default-profile.png"
-                        width="35"
-                        height="35"
-                        className="d-inline-block align-top"
-                        alt="user photo"
+                    <Image
+                        style={{
+                            height: "35px",
+                            width: "35px",
+                            objectFit: "cover",
+                            borderRadius: "50%"
+                        }} 
+                        src={creatorPhoto} // user photo will be placed here
+                        roundedCircle 
                     />
-                    <p style={{fontSize: "10px"}} className="mt-3 ms-2">Created by: UserName</p>
+                    <p style={{fontSize: "10px"}} className="mt-3 ms-2">Created by: {creatorName}</p>
                 </Stack>
 
             </Modal.Body>
@@ -57,5 +91,8 @@ export const ViewTaskModal = ({ show, handleClose }) => {
 
 ViewTaskModal.propTypes = {
     show: PropTypes.any,
-    handleClose: PropTypes.func
+    handleClose: PropTypes.func,
+    taskId: PropTypes.any,
+    creatorPhoto: PropTypes.any,
+    creatorName: PropTypes.any
 }
