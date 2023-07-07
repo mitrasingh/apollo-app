@@ -1,9 +1,10 @@
 import { Button, Form, Modal, Stack, Image } from 'react-bootstrap'
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { db } from '../utils/firebase-config'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
-
-export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhoto, creatorName }) => {
+export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, creatorPhoto, creatorName }) => {
 
     const [taskName, setTaskName] = useState("")
     const [descriptionTask, setDescriptionTask] = useState("")
@@ -11,6 +12,47 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhot
     const [priorityLevel, setPriorityLevel] = useState("")
     const [dueDate, setDueDate] = useState("")
 
+    useEffect(() => {
+        const taskContent = async () => {
+            try {
+                const docRef = doc(db, "tasks", taskId)
+                const docSnap = await getDoc(docRef)   
+                if (docSnap.exists()) {
+                    const data = docSnap.data()
+                    setTaskName(data.taskName)
+                    setDescriptionTask(data.descriptionTask)
+                    setStatusProject(data.statusProject)
+                    setPriorityLevel(data.priorityLevel)
+                    setDueDate(data.dueDate)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        if (showEditModal) {
+            taskContent()
+        }     
+    }, [showEditModal])
+
+
+    const handleUpdate = async () => {
+        try {
+            await updateDoc (doc(db, "tasks", taskId), {
+                taskName,
+                descriptionTask,
+                statusProject,
+                priorityLevel,
+                dueDate
+            })
+            handleEditModalClose()
+            console.log('data has been updated')
+        } catch (error) {
+            console.log(error)
+        } 
+    }
+
+
+    
     const handleSetStatusProjectChange = (e) => {
         setStatusProject(e.target.value)
     }
@@ -18,24 +60,12 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhot
     const handleSetPriorityLevel = (e) => {
         setPriorityLevel(e.target.value)
     }
-
-    const handleSubmit = () => {
-        console.log(taskName)
-        console.log(descriptionTask)
-        console.log(statusProject)
-        console.log(priorityLevel)
-        console.log(dueDate)
-
-        setTimeout(() => {
-            handleEditModalClose()
-        }, 2000)
-    }
     
     return (
             <>
             <Modal show={showEditModal} onHide={handleEditModalClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Project Name</Modal.Title>
+                    <Modal.Title style={{fontSize:"15px"}} className="fw-bold">Edit Task</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body style={{fontSize:"11px"}}>
@@ -44,8 +74,9 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhot
                         <Form.Control 
                             style={{fontSize: "10px"}} 
                             type="text" 
-                            placeholder="Current Name"
-                            onChange={(e) => setTaskName(e.target.value)} />
+                            value={taskName}
+                            onChange={(e) => setTaskName(e.target.value)} 
+                        />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="progress">
@@ -54,7 +85,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhot
                             style={{fontSize: "10px"}} 
                             type="text" as="textarea" 
                             rows={3} 
-                            placeholder="Here will be the description of the individual task. Will put a limit on how many characters will be in this area. Maybe will implement a scroll feature if it's too long." 
+                            value={descriptionTask} 
                             onChange={(e) => setDescriptionTask(e.target.value)}
                         />
                     </Form.Group>
@@ -95,7 +126,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhot
                         <Form.Control 
                             style={{fontSize: "10px"}} 
                             type="text" 
-                            placeholder="06/14/2023"
+                            value={dueDate}
                             onChange={(e) => setDueDate(e.target.value)}
                             />
                     </Form.Group>
@@ -132,8 +163,8 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhot
                         variant="primary" 
                         size="sm" 
                         type="submit"
-                        onClick={handleSubmit}>
-                        Submit
+                        onClick={handleUpdate}>
+                        Update
                     </Button>
                 </Modal.Footer>
             </Modal>     
@@ -143,7 +174,8 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, creatorPhot
 
 EditTaskModal.propTypes = {
     showEditModal: PropTypes.any,
-    handleEditModalClose: PropTypes.any,
+    handleEditModalClose: PropTypes.func,
     creatorPhoto: PropTypes.any,
-    creatorName: PropTypes.any
+    creatorName: PropTypes.any,
+    taskId: PropTypes.any
 }
