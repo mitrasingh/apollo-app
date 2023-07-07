@@ -6,13 +6,15 @@ import PropTypes from 'prop-types';
 import { getStorage, getDownloadURL, ref } from 'firebase/storage'
 import { db } from '../utils/firebase-config'
 import { doc, getDoc } from 'firebase/firestore'
-
+import { useSelector } from 'react-redux';
 
 
 export const TaskCard = ( props ) => {
 
     //retrieving prop data from Home.jsx
     const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task
+
+    const currentUser = useSelector((state) => state.user)
 
     const [show, setShow] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
@@ -42,7 +44,6 @@ export const TaskCard = ( props ) => {
         }
     }
     creatorInfo()
-
 
     return (
     <>
@@ -80,12 +81,15 @@ export const TaskCard = ( props ) => {
                     <Col xs lg="2" className="d-flex mt-1">
 
                         {/* IF EDIT BUTTON IS CLICKED AND MATCHES LOGGED IN USER - MODAL IS SHOWN */}
+                        {currentUser.userId !== userId ? null : (
+                        <>
                         <EditTaskModal 
                             showEditModal={showEditModal} 
                             handleEditModalClose={handleEditModalClose}
                             taskId={taskId}
                             creatorPhoto={creatorPhoto}
-                            creatorName={creatorName}/> 
+                            creatorName={creatorName}/>
+
                         <Button 
                             style={{fontSize: "10px", maxHeight: "30px"}} 
                             variant="primary" 
@@ -94,6 +98,8 @@ export const TaskCard = ( props ) => {
                             onClick={() => setShowEditModal(true)}>
                                 Edit
                         </Button>
+                        </>
+                        )}
 
                         {/* IF VIEW BUTTON IS CLICKED MODAL IS SHOWN */}
                         <ViewTaskModal 
