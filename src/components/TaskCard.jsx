@@ -136,5 +136,5 @@ TaskCard.propTypes = {
     priorityLevel: PropTypes.any,
     dueDate: PropTypes.any,
     userId: PropTypes.any,
-    taskId: PropTypes.any
+    taskId: PropTypes.any,
 }
