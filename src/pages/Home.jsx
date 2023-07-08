@@ -9,6 +9,7 @@ export const Home = () => {
 
   const [tasks, setTasks] = useState([])
 
+  // pulling data from database and mapping each task into the tasks variable
   useEffect(() => {
     const getTasks = async () => {
       const data = await getDocs(query(collection(db, "tasks")))
@@ -22,6 +23,7 @@ export const Home = () => {
       <SearchBar />
       <Filter />
 
+      {/* mapping each task from tasks variable as per TaskCard */}
       {tasks.map((task) => {
         return (
             <TaskCard task={task} key={task.taskId} />
