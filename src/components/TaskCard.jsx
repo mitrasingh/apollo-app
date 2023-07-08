@@ -21,12 +21,15 @@ export const TaskCard = ( props ) => {
     const [creatorPhoto, setCreatorPhoto] = useState("")
     const [creatorName, setCreatorName] = useState("")
 
+    // visibility functionality for modals
     const handleClose = () => setShow(false)
     const handleEditModalClose = () => setShowEditModal(false)
 
+    // routing for database
     const storage = getStorage()
     const storageRef = ref(storage)
     
+    // retrieving users information from database
     const creatorInfo = async () => {
         try {
             const creatorPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${userId}`))
