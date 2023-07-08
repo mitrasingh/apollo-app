@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { db } from '../utils/firebase-config'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
+// props are from TaskCard.jsx
 export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, creatorPhoto, creatorName }) => {
 
     const [taskName, setTaskName] = useState("")
@@ -12,6 +13,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, cre
     const [priorityLevel, setPriorityLevel] = useState("")
     const [dueDate, setDueDate] = useState("")
 
+    // retrieving current content from database
     useEffect(() => {
         const taskContent = async () => {
             try {
@@ -34,7 +36,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, cre
         }     
     }, [showEditModal])
 
-
+    // updating new task content to database
     const handleUpdate = async () => {
         try {
             await updateDoc (doc(db, "tasks", taskId), {
@@ -51,12 +53,12 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, cre
         } 
     }
 
-
-    
+    // handling drop down menu for project status
     const handleSetStatusProjectChange = (e) => {
         setStatusProject(e.target.value)
     }
 
+    // handling drop down menu for priority level
     const handleSetPriorityLevel = (e) => {
         setPriorityLevel(e.target.value)
     }
@@ -139,7 +141,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, cre
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            src={creatorPhoto} // user photo will be placed here
+                            src={creatorPhoto} // user photo of task creator
                             roundedCircle 
                         />
                         <p style={{fontSize: "10px"}} className="mt-3 ms-2">Created by: {creatorName}</p>
