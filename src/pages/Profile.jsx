@@ -1,34 +1,88 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Row, Stack, Image } from 'react-bootstrap'
 import { useSelector } from "react-redux"
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { useDispatch } from "react-redux"
+import { editUser } from "../features/user/userSlice"
+import { Link, useNavigate } from "react-router-dom"
+import { getAuth, updateProfile } from "firebase/auth"
+import { doc, updateDoc } from "firebase/firestore"
+import { db } from "../utils/firebase-config"
+
 
 
 export const Profile = () => {
 
-    const user = useSelector((state) => state.user)
+    // CURRENTLY WE HAVE COMPONENTS DATA AS USESTATE VARIABLES (WHICH ARE EMPTY) 
+    // MAKE THE DATA MATCH REDUX DATA, THEN UPDATE DATA TO FIRESTORE DATABASE
+    // MAKE A FUNCTION USING USESTATE CALLED HANDLEUPDATETOLOCALDATA (OR SOMETHING LIKE THAT)
 
-    const [userUpdatedPhoto, setUserUpdatedPhoto] = useState("") //allows user to see how photo is displayed before upload
+    const user = useSelector((state) => state.user)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const auth = getAuth()
+
+    // const [userUpdatedPhoto, setUserUpdatedPhoto] = useState("") //allows user to see how photo is displayed before upload
     const [photoURL, setPhotoURL] = useState("") 
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [title, setTitle] = useState("")
     const [email, setEmail] = useState("")
 
-    const storage = getStorage()
-    const storageRef = ref(storage)
+    // const storage = getStorage()
+    // const storageRef = ref(storage)
 
-    const setPhotoHandle = async (e) => {
+    // const setPhotoHandle = async (e) => {
+    //     e.preventDefault()
+    //     try {
+    //         const imageRef = ref(storageRef, "user-photo/temp")
+    //         await uploadBytes(imageRef, userUpdatedPhoto)
+    //         const getURL = await getDownloadURL(imageRef)
+    //         setPhotoURL(getURL)
+    //     } catch (error) {
+    //         console.log(error.code)
+    //     }
+    // }
+
+
+    const handleUpdate = async (e) => {
         e.preventDefault()
         try {
-            const imageRef = ref(storageRef, "user-photo/temp")
-            await uploadBytes(imageRef, userUpdatedPhoto)
-            const getURL = await getDownloadURL(imageRef)
-            setPhotoURL(getURL)
+            await updateProfile(auth.currentUser, {
+                displayName: firstName
+            })
+            // await updateEmail(auth.currentUser, email)
+            await updateDoc(doc(db, "users", auth.currentUser.uid),{
+                firstname: firstName,
+                lastname: lastName,
+                title: title
+            })            
+            dispatch(editUser({
+                userId: user.userId,
+                userPhoto: photoURL,
+                firstName: firstName,
+                lastName: lastName,
+                title: title,
+                email: email
+            }))
+            navigate("/")
         } catch (error) {
-            console.log(error.code)
+            console.log(error)
         }
     }
+
+
+    // updates useState values to user initial state from redux
+    useEffect(() => {
+        const handleUpdateToLocal = () => {
+            setPhotoURL(user.userPhoto)
+            setFirstName(user.firstName)
+            setLastName(user.lastName)
+            setTitle(user.title)
+            setEmail(user.email)
+        }
+        handleUpdateToLocal()   
+    },[])
 
 
     return (
@@ -44,15 +98,14 @@ export const Profile = () => {
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            // src={user.userPhoto}
-                            src={photoURL === "" ? user.userPhoto : photoURL}
+                            src={photoURL}
                             roundedCircle />
 
                         <Form.Group>
                             <Form.Control 
                                 type="file"
                                 size="sm"
-                                onChange={(event) => setUserUpdatedPhoto(event.target.files[0])}
+                                // onChange={(event) => setUserUpdatedPhoto(event.target.files[0])}
                             />
                         </Form.Group>
 
@@ -62,7 +115,8 @@ export const Profile = () => {
                             variant="secondary" 
                             size="sm" 
                             type="file"
-                            onClick={setPhotoHandle}>Set Photo
+                            // onClick={setPhotoHandle}
+                            >Set Photo
                         </Button>
                     </Stack>
                 </Col>
@@ -75,7 +129,7 @@ export const Profile = () => {
                         <Form.Control 
                             style={{fontSize: "10px"}} 
                             type="text" 
-                            value={user.firstName}
+                            value={firstName}
                             onChange={(e) => setFirstName(e.target.value)} />
                     </Form.Group>
                     
@@ -84,7 +138,8 @@ export const Profile = () => {
                         <Form.Control 
                             style={{fontSize: "10px"}} 
                             type="text" 
-                            value={user.lastName} />
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)} />
                     </Form.Group>
                     
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>Title</p>
@@ -92,7 +147,8 @@ export const Profile = () => {
                         <Form.Control 
                             style={{fontSize: "10px"}} 
                             type="text" 
-                            value={user.title} />
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)} />
                     </Form.Group>
                    
                     <p className="fw-bold" style={{fontSize: "10px", margin: "0px"}}>E-mail</p>
@@ -100,16 +156,27 @@ export const Profile = () => {
                         <Form.Control 
                             style={{fontSize: "10px"}} 
                             type="text" 
-                            value={user.email} />
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)} />
                     </Form.Group>
                 </Stack>
             </Row>
 
-            <Button style={{fontSize: "10px", maxHeight: "30px"}} variant="secondary" size="sm" href="/">
+            <Button 
+                style={{fontSize: "10px", maxHeight: "30px"}} 
+                variant="secondary" 
+                size="sm" 
+                as={Link} to="/" >
                 Cancel
             </Button>
 
-            <Button style={{fontSize: "10px", maxHeight: "30px"}} className="ms-2" variant="primary" size="sm" type="submit">
+            <Button 
+                style={{fontSize: "10px", maxHeight: "30px"}} 
+                className="ms-2" 
+                variant="primary" 
+                size="sm" 
+                type="submit"
+                onClick={handleUpdate}>
                 Update
             </Button>
         </Container>
