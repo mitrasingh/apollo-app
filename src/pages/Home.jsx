@@ -9,6 +9,9 @@ export const Home = () => {
 
   const [tasks, setTasks] = useState([])
 
+  // SHOULD MAPPING TASK BE DONE AS A USEEFFECT? IN CONSOLE IT IS BEING REPEATED
+  // MANY TIMES!!! 
+
   // pulling data from database and mapping each task into the tasks variable
   useEffect(() => {
     const getTasks = async () => {
@@ -17,7 +20,7 @@ export const Home = () => {
     }
     getTasks()
   },[])
-  
+
   return (
     <>
       <SearchBar />
@@ -25,6 +28,7 @@ export const Home = () => {
 
       {/* mapping each task from tasks variable as per TaskCard */}
       {tasks.map((task) => {
+        console.log(task.taskName)
         return (
             <TaskCard task={task} key={task.taskId} />
         )
