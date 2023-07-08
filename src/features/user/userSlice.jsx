@@ -29,8 +29,16 @@ const userSlice = createSlice({
             state.title = null
             state.email = null
         },
+        editUser: (state, action) => {
+            state.userId = action.payload.userId
+            state.userPhoto = action.payload.userPhoto
+            state.firstName = action.payload.firstName
+            state.lastName = action.payload.lastName
+            state.title = action.payload.title
+            state.email = action.payload.email
+        }
     }
 })
 
-export const { loginUser, logoutUser } = userSlice.actions
+export const { loginUser, logoutUser, editUser } = userSlice.actions
 export default userSlice.reducer
