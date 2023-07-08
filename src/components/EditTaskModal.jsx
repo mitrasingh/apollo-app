@@ -179,5 +179,5 @@ EditTaskModal.propTypes = {
     handleEditModalClose: PropTypes.func,
     creatorPhoto: PropTypes.any,
     creatorName: PropTypes.any,
-    taskId: PropTypes.any
+    taskId: PropTypes.any,
 }
