@@ -12,7 +12,7 @@ import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "re
 export const PhotoUpload = () => {
 
     const [userPhoto, setUserPhoto] = useState(null)
-    const [photoURL, setPhotoURL] = useState("")
+    const [photoURL, setPhotoURL] = useState("") //allows user to see how photo is displayed before upload
     const [alert, setAlert] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
 
