@@ -5,9 +5,11 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { editUser } from "../features/user/userSlice"
 import { Link, useNavigate } from "react-router-dom"
-import { getAuth, updateProfile } from "firebase/auth"
+import { getAuth, updateProfile, updateEmail } from "firebase/auth"
 import { doc, updateDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+
 
 
 
@@ -22,28 +24,27 @@ export const Profile = () => {
     const navigate = useNavigate()
     const auth = getAuth()
 
-    // const [userUpdatedPhoto, setUserUpdatedPhoto] = useState("") //allows user to see how photo is displayed before upload
+    const [userUpdatedPhoto, setUserUpdatedPhoto] = useState("") //allows user to see how photo is displayed before upload
     const [photoURL, setPhotoURL] = useState("") 
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [title, setTitle] = useState("")
     const [email, setEmail] = useState("")
 
-    // const storage = getStorage()
-    // const storageRef = ref(storage)
+    const storage = getStorage()
+    const storageRef = ref(storage)
 
-    // const setPhotoHandle = async (e) => {
-    //     e.preventDefault()
-    //     try {
-    //         const imageRef = ref(storageRef, "user-photo/temp")
-    //         await uploadBytes(imageRef, userUpdatedPhoto)
-    //         const getURL = await getDownloadURL(imageRef)
-    //         setPhotoURL(getURL)
-    //     } catch (error) {
-    //         console.log(error.code)
-    //     }
-    // }
-
+    const setPhotoHandle = async (e) => {
+        e.preventDefault()
+        try {
+            const imageRef = ref(storageRef, "user-photo/temp")
+            await uploadBytes(imageRef, userUpdatedPhoto)
+            const getURL = await getDownloadURL(imageRef)
+            setPhotoURL(getURL)
+        } catch (error) {
+            console.log(error.code)
+        }
+    }
 
     const handleUpdate = async (e) => {
         e.preventDefault()
@@ -51,7 +52,17 @@ export const Profile = () => {
             await updateProfile(auth.currentUser, {
                 displayName: firstName
             })
-            // await updateEmail(auth.currentUser, email)
+            
+            const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
+            await uploadBytes(imageRef, userUpdatedPhoto)
+            const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
+
+            if (userPhotoURL) {
+                setPhotoURL(userPhotoURL)
+            }
+            
+            await updateEmail(auth.currentUser, email)
+
             await updateDoc(doc(db, "users", auth.currentUser.uid),{
                 firstname: firstName,
                 lastname: lastName,
@@ -105,7 +116,7 @@ export const Profile = () => {
                             <Form.Control 
                                 type="file"
                                 size="sm"
-                                // onChange={(event) => setUserUpdatedPhoto(event.target.files[0])}
+                                onChange={(event) => setUserUpdatedPhoto(event.target.files[0])}
                             />
                         </Form.Group>
 
@@ -115,7 +126,7 @@ export const Profile = () => {
                             variant="secondary" 
                             size="sm" 
                             type="file"
-                            // onClick={setPhotoHandle}
+                            onClick={setPhotoHandle}
                             >Set Photo
                         </Button>
                     </Stack>
