@@ -120,7 +120,7 @@ export const Profile = () => {
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            src={photoURL}
+                            src={`${photoURL}?timestamp=${Date.now()}`}
                             roundedCircle />
 
                         <Form.Group>
