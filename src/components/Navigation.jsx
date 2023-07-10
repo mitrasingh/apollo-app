@@ -6,11 +6,16 @@ import { logoutUser } from '../features/user/userSlice'
 import { signOut } from 'firebase/auth'
 
 export const Navigation = () => {
+    //pulling data from redux
     const user = useSelector((state) => state.user)
-    const userImage = `${user.userPhoto}?timestamp=${Date.now()}`
+    
+    //adding a timestamp so photo will be up-to-date if user makes any photo changes
+    const userImage = `${user.userPhoto}?timestamp=${Date.now()}` 
+    
     const dispatch = useDispatch()
     const navigate = useNavigate()
     
+    //logs user out
     const handleLogout = () => {
         dispatch(logoutUser())
         signOut(auth)
