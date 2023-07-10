@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Row, Stack, Image } from 'react-bootstrap'
 import { useSelector } from "react-redux"
-// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+// import { getStorage, ref } from "firebase/storage"
 import { useDispatch } from "react-redux"
 import { editUser } from "../features/user/userSlice"
 import { Link, useNavigate } from "react-router-dom"
@@ -15,9 +15,8 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 export const Profile = () => {
 
-    // CURRENTLY WE HAVE COMPONENTS DATA AS USESTATE VARIABLES (WHICH ARE EMPTY) 
-    // MAKE THE DATA MATCH REDUX DATA, THEN UPDATE DATA TO FIRESTORE DATABASE
-    // MAKE A FUNCTION USING USESTATE CALLED HANDLEUPDATETOLOCALDATA (OR SOMETHING LIKE THAT)
+    // NEED TO REFACTOR UPDATE FUNCTIONALITY AS THERE IS SOME CONFUSION WITH REDUX/DATABASE UPDATING CONTENT
+    // HAVE TO INCLUDE IF STATEMENTS FOR FUNCTIONALITY TO WORK
 
     const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
@@ -30,6 +29,7 @@ export const Profile = () => {
     const [lastName, setLastName] = useState("")
     const [title, setTitle] = useState("")
     const [email, setEmail] = useState("")
+    const [userSetPhoto, setUserSetPhoto] = useState(false)
 
     const storage = getStorage()
     const storageRef = ref(storage)
@@ -37,6 +37,7 @@ export const Profile = () => {
     const setPhotoHandle = async (e) => {
         e.preventDefault()
         try {
+            setUserSetPhoto(true)
             const imageRef = ref(storageRef, "user-photo/temp")
             await uploadBytes(imageRef, userUpdatedPhoto)
             const getURL = await getDownloadURL(imageRef)
@@ -49,33 +50,42 @@ export const Profile = () => {
     const handleUpdate = async (e) => {
         e.preventDefault()
         try {
-            await updateProfile(auth.currentUser, {
+            const updateDisplayName = await updateProfile(auth.currentUser, {
                 displayName: firstName
             })
-            
-            const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
-            await uploadBytes(imageRef, userUpdatedPhoto)
-            const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
 
-            if (userPhotoURL) {
-                setPhotoURL(userPhotoURL)
+            if (userSetPhoto) {
+                const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
+                await uploadBytes(imageRef, userUpdatedPhoto)
+                await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
             }
             
-            await updateEmail(auth.currentUser, email)
+            const updateUserEmail = await updateEmail(auth.currentUser, email)
 
-            await updateDoc(doc(db, "users", auth.currentUser.uid),{
+            const updateUserInfo = await updateDoc(doc(db, "users", auth.currentUser.uid),{
                 firstname: firstName,
                 lastname: lastName,
                 title: title
-            })            
-            dispatch(editUser({
-                userId: user.userId,
-                userPhoto: photoURL,
-                firstName: firstName,
-                lastName: lastName,
-                title: title,
-                email: email
-            }))
+            }) 
+            if (updateDisplayName && userSetPhoto && updateUserEmail && updateUserInfo) {
+                dispatch(editUser({
+                    userId: user.userId,
+                    userPhoto: photoURL,
+                    firstName: firstName,
+                    lastName: lastName,
+                    title: title,
+                    email: email
+                }))
+            } else {
+                dispatch(editUser({
+                    userId: user.userId,
+                    userPhoto: user.userPhoto,
+                    firstName: firstName,
+                    lastName: lastName,
+                    title: title,
+                    email: email
+                }))
+            }           
             navigate("/")
         } catch (error) {
             console.log(error)
@@ -95,6 +105,7 @@ export const Profile = () => {
         handleUpdateToLocal()   
     },[])
 
+    // console.log(user.firstName, firstName)
 
     return (
         <>
