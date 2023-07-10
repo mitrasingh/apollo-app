@@ -7,6 +7,7 @@ import { signOut } from 'firebase/auth'
 
 export const Navigation = () => {
     const user = useSelector((state) => state.user)
+    const userImage = `${user.userPhoto}?timestamp=${Date.now()}`
     const dispatch = useDispatch()
     const navigate = useNavigate()
     
@@ -54,7 +55,7 @@ export const Navigation = () => {
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            src={user.userPhoto} // user photo will be placed here
+                            src={userImage} // user photo will be placed here
                             roundedCircle />
                     </Navbar.Brand>
                     <Nav.Link style={{fontSize: "9px"}} className="fw-bold pt-3 ps-0">Hello, <strong>{user.firstName}</strong></Nav.Link>
