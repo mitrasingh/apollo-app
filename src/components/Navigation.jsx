@@ -60,7 +60,7 @@ export const Navigation = () => {
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            src={userImage} // user photo will be placed here
+                            src={userImage}
                             roundedCircle />
                     </Navbar.Brand>
                     <Nav.Link style={{fontSize: "9px"}} className="fw-bold pt-3 ps-0">Hello, <strong>{user.firstName}</strong></Nav.Link>
