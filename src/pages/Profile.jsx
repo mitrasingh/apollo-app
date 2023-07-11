@@ -29,15 +29,28 @@ export const Profile = () => {
     const [lastName, setLastName] = useState("")
     const [title, setTitle] = useState("")
     const [email, setEmail] = useState("")
-    const [userSetPhoto, setUserSetPhoto] = useState(false)
+    
+    const [checkPhoto, setCheckPhoto] = useState(false)
 
     const storage = getStorage()
     const storageRef = ref(storage)
 
+    // updates useState values to user initial state from redux
+    useEffect(() => {
+        const handleUpdateToLocal = () => {
+            setPhotoURL(user.userPhoto)
+            setFirstName(user.firstName)
+            setLastName(user.lastName)
+            setTitle(user.title)
+            setEmail(user.email)
+        }
+        handleUpdateToLocal()
+    },[])
+
     const setPhotoHandle = async (e) => {
         e.preventDefault()
         try {
-            setUserSetPhoto(true)
+            setCheckPhoto(true)
             const imageRef = ref(storageRef, "user-photo/temp")
             await uploadBytes(imageRef, userUpdatedPhoto)
             const getURL = await getDownloadURL(imageRef)
@@ -50,62 +63,39 @@ export const Profile = () => {
     const handleUpdate = async (e) => {
         e.preventDefault()
         try {
-            const updateDisplayName = await updateProfile(auth.currentUser, {
+            await updateProfile(auth.currentUser, {
                 displayName: firstName
             })
-
-            if (userSetPhoto) {
-                const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
-                await uploadBytes(imageRef, userUpdatedPhoto)
-                await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
-            }
             
-            const updateUserEmail = await updateEmail(auth.currentUser, email)
-
-            const updateUserInfo = await updateDoc(doc(db, "users", auth.currentUser.uid),{
+            await updateDoc(doc(db, "users", auth.currentUser.uid),{
                 firstname: firstName,
                 lastname: lastName,
                 title: title
             }) 
-            if (updateDisplayName && userSetPhoto && updateUserEmail && updateUserInfo) {
+
+            if (checkPhoto) {
+                const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`)
+                await uploadBytes(imageRef, userUpdatedPhoto)
+                await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`))
+            }
+
+            await updateEmail(auth.currentUser, email)
+            
+            if (updateProfile || checkPhoto || updateEmail || updateDoc) {
                 dispatch(editUser({
                     userId: user.userId,
-                    userPhoto: photoURL,
+                    userPhoto: checkPhoto ? photoURL : user.userPhoto,
                     firstName: firstName,
                     lastName: lastName,
                     title: title,
                     email: email
                 }))
-            } else {
-                dispatch(editUser({
-                    userId: user.userId,
-                    userPhoto: user.userPhoto,
-                    firstName: firstName,
-                    lastName: lastName,
-                    title: title,
-                    email: email
-                }))
-            }           
+            }          
             navigate("/")
         } catch (error) {
             console.log(error)
         }
     }
-
-
-    // updates useState values to user initial state from redux
-    useEffect(() => {
-        const handleUpdateToLocal = () => {
-            setPhotoURL(user.userPhoto)
-            setFirstName(user.firstName)
-            setLastName(user.lastName)
-            setTitle(user.title)
-            setEmail(user.email)
-        }
-        handleUpdateToLocal()   
-    },[])
-
-    // console.log(user.firstName, firstName)
 
     return (
         <>
@@ -120,7 +110,8 @@ export const Profile = () => {
                                 objectFit: "cover",
                                 borderRadius: "50%"
                             }} 
-                            src={`${photoURL}?timestamp=${Date.now()}`}
+                            // adding timestamp to bypass browser cache on image reload
+                            src={photoURL}
                             roundedCircle />
 
                         <Form.Group>
