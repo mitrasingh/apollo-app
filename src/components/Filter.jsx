@@ -10,10 +10,10 @@ export const Filter = () => {
         <Dropdown.Toggle style={{maxHeight: "20px"}} className="d-flex align-items-center" split variant="dark" id="dropdown-split-basic" />
 
         <Dropdown.Menu style={{fontSize: "10px"}}>
-            <Dropdown.Item as={Link} to="">by Due Date</Dropdown.Item>
-            <Dropdown.Item as={Link} to="">by Percentage</Dropdown.Item>
+            <Dropdown.Item as={Link} to="">by Newest</Dropdown.Item>
+            <Dropdown.Item as={Link} to="">by Oldest</Dropdown.Item>
+            <Dropdown.Item as={Link} to="">by Priority Level</Dropdown.Item>
             <Dropdown.Item as={Link} to="">by Status</Dropdown.Item>
-            <Dropdown.Item as={Link} to="">by Name</Dropdown.Item>
         </Dropdown.Menu>
         </Dropdown>   
     </Container>
