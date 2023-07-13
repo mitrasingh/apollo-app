@@ -48,14 +48,11 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, cre
             })
             if (updateDoc) {
                 handleEditModalClose()
+                refreshTasksHandle()
             }
         } catch (error) {
             console.log(error)
         } 
-    }
-
-    if (handleUpdate) {
-        refreshTasksHandle
     }
 
     // handling drop down menu for project status
