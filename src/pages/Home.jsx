@@ -25,11 +25,15 @@ export const Home = () => {
       getTasks()
       setRefresh(false)
       console.log('api retrieval')
+      console.log(tasks)
   },[refresh]) 
 
-
+  const filterNewestHandle = () => {
+    const filterNewestTasks = [...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate));
+    setTasks(filterNewestTasks)  
+  }
+  
   const refreshTasksHandle = () => setRefresh(true)
-
 
   // console.log(typeof refreshTasksHandle)
 
@@ -39,9 +43,9 @@ export const Home = () => {
       <Container className="mt-2">
         <Row>
           <Col xs lg="1">
-            <Filter />      
+            <Filter filterNewestHandle={filterNewestHandle}/>      
           </Col>
-          <Col className="mt-1 px-3">
+          <Col xs lg="2" className="mt-1 px-3">
             <Refresh refreshTasksHandle={refreshTasksHandle} />
           </Col>
         </Row>
