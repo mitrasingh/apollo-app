@@ -1,7 +1,9 @@
 import { Button, ButtonGroup, Container, Dropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
-export const Filter = () => {
+
+export const Filter = ({ filterNewestHandle }) => {
   return (
     <Container>
         <Dropdown as={ButtonGroup}>
@@ -10,7 +12,7 @@ export const Filter = () => {
         <Dropdown.Toggle style={{maxHeight: "20px"}} className="d-flex align-items-center" split variant="dark" id="dropdown-split-basic" />
 
         <Dropdown.Menu style={{fontSize: "10px"}}>
-            <Dropdown.Item >by Newest</Dropdown.Item>
+            <Dropdown.Item onClick={filterNewestHandle} >by Newest</Dropdown.Item>
             <Dropdown.Item as={Link} to="">by Oldest</Dropdown.Item>
             <Dropdown.Item>by Priority Level</Dropdown.Item>
               <Dropdown.Item as={Link} to="" className="ms-3">In Progress</Dropdown.Item>
@@ -26,4 +28,8 @@ export const Filter = () => {
         </Dropdown>   
     </Container>
   )
+}
+
+Filter.propTypes = {
+  filterNewestHandle: PropTypes.func
 }
