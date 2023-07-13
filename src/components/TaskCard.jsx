@@ -9,7 +9,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { useSelector } from 'react-redux';
 
 
-export const TaskCard = ( props ) => {
+export const TaskCard = ( props, { refreshTasksHandle } ) => {
 
     //retrieving prop data from Home.jsx
     const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task
@@ -91,7 +91,8 @@ export const TaskCard = ( props ) => {
                             handleEditModalClose={handleEditModalClose}
                             taskId={taskId}
                             creatorPhoto={creatorPhoto}
-                            creatorName={creatorName}/>
+                            creatorName={creatorName}
+                            refreshTasksHandle={refreshTasksHandle}/>
 
                         <Button 
                             style={{fontSize: "10px", maxHeight: "30px"}} 
@@ -137,4 +138,5 @@ TaskCard.propTypes = {
     dueDate: PropTypes.any,
     userId: PropTypes.any,
     taskId: PropTypes.any,
+    refreshTasksHandle: PropTypes.func
 }
