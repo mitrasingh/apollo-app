@@ -9,10 +9,11 @@ import { doc, getDoc } from 'firebase/firestore'
 import { useSelector } from 'react-redux';
 
 
-export const TaskCard = ( props, { refreshTasksHandle } ) => {
+export const TaskCard = ( props ) => {
 
     //retrieving prop data from Home.jsx
     const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task
+    const { refreshTasksHandle } = props
 
     const currentUser = useSelector((state) => state.user)
 
