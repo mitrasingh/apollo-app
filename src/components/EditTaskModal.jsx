@@ -5,7 +5,7 @@ import { db } from '../utils/firebase-config'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
 // props are from TaskCard.jsx
-export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, creatorPhoto, creatorName }) => {
+export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, creatorPhoto, creatorName, refreshTasksHandle }) => {
 
     const [taskName, setTaskName] = useState("")
     const [descriptionTask, setDescriptionTask] = useState("")
@@ -46,11 +46,16 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, cre
                 priorityLevel,
                 dueDate
             })
-            handleEditModalClose()
-            console.log('data has been updated')
+            if (updateDoc) {
+                handleEditModalClose()
+            }
         } catch (error) {
             console.log(error)
         } 
+    }
+
+    if (handleUpdate) {
+        refreshTasksHandle
     }
 
     // handling drop down menu for project status
@@ -180,4 +185,5 @@ EditTaskModal.propTypes = {
     creatorPhoto: PropTypes.any,
     creatorName: PropTypes.any,
     taskId: PropTypes.any,
+    refreshTasksHandle: PropTypes.func
 }
