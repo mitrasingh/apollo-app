@@ -21,18 +21,17 @@ export const Home = () => {
       } catch (error) {
         console.log(error)
       }
-      }
-    getTasks()
-    setRefresh(false)
-    console.log('api retrieval')
+    }
+      getTasks()
+      setRefresh(false)
+      console.log('api retrieval')
   },[refresh]) 
-  
+
 
   const refreshTasksHandle = () => setRefresh(true)
 
 
-  console.log(refresh)
-
+  // console.log(typeof refreshTasksHandle)
 
   return (
     <>
@@ -57,4 +56,3 @@ export const Home = () => {
     </>
   )
 } 
-
