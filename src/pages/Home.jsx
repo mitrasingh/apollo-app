@@ -15,11 +15,24 @@ export const Home = () => {
   // pulling data from database and mapping each task into the tasks variable
   useEffect(() => {
     const getTasks = async () => {
-      const data = await getDocs(query(collection(db, "tasks")))
-      setTasks(data.docs.map((doc) => ({...doc.data(), taskId: doc.id})))
-    }
+      try {
+        const data = await getDocs(query(collection(db, "tasks")))
+        setTasks(data.docs.map((doc) => ({...doc.data(), taskId: doc.id})))
+      } catch (error) {
+        console.log(error)
+      }
+      }
     getTasks()
-  },[]) 
+    setRefresh(false)
+    console.log('api retrieval')
+  },[refresh]) 
+  
+
+  const refreshTasksHandle = () => setRefresh(true)
+
+
+  console.log(refresh)
+
 
   return (
     <>
@@ -30,7 +43,7 @@ export const Home = () => {
             <Filter />      
           </Col>
           <Col className="mt-1 px-3">
-            <Refresh />
+            <Refresh refreshTasksHandle={refreshTasksHandle} />
           </Col>
         </Row>
       </Container>
@@ -38,7 +51,7 @@ export const Home = () => {
       {/* mapping each task from tasks variable as per TaskCard */}
       {tasks.map((task) => {
         return (
-            <TaskCard task={task} key={task.taskId} />
+            <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
         )
       })}
     </>
