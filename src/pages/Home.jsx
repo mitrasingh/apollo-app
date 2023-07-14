@@ -9,8 +9,11 @@ import { Row, Col, Container } from 'react-bootstrap'
 
 export const Home = () => {
 
+  // initial state for task data from database
   const [tasks, setTasks] = useState([])
-  const [refresh, setRefresh] = useState(false)
+
+  // refreshes data retrieval, also used for editing task and seeing the task update when modal is closed
+  const [refresh, setRefresh] = useState(false) 
 
   // pulling data from database and mapping each task into the tasks variable
   useEffect(() => {
@@ -28,11 +31,29 @@ export const Home = () => {
       console.log(tasks)
   },[refresh]) 
 
+  
+  // filter fuctionality for filter button 
   const filterNewestHandle = () => {
     const filterNewestTasks = [...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate));
     setTasks(filterNewestTasks)  
   }
+
+  const filterOldestHandle = () => {
+    const filterOldestTasks = [...tasks].sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
+    setTasks(filterOldestTasks)
+  }
   
+  const filterPriorityHandle = (level) => {
+    const filterPriorityTasks = tasks.filter(task => task.priorityLevel === level)
+    setTasks(filterPriorityTasks)
+  }
+
+  const filterStatusHandle = (level) => {
+    const filterPriorityTasks = tasks.filter(task => task.statusProject === level)
+    setTasks(filterPriorityTasks)
+  }
+
+  // resets to original task data when user clicks refresh button
   const refreshTasksHandle = () => setRefresh(true)
 
   // console.log(typeof refreshTasksHandle)
@@ -43,7 +64,12 @@ export const Home = () => {
       <Container className="mt-2">
         <Row>
           <Col xs lg="1">
-            <Filter filterNewestHandle={filterNewestHandle}/>      
+            <Filter 
+              filterNewestHandle={filterNewestHandle} 
+              filterOldestHandle={filterOldestHandle} 
+              filterPriorityHandle={filterPriorityHandle}
+              filterStatusHandle={filterStatusHandle}
+            />      
           </Col>
           <Col xs lg="2" className="mt-1 px-3">
             <Refresh refreshTasksHandle={refreshTasksHandle} />
