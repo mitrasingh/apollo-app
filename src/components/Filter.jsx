@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 
-export const Filter = ({ filterNewestHandle }) => {
+export const Filter = ({ filterNewestHandle, filterOldestHandle, filterPriorityHandle, filterStatusHandle }) => {
   return (
     <Container>
         <Dropdown as={ButtonGroup}>
@@ -13,17 +13,17 @@ export const Filter = ({ filterNewestHandle }) => {
 
         <Dropdown.Menu style={{fontSize: "10px"}}>
             <Dropdown.Item onClick={filterNewestHandle} >by Newest</Dropdown.Item>
-            <Dropdown.Item as={Link} to="">by Oldest</Dropdown.Item>
+            <Dropdown.Item onClick={filterOldestHandle}>by Oldest</Dropdown.Item>
             <Dropdown.Item>by Priority Level</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">In Progress</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">Done</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">On Hold</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">Cancelled</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterPriorityHandle("Urgent")} className="ms-3">Urgent</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterPriorityHandle("High")} className="ms-3">High</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterPriorityHandle("Medium")} className="ms-3">Medium</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterPriorityHandle("Low")} className="ms-3">Low</Dropdown.Item>
             <Dropdown.Item as={Link} to="">by Status</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">Urgent</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">High</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">Medium</Dropdown.Item>
-              <Dropdown.Item as={Link} to="" className="ms-3">Low</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterStatusHandle("In Progress")} className="ms-3">In Progress</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterStatusHandle("Done")} className="ms-3">Done</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterStatusHandle("On Hold")} className="ms-3">On Hold</Dropdown.Item>
+              <Dropdown.Item onClick={() => filterStatusHandle("Cancelled")} className="ms-3">Cancelled</Dropdown.Item>
         </Dropdown.Menu> 
         </Dropdown>   
     </Container>
@@ -31,5 +31,8 @@ export const Filter = ({ filterNewestHandle }) => {
 }
 
 Filter.propTypes = {
-  filterNewestHandle: PropTypes.func
+  filterNewestHandle: PropTypes.func,
+  filterOldestHandle: PropTypes.func,
+  filterPriorityHandle: PropTypes.func,
+  filterStatusHandle: PropTypes.func
 }
