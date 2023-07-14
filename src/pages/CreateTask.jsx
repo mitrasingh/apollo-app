@@ -7,26 +7,32 @@ import { db } from "../utils/firebase-config"
 
 export const CreateTask = () => {
   
+  // state to retrieve and hold users form field information
   const [taskName, setTaskName] = useState("")
   const [descriptionTask, setDescriptionTask] = useState("")
   const [statusProject, setStatusProject] = useState("")
   const [priorityLevel, setPriorityLevel] = useState("")
   const [dueDate, setDueDate] = useState("")
 
+  // redirect user to home after submission via react router
   const navigate = useNavigate()
 
+  // accessing redux state for users current properties
   const user = useSelector((state) => state.user)
 
+  // sets state status level of the task
   const handleSetStatusProjectChange = (e) => {
     e.preventDefault()
     setStatusProject(e.target.value)
   }
 
+  // sets state priority level of the task
   const handleSetPriorityLevel = (e) => {
     e.preventDefault()
     setPriorityLevel(e.target.value)
   }
 
+  // uploads new task to database
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
