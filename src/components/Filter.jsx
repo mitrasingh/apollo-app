@@ -2,8 +2,8 @@ import { Button, ButtonGroup, Container, Dropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-
 export const Filter = ({ filterNewestHandle, filterOldestHandle, filterPriorityHandle, filterStatusHandle }) => {
+
   return (
     <Container>
         <Dropdown as={ButtonGroup}>
@@ -16,6 +16,7 @@ export const Filter = ({ filterNewestHandle, filterOldestHandle, filterPriorityH
             <Dropdown.Item onClick={filterOldestHandle}>by Oldest</Dropdown.Item>
             <Dropdown.Item>by Priority Level</Dropdown.Item>
               <Dropdown.Item onClick={() => filterPriorityHandle("Urgent")} className="ms-3">Urgent</Dropdown.Item>
+              {/* <Form.Check type="checkbox" id="Urgent" label="Urgent" className="ms-3" onClick={()=>filterPriorityHandle("Urgent")} /> */}
               <Dropdown.Item onClick={() => filterPriorityHandle("High")} className="ms-3">High</Dropdown.Item>
               <Dropdown.Item onClick={() => filterPriorityHandle("Medium")} className="ms-3">Medium</Dropdown.Item>
               <Dropdown.Item onClick={() => filterPriorityHandle("Low")} className="ms-3">Low</Dropdown.Item>
@@ -34,5 +35,5 @@ Filter.propTypes = {
   filterNewestHandle: PropTypes.func,
   filterOldestHandle: PropTypes.func,
   filterPriorityHandle: PropTypes.func,
-  filterStatusHandle: PropTypes.func
+  filterStatusHandle: PropTypes.func,
 }
