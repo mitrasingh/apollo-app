@@ -11,6 +11,10 @@ export const Home = () => {
 
   // initial state for task data from database
   const [tasks, setTasks] = useState([])
+  const [filteredTasks, setFilteredTasks] = useState([])
+
+  const [displaySorted, setDisplaySorted] = useState(false)
+  const [displayFiltered, setDisplayFiltered] = useState(false)
 
   // refreshes data retrieval, also used for editing task and seeing the task update when modal is closed
   const [refresh, setRefresh] = useState(false) 
@@ -28,36 +32,49 @@ export const Home = () => {
       getTasks()
       setRefresh(false)
       console.log('api retrieval')
-      console.log(tasks)
-  },[refresh]) 
+  },[refresh])
 
+  // useEffect(() => {
+  //   // setTasks(backupTasks)
+  //   console.log(`setTasks to backupTasks: ${tasks[0].userId}`)
+  // },[refresh])
   
-  // filter fuctionality for filter button 
-  const filterNewestHandle = () => {
-    const filterNewestTasks = [...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate));
-    setTasks(filterNewestTasks)  
-  }
-
-  const filterOldestHandle = () => {
-    const filterOldestTasks = [...tasks].sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
-    setTasks(filterOldestTasks)
-  }
-  
-  const filterPriorityHandle = (level) => {
-    const filterPriorityTasks = tasks.filter(task => task.priorityLevel === level)
-    setTasks(filterPriorityTasks)
-  }
-
-  const filterStatusHandle = (level) => {
-    const filterPriorityTasks = tasks.filter(task => task.statusProject === level)
-    setTasks(filterPriorityTasks)
-  }
-
   // resets to original task data when user clicks refresh button
   const refreshTasksHandle = () => setRefresh(true)
 
-  // console.log(typeof refreshTasksHandle)
+  // filter fuctionality for filter button 
+  const filterNewestHandle = () => {
+    setTasks([...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate)))
+    setDisplaySorted(true)
+    setDisplayFiltered(false)
+    // setFilteredTasks([])
+    // const filterNewestTasks = [...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate));
+    // setTasks(filterNewestTasks)
+  }
 
+  const filterOldestHandle = () => {
+    setTasks([...tasks].sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate)))
+    setDisplaySorted(true)
+    setDisplayFiltered(false)
+    // setFilteredTasks([])
+    // const filterOldestTasks = [...tasks].sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
+    // setTasks(filterOldestTasks)
+  }
+  
+  const filterPriorityHandle = (priority) => {
+    setFilteredTasks(tasks.filter(task => task.priorityLevel === priority))
+    setDisplaySorted(false)
+    setDisplayFiltered(true)
+    // const filterPriorityTasks = tasks.filter(task => task.priorityLevel === priority)
+    // setTasks(filterPriorityTasks)
+  }
+
+  const filterStatusHandle = (status) => {
+    setFilteredTasks(tasks.filter(task => task.statusProject === status))
+    setDisplaySorted(false)
+    setDisplayFiltered(true)
+  }
+  
   return (
     <>
       <SearchBar />
@@ -75,14 +92,47 @@ export const Home = () => {
             <Refresh refreshTasksHandle={refreshTasksHandle} />
           </Col>
         </Row>
-      </Container>
 
-      {/* mapping each task from tasks variable as per TaskCard */}
-      {tasks.map((task) => {
-        return (
+
+      {!displayFiltered && !displaySorted ?
+        tasks.map((task) => {
+          return (
             <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
-        )
-      })}
+          )
+        })
+      :
+        null
+      }
+
+
+      {displayFiltered ? 
+        filteredTasks.map((task) => {
+          return (
+            <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
+          )  
+        })
+      :  
+        null
+      } 
+
+      {displayFiltered && filteredTasks.length == 0 ? (<h5>No tasks to display</h5>) : null}
+      
+
+      
+      {displaySorted ? 
+        tasks.map((task) => {
+          return (
+            <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
+          )
+        })
+      :
+        null
+      } 
+
+      {displaySorted && tasks.length == 0 ? (<h5>No tasks to display</h5>) : null}
+      
+
+     </Container>
     </>
   )
 } 
