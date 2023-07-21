@@ -67,7 +67,7 @@ export const Home = () => {
   
   return (
     <>
-      <SearchBar />
+      <SearchBar tasks={tasks} />
       <Container className="mt-2">
         <Row>
           <Col xs lg="1">
