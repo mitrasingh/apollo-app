@@ -1,12 +1,14 @@
 import { Col, Container, Form, FormControl, InputGroup, Row } from 'react-bootstrap'
-import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
 
-export const SearchBar = ({ tasks }) => {
+export const SearchBar = ({ userInputSearchBar }) => {
 
-    const [search, setSearch] = useState("")
+    // sending user form value to parent (Home.jsx)
+    const handleUserInput = (e) => {
+        const userInput = e.target.value
+        userInputSearchBar(userInput)
+    }
 
     return (
         <Container className="mt-4">
@@ -28,16 +30,10 @@ export const SearchBar = ({ tasks }) => {
                         type="text" 
                         className="me-2" 
                         placeholder="Search by task name..." 
-                        onChange={(e) => setSearch(e.target.value)}/>
+                        onChange={handleUserInput}
+                    />
                     </InputGroup>                
                 </Form>
-                {tasks
-                    .filter((task) => {
-                        return search.toLowerCase() === "" ? null : task.taskName.toLowerCase().includes(search)
-                })
-                    .map((task) => (
-                    <p key={uuidv4()}>{task.taskName}</p>
-                ))}
                 </Col>
             </Row>
         </Container>
@@ -45,5 +41,6 @@ export const SearchBar = ({ tasks }) => {
 }
 
 SearchBar.propTypes = {
-    tasks: PropTypes.any
+    tasks: PropTypes.any,
+    userInputSearchBar: PropTypes.func
 }
