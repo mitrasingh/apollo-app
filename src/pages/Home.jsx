@@ -11,12 +11,15 @@ export const Home = () => {
 
   // initial state for task data from database
   const [tasks, setTasks] = useState([])
+
+  // result of tasks that have been filtered by options from filterbutton (Filter.jsx)
   const [filteredTasks, setFilteredTasks] = useState([])
 
+  // displays which array of tasks should be shown 
   const [displaySorted, setDisplaySorted] = useState(false)
   const [displayFiltered, setDisplayFiltered] = useState(false)
 
-  // refreshes data retrieval, also used for editing task and seeing the task update when modal is closed
+  // refreshes the tasks state which retrieve any new tasks from database
   const [refresh, setRefresh] = useState(false) 
 
   // pulling data from database and mapping each task into the tasks variable
@@ -33,40 +36,27 @@ export const Home = () => {
       setRefresh(false)
       console.log('api retrieval')
   },[refresh])
-
-  // useEffect(() => {
-  //   // setTasks(backupTasks)
-  //   console.log(`setTasks to backupTasks: ${tasks[0].userId}`)
-  // },[refresh])
   
-  // resets to original task data when user clicks refresh button
+  // refreshes tasks state by retrieving any new data from database
   const refreshTasksHandle = () => setRefresh(true)
 
-  // filter fuctionality for filter button 
+  // filter options fuctionality for the dropdown filter button 
   const filterNewestHandle = () => {
     setTasks([...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate)))
     setDisplaySorted(true)
     setDisplayFiltered(false)
-    // setFilteredTasks([])
-    // const filterNewestTasks = [...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate));
-    // setTasks(filterNewestTasks)
   }
 
   const filterOldestHandle = () => {
     setTasks([...tasks].sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate)))
     setDisplaySorted(true)
     setDisplayFiltered(false)
-    // setFilteredTasks([])
-    // const filterOldestTasks = [...tasks].sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
-    // setTasks(filterOldestTasks)
   }
   
   const filterPriorityHandle = (priority) => {
     setFilteredTasks(tasks.filter(task => task.priorityLevel === priority))
     setDisplaySorted(false)
     setDisplayFiltered(true)
-    // const filterPriorityTasks = tasks.filter(task => task.priorityLevel === priority)
-    // setTasks(filterPriorityTasks)
   }
 
   const filterStatusHandle = (status) => {
@@ -93,44 +83,45 @@ export const Home = () => {
           </Col>
         </Row>
 
+        {/* initial display that is shown */}
+        {!displayFiltered && !displaySorted ?
+          tasks.map((task) => {
+            return (
+              <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
+            )
+          })
+        :
+          null
+        }
 
-      {!displayFiltered && !displaySorted ?
-        tasks.map((task) => {
-          return (
-            <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
-          )
-        })
-      :
-        null
-      }
+        {/* if filtered options (priority level or status) is clicked via filter button */}
+        {displayFiltered ? 
+          filteredTasks.map((task) => {
+            return (
+              <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
+            )  
+          })
+        :  
+          null
+        } 
+
+        {/* if filtered options (priority levl or status) is clicked and no tasks match criteria */}
+        {displayFiltered && filteredTasks.length == 0 ? (<h5>No tasks to display</h5>) : null}
 
 
-      {displayFiltered ? 
-        filteredTasks.map((task) => {
-          return (
-            <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
-          )  
-        })
-      :  
-        null
-      } 
+        {/* if sorted options (newest or oldest) is clicked via filter button */}
+        {displaySorted ? 
+          tasks.map((task) => {
+            return (
+              <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
+            )
+          })
+        :
+          null
+        } 
 
-      {displayFiltered && filteredTasks.length == 0 ? (<h5>No tasks to display</h5>) : null}
-      
-
-      
-      {displaySorted ? 
-        tasks.map((task) => {
-          return (
-            <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
-          )
-        })
-      :
-        null
-      } 
-
-      {displaySorted && tasks.length == 0 ? (<h5>No tasks to display</h5>) : null}
-      
+        {/* if sorted options (newest or oldest) is clicked and no tasks match criteria */}
+        {displaySorted && tasks.length == 0 ? (<h5>No tasks to display</h5>) : null}
 
      </Container>
     </>
