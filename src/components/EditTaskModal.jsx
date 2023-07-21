@@ -48,7 +48,7 @@ export const EditTaskModal = ({ showEditModal, handleEditModalClose, taskId, cre
             })
             if (updateDoc) {
                 handleEditModalClose()
-                refreshTasksHandle()
+                refreshTasksHandle() // from Home.jsx, updates display and current task being edited by retrieving new data from database
             }
         } catch (error) {
             console.log(error)
