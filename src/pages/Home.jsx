@@ -7,6 +7,7 @@ import { collection, getDocs, query } from 'firebase/firestore'
 import { db } from '../utils/firebase-config'
 import { Row, Col, Container } from 'react-bootstrap'
 
+
 export const Home = () => {
 
   // initial state for task data from database
@@ -18,6 +19,9 @@ export const Home = () => {
   // displays which array of tasks should be shown 
   const [displaySorted, setDisplaySorted] = useState(false)
   const [displayFiltered, setDisplayFiltered] = useState(false)
+
+  //user input for SearchBar
+  const [userInput, setUserInput] = useState("")
 
   // refreshes the tasks state which retrieve any new tasks from database
   const [refresh, setRefresh] = useState(false) 
@@ -37,8 +41,20 @@ export const Home = () => {
       console.log('api retrieval')
   },[refresh])
   
-  // refreshes tasks state by retrieving any new data from database
-  const refreshTasksHandle = () => setRefresh(true)
+  // refreshes tasks state by retrieving any new data from database and clears displays to original list
+  const refreshTasksHandle = () => {
+    setRefresh(true)
+    setDisplaySorted(false)
+    setDisplayFiltered(false)
+  }  
+
+  // receiving user input from SearchBar component
+  const userInputSearchBar = (formInput) => {
+    if (userInput.length > 0) {
+      refreshTasksHandle()
+    }
+    setUserInput(formInput)
+  }
 
   // filter options fuctionality for the dropdown filter button 
   const filterNewestHandle = () => {
@@ -67,7 +83,7 @@ export const Home = () => {
   
   return (
     <>
-      <SearchBar tasks={tasks} />
+      <SearchBar tasks={tasks} userInputSearchBar={userInputSearchBar} />
       <Container className="mt-2">
         <Row>
           <Col xs lg="1">
@@ -84,7 +100,7 @@ export const Home = () => {
         </Row>
 
         {/* initial display that is shown */}
-        {!displayFiltered && !displaySorted ?
+        {!displayFiltered && !displaySorted && userInput === "" ?
           tasks.map((task) => {
             return (
               <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
@@ -93,6 +109,16 @@ export const Home = () => {
         :
           null
         }
+
+        {/* if user inputs any value into search bar */}
+        {tasks
+          .filter((task) => {
+              return userInput.toLowerCase() === "" ? null : task.taskName.toLowerCase().includes(userInput)
+        })
+          .map((task) => (
+            <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
+        ))}
+
 
         {/* if filtered options (priority level or status) is clicked via filter button */}
         {displayFiltered ? 
