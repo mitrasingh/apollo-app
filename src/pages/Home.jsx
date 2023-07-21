@@ -41,9 +41,10 @@ export const Home = () => {
       console.log('api retrieval')
   },[refresh])
   
-  // refreshes tasks state by retrieving any new data from database and clears displays to original list
+  // refreshes tasks state by retrieving any new data from database, clears displays to original list, clears user search value
   const refreshTasksHandle = () => {
     setRefresh(true)
+    setUserInput("")
     setDisplaySorted(false)
     setDisplayFiltered(false)
   }  
