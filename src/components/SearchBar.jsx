@@ -1,6 +1,13 @@
 import { Col, Container, Form, FormControl, InputGroup, Row } from 'react-bootstrap'
+import { v4 as uuidv4 } from 'uuid';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 
-export const SearchBar = () => {
+
+export const SearchBar = ({ tasks }) => {
+
+    const [search, setSearch] = useState("")
+
     return (
         <Container className="mt-4">
             <Row className="justify-content-center">
@@ -16,11 +23,27 @@ export const SearchBar = () => {
                         alt="Search bar button"
                         />
                     </InputGroup.Text>
-                    <FormControl style={{fontSize: "11px"}} type="search" className="me-2" placeholder="Search tasks..." />
-                    </InputGroup>
+                    <FormControl 
+                        style={{fontSize: "11px"}} 
+                        type="text" 
+                        className="me-2" 
+                        placeholder="Search by task name..." 
+                        onChange={(e) => setSearch(e.target.value)}/>
+                    </InputGroup>                
                 </Form>
+                {tasks
+                    .filter((task) => {
+                        return search.toLowerCase() === "" ? null : task.taskName.toLowerCase().includes(search)
+                })
+                    .map((task) => (
+                    <p key={uuidv4()}>{task.taskName}</p>
+                ))}
                 </Col>
             </Row>
         </Container>
     )
+}
+
+SearchBar.propTypes = {
+    tasks: PropTypes.any
 }
