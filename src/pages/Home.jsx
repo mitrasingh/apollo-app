@@ -19,6 +19,7 @@ export const Home = () => {
   // displays which array of tasks should be shown 
   const [displaySorted, setDisplaySorted] = useState(false)
   const [displayFiltered, setDisplayFiltered] = useState(false)
+  const [displaySearched, setDisplaySearched] = useState(false)
 
   //user input for SearchBar
   const [userInput, setUserInput] = useState("")
@@ -47,6 +48,7 @@ export const Home = () => {
     setUserInput("")
     setDisplaySorted(false)
     setDisplayFiltered(false)
+    setDisplaySearched(false)
   }  
 
   // receiving user input from SearchBar component
@@ -55,36 +57,43 @@ export const Home = () => {
       refreshTasksHandle()
     }
     setUserInput(formInput)
+    setDisplaySearched(true)
   }
+
+
 
   // filter options fuctionality for the dropdown filter button 
   const filterNewestHandle = () => {
     setTasks([...tasks].sort((a,b) => new Date(b.dueDate) - new Date(a.dueDate)))
     setDisplaySorted(true)
     setDisplayFiltered(false)
+    setDisplaySearched(false)
   }
 
   const filterOldestHandle = () => {
     setTasks([...tasks].sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate)))
     setDisplaySorted(true)
     setDisplayFiltered(false)
+    setDisplaySearched(false)
   }
   
   const filterPriorityHandle = (priority) => {
     setFilteredTasks(tasks.filter(task => task.priorityLevel === priority))
-    setDisplaySorted(false)
     setDisplayFiltered(true)
+    setDisplaySorted(false)
+    setDisplaySearched(false)
   }
 
   const filterStatusHandle = (status) => {
     setFilteredTasks(tasks.filter(task => task.statusProject === status))
-    setDisplaySorted(false)
     setDisplayFiltered(true)
+    setDisplaySorted(false)
+    setDisplaySearched(false)
   }
   
   return (
     <>
-      <SearchBar tasks={tasks} userInputSearchBar={userInputSearchBar} />
+      <SearchBar userInputSearchBar={userInputSearchBar} />
       <Container className="mt-2">
         <Row>
           <Col xs lg="1">
@@ -112,13 +121,17 @@ export const Home = () => {
         }
 
         {/* if user inputs any value into search bar */}
-        {tasks
+        {displaySearched ? 
+        tasks
           .filter((task) => {
               return userInput.toLowerCase() === "" ? null : task.taskName.toLowerCase().includes(userInput)
         })
           .map((task) => (
             <TaskCard refreshTasksHandle={refreshTasksHandle} task={task} key={task.taskId} />
-        ))}
+        ))
+        :
+          null
+        }
 
 
         {/* if filtered options (priority level or status) is clicked via filter button */}
