@@ -29,9 +29,8 @@ export const SearchBar = ({ userInputSearchBar }) => {
                         style={{fontSize: "11px"}} 
                         type="text" 
                         className="me-2" 
-                        placeholder="Search by task name..." 
-                        onChange={handleUserInput}
-                    />
+                        placeholder="Search by task name..."
+                        onChange={handleUserInput}/>
                     </InputGroup>                
                 </Form>
                 </Col>
@@ -41,6 +40,5 @@ export const SearchBar = ({ userInputSearchBar }) => {
 }
 
 SearchBar.propTypes = {
-    tasks: PropTypes.any,
     userInputSearchBar: PropTypes.func
 }
