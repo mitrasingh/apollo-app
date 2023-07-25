@@ -1,7 +1,7 @@
 import { Button, Container } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 
-export const Refresh = ({ refreshTasksHandle }) => {
+export const Refresh = ({ refreshTasksHandle, displayFiltered, displaySorted }) => {
   return (
     <Container>
         <Button 
@@ -9,12 +9,14 @@ export const Refresh = ({ refreshTasksHandle }) => {
             className="d-flex align-items-center" 
             variant="dark"
             onClick={refreshTasksHandle}>
-                Refresh Tasks
+                {displayFiltered || displaySorted ? "Clear Filters" : "Refresh Tasks"}
         </Button>
     </Container>
   )
 }
 
 Refresh.propTypes = {
-    refreshTasksHandle: PropTypes.func
+    refreshTasksHandle: PropTypes.func,
+    displayFiltered: PropTypes.bool,
+    displaySorted: PropTypes.bool
 }
