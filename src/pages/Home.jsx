@@ -53,14 +53,14 @@ export const Home = () => {
 
   // receiving user input from SearchBar component
   const userInputSearchBar = (formInput) => {
-    if (userInput.length > 0) {
+    if (userInput.length > 4) {
       refreshTasksHandle()
     }
     setUserInput(formInput)
     setDisplaySearched(true)
   }
 
-
+console.log(userInput)
 
   // filter options fuctionality for the dropdown filter button 
   const filterNewestHandle = () => {
