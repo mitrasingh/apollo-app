@@ -1,7 +1,6 @@
 import { Col, Container, Form, FormControl, InputGroup, Row } from 'react-bootstrap'
 import PropTypes from 'prop-types';
 
-
 export const SearchBar = ({ userInputSearchBar }) => {
 
     // sending user form value to parent (Home.jsx)
@@ -40,5 +39,5 @@ export const SearchBar = ({ userInputSearchBar }) => {
 }
 
 SearchBar.propTypes = {
-    userInputSearchBar: PropTypes.func
+    userInputSearchBar: PropTypes.func,
 }
