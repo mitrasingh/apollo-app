@@ -5,8 +5,9 @@ export const SearchBar = ({ userInputSearchBar }) => {
 
     // sending user form value to parent (Home.jsx)
     const handleUserInput = (e) => {
-        const userInput = e.target.value
-        userInputSearchBar(userInput)
+            const userInput = e.target.value
+            userInputSearchBar(userInput)
+            console.log(e.target.value == 0 ? 'true' : 'false' )
     }
 
     return (
@@ -15,21 +16,22 @@ export const SearchBar = ({ userInputSearchBar }) => {
                 <Col sm={5}>
                 <Form className="d-flex">
                     <InputGroup>
-                    <InputGroup.Text className="bg-white">
-                        <img
-                        src="src/img/search.svg"
-                        width="30"
-                        height="30"
-                        className="d-inline-block align-top"
-                        alt="Search bar button"
+                        <InputGroup.Text className="bg-white">
+                            <img
+                            src="src/img/search.svg"
+                            width="30"
+                            height="30"
+                            className="d-inline-block align-top"
+                            alt="Search bar button"
+                            />
+                        </InputGroup.Text>
+                        <FormControl 
+                            style={{fontSize: "11px"}} 
+                            type="text" 
+                            className="me-2" 
+                            placeholder="Search by task name..."
+                            onChange={handleUserInput}
                         />
-                    </InputGroup.Text>
-                    <FormControl 
-                        style={{fontSize: "11px"}} 
-                        type="text" 
-                        className="me-2" 
-                        placeholder="Search by task name..."
-                        onChange={handleUserInput}/>
                     </InputGroup>                
                 </Form>
                 </Col>
