@@ -1,7 +1,7 @@
 import { Button, Container } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 
-export const Refresh = ({ refreshTasksHandle, displayFiltered, displaySorted }) => {
+export const RefreshButton = ({ refreshTasksHandle, displayFiltered, displaySorted }) => {
   return (
     <Container>
         <Button 
@@ -15,7 +15,7 @@ export const Refresh = ({ refreshTasksHandle, displayFiltered, displaySorted }) 
   )
 }
 
-Refresh.propTypes = {
+RefreshButton.propTypes = {
     refreshTasksHandle: PropTypes.func,
     displayFiltered: PropTypes.bool,
     displaySorted: PropTypes.bool
