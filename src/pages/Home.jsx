@@ -1,7 +1,7 @@
 import { TaskCard } from '../components/TaskCard'
 import { SearchBar } from '../components/SearchBar'
 import { Filter } from '../components/Filter'
-import { Refresh } from '../components/Refresh'
+import { RefreshButton } from '../components/RefreshButton'
 import { useEffect, useState } from 'react'
 import { collection, getDocs, query } from 'firebase/firestore'
 import { db } from '../utils/firebase-config'
@@ -100,7 +100,7 @@ export const Home = () => {
             />      
           </Col>
           <Col xs lg="2" className="mt-1 px-3">
-            <Refresh refreshTasksHandle={refreshTasksHandle} displayFiltered={displayFiltered} displaySorted={displaySorted} />
+            <RefreshButton refreshTasksHandle={refreshTasksHandle} displayFiltered={displayFiltered} displaySorted={displaySorted} />
           </Col>
         </Row>
 
