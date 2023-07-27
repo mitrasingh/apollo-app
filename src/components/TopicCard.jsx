@@ -3,7 +3,7 @@ import { Card, Col, Container, Row, Image } from 'react-bootstrap'
 export const TopicCard = () => {
 
     return (
-        <Container className="mt-4">
+        <Container className="mt-2">
         <Card style={{maxHeight: "65px"}} >
             <Card.Body>
             <Row>
