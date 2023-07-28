@@ -22,11 +22,11 @@ export const Shoutboard = () => {
           variant="dark"
           onClick={handleCreateTopic}
         >
-          + Create Topic
+          {!isCreateTopic ? "+ Create Topic" : "- Close"}
         </Button>
 
-        {isCreateTopic ? <CreateTopicForm /> : null}
-        
+        {isCreateTopic ? <CreateTopicForm setIsCreateTopic={setIsCreateTopic} /> : null}
+
         <TopicCard />        
       </Container>
   )
