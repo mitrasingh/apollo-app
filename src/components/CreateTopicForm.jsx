@@ -3,9 +3,10 @@ import { Container, Form, Button } from 'react-bootstrap'
 import { collection, addDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
+import PropTypes from "prop-types"
 
 
-export const CreateTopicForm = () => {
+export const CreateTopicForm = ({ setIsCreateTopic }) => {
 
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
@@ -18,7 +19,9 @@ export const CreateTopicForm = () => {
           await addDoc(collection(db,"topics"), { //using firestore to generate task ID
             title,
             description,
-            userId: user.userId 
+            userId: user.userId,
+            firstName: user.firstName,
+            lastName: user.lastName 
           })
         } catch (error) {
             console.log(error)
@@ -55,7 +58,8 @@ export const CreateTopicForm = () => {
                 style={{fontSize: "10px", maxHeight: "30px"}} 
                 className="ms-2" 
                 variant="secondary" 
-                size="sm" 
+                size="sm"
+                onClick={() => setIsCreateTopic(false)} 
                 >
                 Cancel
             </Button>
@@ -73,4 +77,8 @@ export const CreateTopicForm = () => {
         </Container>
         </Container>
     )
+}
+
+CreateTopicForm.propTypes = {
+    setIsCreateTopic: PropTypes.func
 }
