@@ -13,16 +13,22 @@ export const CreateTopicForm = ({ setIsCreateTopic }) => {
 
     const user = useSelector((state) => state.user)
 
+    console.log(`before: ${title} ${description}`)
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-          await addDoc(collection(db,"topics"), { //using firestore to generate task ID
+          const addTopic = await addDoc(collection(db,"topics"), { //using firestore to generate task ID
             title,
             description,
             userId: user.userId,
             firstName: user.firstName,
             lastName: user.lastName 
           })
+          if (addTopic) {
+            setTitle("")
+            setDescription("")
+          }
         } catch (error) {
             console.log(error)
         }
@@ -38,6 +44,7 @@ export const CreateTopicForm = ({ setIsCreateTopic }) => {
                 maxLength={50}
                 type="text" 
                 placeholder="Title"
+                value={title}
                 onChange={(e) => setTitle(e.target.value)} 
                 />
                 </Form.Group>
@@ -50,6 +57,7 @@ export const CreateTopicForm = ({ setIsCreateTopic }) => {
                 type="text" 
                 as="textarea"
                 placeholder="Shout it out..."
+                value={description}
                 onChange={(e) => setDescription(e.target.value)} 
                 />
                 </Form.Group>
