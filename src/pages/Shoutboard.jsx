@@ -1,12 +1,28 @@
 import { TopicCard } from "../components/TopicCard"
 import { Container } from "react-bootstrap"
 import { CreateTopicForm } from "../components/CreateTopicForm"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from 'react-bootstrap'
+import { collection, getDocs, query } from 'firebase/firestore'
+import { db } from '../utils/firebase-config'
 
 export const Shoutboard = () => {
 
+  const [topics, setTopics] = useState([])
   const [isCreateTopic, setIsCreateTopic] = useState(false)
+
+  useEffect(() => {
+    const getTopics = async () => {
+      try {
+        const data = await getDocs(query(collection(db,"topics")))
+        setTopics(data.docs.map((doc) => ({...doc.data(), topicId: doc.id})))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+      getTopics()
+      console.log(topics)
+  },[])
 
   const handleCreateTopic = () => {
     !isCreateTopic ? setIsCreateTopic(true) : setIsCreateTopic(false)
@@ -27,7 +43,11 @@ export const Shoutboard = () => {
 
         {isCreateTopic ? <CreateTopicForm setIsCreateTopic={setIsCreateTopic} /> : null}
 
-        <TopicCard />        
+        {topics.map((topic) => {
+          return (
+            <TopicCard topic={topic} key={topic.topicId}/>        
+          )
+        })}
       </Container>
   )
 }
