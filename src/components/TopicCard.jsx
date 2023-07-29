@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 export const TopicCard = ( props ) => {
 
+    // receiving prop data from Shoutboard.jsx
     const { title, firstName, lastName } = props.topic
 
     return (
