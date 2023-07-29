@@ -8,9 +8,13 @@ import { db } from '../utils/firebase-config'
 
 export const Shoutboard = () => {
 
+  // data state from firestore database from topics collection
   const [topics, setTopics] = useState([])
+
+  // displays create topic form if user clicks create topic button
   const [isCreateTopic, setIsCreateTopic] = useState(false)
 
+  // queries data from firestore database from topics collection
   useEffect(() => {
     const getTopics = async () => {
       try {
@@ -24,6 +28,7 @@ export const Shoutboard = () => {
       console.log(topics)
   },[])
 
+  // displays true/false of the display for create topic form
   const handleCreateTopic = () => {
     !isCreateTopic ? setIsCreateTopic(true) : setIsCreateTopic(false)
     console.log('shown')
