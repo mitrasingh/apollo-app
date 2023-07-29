@@ -8,22 +8,23 @@ import PropTypes from "prop-types"
 
 export const CreateTopicForm = ({ setIsCreateTopic }) => {
 
+    // holds the state of user input data 
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
 
+    // retrieving data from redux state of user
     const user = useSelector((state) => state.user)
 
-    console.log(`before: ${title} ${description}`)
-
+    // submits user created topic to database collection
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
           const addTopic = await addDoc(collection(db,"topics"), { //using firestore to generate task ID
             title,
             description,
-            userId: user.userId,
-            firstName: user.firstName,
-            lastName: user.lastName 
+            userId: user.userId, // from redux state
+            firstName: user.firstName, // from redux state
+            lastName: user.lastName // from redux state
           })
           if (addTopic) {
             setTitle("")
