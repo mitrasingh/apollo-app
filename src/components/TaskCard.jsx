@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ViewTaskModal } from './ViewTaskModal'
 import { EditTaskModal } from './EditTaskModal'
 import { Button, Card, Col, Container, Row, Image } from 'react-bootstrap'
@@ -31,23 +31,25 @@ export const TaskCard = ( props ) => {
     const storageRef = ref(storage)
     
     // retrieving users information from database
-    const creatorInfo = async () => {
-        try {
-            const creatorPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${userId}`))
-            if (creatorPhotoURL) {
-                setCreatorPhoto(creatorPhotoURL)
+    useEffect(() => {
+        const creatorInfo = async () => {
+            try {
+                const creatorPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${userId}`))
+                if (creatorPhotoURL) {
+                    setCreatorPhoto(creatorPhotoURL)
+                }
+                const docRef = doc(db, "users", userId)
+                const docSnap = await getDoc(docRef)
+                if (docSnap.exists()) {
+                    const data = docSnap.data()
+                    setCreatorName(`${data.firstname} ${data.lastname}`)
+                }
+            } catch (error) {
+                console.log(error)
             }
-            const docRef = doc(db, "users", userId)
-            const docSnap = await getDoc(docRef)
-            if (docSnap.exists()) {
-                const data = docSnap.data()
-                setCreatorName(`${data.firstname} ${data.lastname}`)
-            }
-        } catch (error) {
-            console.log(error)
         }
-    }
-    creatorInfo()
+        creatorInfo()
+    },[])
 
     return (
     <>
