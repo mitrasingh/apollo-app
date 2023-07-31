@@ -32,7 +32,7 @@ export const TaskCard = ( props ) => {
     
     // retrieving users information from database
     useEffect(() => {
-        const creatorInfo = async () => {
+        const fetchCreatorInfo = async () => {
             try {
                 const creatorPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${userId}`))
                 if (creatorPhotoURL) {
@@ -48,7 +48,7 @@ export const TaskCard = ( props ) => {
                 console.log(error)
             }
         }
-        creatorInfo()
+        fetchCreatorInfo()
     },[])
 
     return (
