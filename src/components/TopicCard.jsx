@@ -2,12 +2,13 @@ import { Card, Col, Container, Row, Image } from 'react-bootstrap'
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { getStorage, getDownloadURL, ref } from 'firebase/storage';
+import { Link } from 'react-router-dom'
 
 
 export const TopicCard = ( props ) => {
 
     // receiving prop data from Shoutboard.jsx
-    const { title, firstName, lastName, userId } = props.topic
+    const { title, firstName, lastName, userId, topicId } = props.topic
 
     const [creatorPhoto, setCreatorPhoto] = useState("")
 
@@ -49,7 +50,7 @@ export const TopicCard = ( props ) => {
 
                 <Col xs lg="9">
                 <Row style={{fontSize: "13px"}} className="fw-bold">
-                    <Col xs lg="5">{title}</Col>
+                    <Col xs lg="5" as={Link} to={topicId.toString()}>{title}</Col>
                 </Row>
                 <Row style={{fontSize: "9px"}}>
                     <Col xs lg="5">by {firstName} {lastName}</Col>
@@ -80,5 +81,6 @@ TopicCard.propTypes = {
     description: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    topicId: PropTypes.string
 }
