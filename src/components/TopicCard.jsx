@@ -1,10 +1,32 @@
 import { Card, Col, Container, Row, Image } from 'react-bootstrap'
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { getStorage, getDownloadURL, ref } from 'firebase/storage';
+
 
 export const TopicCard = ( props ) => {
 
     // receiving prop data from Shoutboard.jsx
-    const { title, firstName, lastName } = props.topic
+    const { title, firstName, lastName, userId } = props.topic
+
+    const [creatorPhoto, setCreatorPhoto] = useState("")
+
+    const storage = getStorage()
+    const storageRef = ref(storage)
+
+    useEffect(() => {
+        const creatorInfo = async () => {
+            try {
+                const creatorPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${userId}`))
+                if (creatorPhotoURL) {
+                    setCreatorPhoto(creatorPhotoURL)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        creatorInfo()
+    },[])
 
     return (
         <Container className="mt-2">
@@ -14,11 +36,14 @@ export const TopicCard = ( props ) => {
 
                 <Col xs lg="1" className="d-flex justify-content-end">
                 <Image
-                    src="src/img/default-profile.png"
-                    width="35"
-                    height="35"
-                    className="d-inline-block align-top"
-                    alt="Apollo Logo"
+                    style={{
+                        height: "35px",
+                        width: "35px",
+                        objectFit: "cover",
+                        borderRadius: "50%"
+                    }} 
+                    src={creatorPhoto}
+                    roundedCircle 
                 />
                 </Col>
 
