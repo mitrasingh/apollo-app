@@ -20,6 +20,7 @@ export const Shoutboard = () => {
       try {
         const data = await getDocs(query(collection(db,"topics")))
         setTopics(data.docs.map((doc) => ({...doc.data(), topicId: doc.id})))
+        console.log(topics)        
       } catch (error) {
         console.log(error)
       }
@@ -50,7 +51,7 @@ export const Shoutboard = () => {
 
         {topics.map((topic) => {
           return (
-            <TopicCard topic={topic} key={topic.topicId}/>        
+            <TopicCard topic={topic} key={topic.topicId}/>
           )
         })}
       </Container>
