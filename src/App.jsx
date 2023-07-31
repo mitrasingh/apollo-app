@@ -30,14 +30,15 @@ function App() {
           <Shoutboard />
         </ProtectedRoute>  
         } 
-      />
+      >
+      </Route>
       <Route path="profile" element={
         <ProtectedRoute>
           <Profile />
         </ProtectedRoute>
         } 
       />
-      <Route path="/shoutboard/:id" element={
+      <Route path="shoutboard/:id" element={
         <ProtectedRoute>
           <TopicDetails />
         </ProtectedRoute>
