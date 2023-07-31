@@ -15,7 +15,7 @@ export const TopicCard = ( props ) => {
     const storageRef = ref(storage)
 
     useEffect(() => {
-        const creatorInfo = async () => {
+        const fetchUserPhoto = async () => {
             try {
                 const creatorPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${userId}`))
                 if (creatorPhotoURL) {
@@ -25,7 +25,7 @@ export const TopicCard = ( props ) => {
                 console.log(error)
             }
         }
-        creatorInfo()
+        fetchUserPhoto()
     },[])
 
     return (
