@@ -7,6 +7,7 @@ import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
 import { ProtectedRoute } from './components/ProtectedRoute'; 
 import { PhotoUpload } from './pages/PhotoUpload';
+import { TopicDetails } from './pages/TopicDetails'
 
 function App() {
 
@@ -33,6 +34,12 @@ function App() {
       <Route path="profile" element={
         <ProtectedRoute>
           <Profile />
+        </ProtectedRoute>
+        } 
+      />
+      <Route path="/shoutboard/:id" element={
+        <ProtectedRoute>
+          <TopicDetails />
         </ProtectedRoute>
         } 
       />
