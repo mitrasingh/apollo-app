@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { doc, getDoc } from "firebase/firestore"
+import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { Container, Card, Row, Col, Image, Stack } from "react-bootstrap"
 import CloseButton from 'react-bootstrap/CloseButton';
@@ -11,21 +12,27 @@ export const TopicDetails = () => {
     const { id } = useParams()
 
     const [topic, setTopic] = useState({})
+    const [userPhoto, setUserPhoto] = useState("")
+
+    const storage = getStorage()
+    const storageRef = ref(storage)
 
     useEffect(() => {
-        const fetchTopic = async () => {
+        const fetchTopicData = async () => {
             try {
                 const docRef = doc(db,"topics",id)
                 const docSnap = await getDoc(docRef)
                 if (docSnap.exists()) {
                     const data = docSnap.data()
+                    const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${data.userId}`))
+                    setUserPhoto(userPhotoURL)
                     setTopic(data)
                 }
             } catch (error) {
                 console.log(error)
             }
         }
-        fetchTopic()
+        fetchTopicData()
     },[])
 
     return (
@@ -43,7 +50,7 @@ export const TopicDetails = () => {
                                     objectFit: "cover",
                                     borderRadius: "50%"
                                 }} 
-                                src="src/img/default-profile.png"
+                                src={userPhoto}
                                 roundedCircle 
                             />
                             <p>{`Posted by: ${topic.firstName} ${topic.lastName}`}</p>
