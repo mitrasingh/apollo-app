@@ -6,6 +6,7 @@ import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
 import { Container, Card, Row, Col, Image, Stack, Form, Button } from "react-bootstrap"
 import CloseButton from 'react-bootstrap/CloseButton';
+import { CommentCard } from "../components/CommentCard"
 
 
 export const TopicDetails = () => {
@@ -49,8 +50,6 @@ export const TopicDetails = () => {
             console.log(error)
         }
     }
-
-    console.log(id)
 
     return (
         <>
@@ -111,6 +110,7 @@ export const TopicDetails = () => {
                 Post
             </Button>     
         </Container>
+        <CommentCard />
         </>
     )
 }
