@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
@@ -39,10 +39,18 @@ export const TopicDetails = () => {
         fetchTopicData()
     },[])
 
-    const handlePostButton = (e) => {
+    const handlePostButton = async (e) => {
         e.preventDefault()
-        console.log(comment)
+        try {
+            await addDoc(collection(doc(db,"topics",id), "comments"), {
+                userComment: comment
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
+
+    console.log(id)
 
     return (
         <>
