@@ -20,13 +20,11 @@ export const Shoutboard = () => {
       try {
         const data = await getDocs(query(collection(db,"topics")))
         setTopics(data.docs.map((doc) => ({...doc.data(), topicId: doc.id})))
-        console.log(topics)        
       } catch (error) {
         console.log(error)
       }
     }
       getTopics()
-      console.log(topics)
   },[])
 
   // displays true/false of the display for create topic form
