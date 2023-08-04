@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc, getDocs, query } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
@@ -13,9 +13,10 @@ export const TopicDetails = () => {
 
     const { id } = useParams()
 
-    const [topic, setTopic] = useState({})
+    const [topic, setTopic] = useState([])
+    const [comments, setComments] = useState([])
     const [userPhoto, setUserPhoto] = useState("")
-    const [comment, setComment] = useState("")
+    const [commentInput, setCommentInput] = useState("")
 
     const storage = getStorage()
     const storageRef = ref(storage)
@@ -40,16 +41,37 @@ export const TopicDetails = () => {
         fetchTopicData()
     },[])
 
+    //map out the comments subcollection from topics collection
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const data = await getDocs(query(collection(db,"topics",id)))
+                setComments(data.docs.map((doc) => ({...doc.data(), commentId: doc.id})))
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchComments()
+    },[])
+
+    // console.log(comments.userId)
+
     const handlePostButton = async (e) => {
         e.preventDefault()
         try {
             await addDoc(collection(doc(db,"topics",id), "comments"), {
-                userComment: comment
+                userId: currentUser.userId,
+                userPhoto: currentUser.userPhoto,
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName, 
+                userComment: commentInput
             })
         } catch (error) {
             console.log(error)
         }
     }
+
+    
 
     return (
         <>
@@ -93,8 +115,8 @@ export const TopicDetails = () => {
                         type="text" 
                         as="textarea"
                         placeholder="What are your thoughts?"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
+                        value={commentInput}
+                        onChange={(e) => setCommentInput(e.target.value)}
                     />
                 </Form.Group>
             </Form>
