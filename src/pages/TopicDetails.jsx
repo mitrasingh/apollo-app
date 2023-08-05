@@ -7,7 +7,7 @@ import { useSelector } from "react-redux"
 import { Container, Card, Row, Col, Image, Stack, Form, Button } from "react-bootstrap"
 import CloseButton from 'react-bootstrap/CloseButton';
 import { CommentCard } from "../components/CommentCard"
-// import formatDate from ".././utils/format-date"
+import formatDate from ".././utils/format-date"
 
 
 export const TopicDetails = () => {
@@ -18,14 +18,16 @@ export const TopicDetails = () => {
     const [comments, setComments] = useState([])
     const [userPhoto, setUserPhoto] = useState("")
     const [commentInput, setCommentInput] = useState("")
+    const [displayTimeStamp, setDisplayTimeStamp] = useState("")
 
     const storage = getStorage()
     const storageRef = ref(storage)
 
     const currentUser = useSelector((state) => state.user)
 
-    const myDate = new Date()
-    const postTimeStamp = Timestamp.fromDate(myDate)
+    // need to move these two variables within the post functions for all files
+    // const myDate = new Date()
+    // const postTimeStamp = Timestamp.fromDate(myDate)
 
     useEffect(() => {
         const fetchTopicData = async () => {
@@ -38,6 +40,7 @@ export const TopicDetails = () => {
                     const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${data.userId}`))
                     setUserPhoto(userPhotoURL)
                     setTopic(data)
+                    setDisplayTimeStamp(formatDate(data.datePosted)) // convert timestamp to state during topic data fetching from database
                 }
             } catch (error) {
                 console.log(error)
@@ -45,6 +48,8 @@ export const TopicDetails = () => {
         }
         fetchTopicData()
     },[])
+
+
 
     //map out the comments subcollection from topics collection
     useEffect(() => {
@@ -61,6 +66,8 @@ export const TopicDetails = () => {
 
     const handlePostButton = async (e) => {
         e.preventDefault()
+        const myDate = new Date()
+        const postTimeStamp = Timestamp.fromDate(myDate)
         try {
             await addDoc(collection(doc(db,"topics",id), "comments"), {
                 userId: currentUser.userId,
@@ -104,7 +111,7 @@ export const TopicDetails = () => {
                 <Card.Body>
                     <h5>{topic.title}</h5>
                     <p style={{fontSize: "12px"}}>{topic.description}</p>
-                    {/* <p style={{fontSize: "9px"}}>posted on: {topic.datePosted}</p> */}
+                    <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}</p>
                 </Card.Body>
             </Card>
 
