@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { getStorage, getDownloadURL, ref } from 'firebase/storage';
 import { Link } from 'react-router-dom'
+import formatDate from ".././utils/format-date"
 
 
 export const TopicCard = ( props ) => {
 
     // receiving prop data from Shoutboard.jsx
-    const { title, firstName, lastName, userId, topicId } = props.topic
+    const { title, firstName, lastName, userId, topicId, datePosted } = props.topic
 
     const [creatorPhoto, setCreatorPhoto] = useState("")
 
@@ -54,6 +55,7 @@ export const TopicCard = ( props ) => {
                 </Row>
                 <Row style={{fontSize: "9px"}}>
                     <Col xs lg="5">by {firstName} {lastName}</Col>
+                    <Col xs lg="5">posted on: {formatDate(datePosted)}</Col>
                 </Row>
                 </Col>
 
@@ -82,5 +84,6 @@ TopicCard.propTypes = {
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     userId: PropTypes.string,
-    topicId: PropTypes.string
+    topicId: PropTypes.string,
+    datePosted: PropTypes.any
 }
