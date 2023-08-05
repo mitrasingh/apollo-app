@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap'
-import { collection, addDoc } from "firebase/firestore"
+import { collection, addDoc, Timestamp } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
 import PropTypes from "prop-types"
@@ -15,6 +15,9 @@ export const CreateTopicForm = ({ setIsCreateTopic }) => {
     // retrieving data from redux state of user
     const user = useSelector((state) => state.user)
 
+    const myDate = new Date()
+    const postTimeStamp = Timestamp.fromDate(myDate)
+
     // submits user created topic to database collection
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -24,7 +27,8 @@ export const CreateTopicForm = ({ setIsCreateTopic }) => {
             description,
             userId: user.userId, // from redux state
             firstName: user.firstName, // from redux state
-            lastName: user.lastName // from redux state
+            lastName: user.lastName, // from redux state
+            datePosted: postTimeStamp
           })
           if (addTopic) {
             setTitle("")
