@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc, getDocs, query } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
 import { Container, Card, Row, Col, Image, Stack, Form, Button } from "react-bootstrap"
 import CloseButton from 'react-bootstrap/CloseButton';
 import { CommentCard } from "../components/CommentCard"
+// import formatDate from ".././utils/format-date"
 
 
 export const TopicDetails = () => {
@@ -23,11 +24,15 @@ export const TopicDetails = () => {
 
     const currentUser = useSelector((state) => state.user)
 
+    const myDate = new Date()
+    const postTimeStamp = Timestamp.fromDate(myDate)
+
     useEffect(() => {
         const fetchTopicData = async () => {
             try {
                 const docRef = doc(db,"topics",id)
                 const docSnap = await getDoc(docRef)
+
                 if (docSnap.exists()) {
                     const data = docSnap.data()
                     const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${data.userId}`))
@@ -45,7 +50,7 @@ export const TopicDetails = () => {
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const data = await getDocs(query(collection(db,"topics",id)))
+                const data = await getDocs(query(collection(db,"topics",id,"comments")))
                 setComments(data.docs.map((doc) => ({...doc.data(), commentId: doc.id})))
             } catch (error) {
                 console.log(error)
@@ -53,8 +58,6 @@ export const TopicDetails = () => {
         }
         fetchComments()
     },[])
-
-    // console.log(comments.userId)
 
     const handlePostButton = async (e) => {
         e.preventDefault()
@@ -64,14 +67,13 @@ export const TopicDetails = () => {
                 userPhoto: currentUser.userPhoto,
                 firstName: currentUser.firstName,
                 lastName: currentUser.lastName, 
-                userComment: commentInput
+                userComment: commentInput,
+                datePosted: postTimeStamp
             })
         } catch (error) {
             console.log(error)
         }
     }
-
-    
 
     return (
         <>
@@ -91,7 +93,7 @@ export const TopicDetails = () => {
                                 src={userPhoto}
                                 roundedCircle 
                             />
-                            <p>{`Posted by: ${topic.firstName} ${topic.lastName}`}</p>
+                            <p>Posted by: {topic.firstName} {topic.lastName}</p>
                     </Stack>
                     </Col>
                     <Col className="align-items-end">
@@ -102,6 +104,7 @@ export const TopicDetails = () => {
                 <Card.Body>
                     <h5>{topic.title}</h5>
                     <p style={{fontSize: "12px"}}>{topic.description}</p>
+                    {/* <p style={{fontSize: "9px"}}>posted on: {topic.datePosted}</p> */}
                 </Card.Body>
             </Card>
 
@@ -132,7 +135,11 @@ export const TopicDetails = () => {
                 Post
             </Button>     
         </Container>
-        <CommentCard />
+        {comments.map((comment) => {
+            return (
+                <CommentCard comment={comment} key={comment.commentId} />
+            )
+        })}
         </>
     )
 }
