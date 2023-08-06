@@ -11,11 +11,14 @@ export const TopicCard = ( props ) => {
     // receiving prop data from Shoutboard.jsx
     const { title, firstName, lastName, userId, topicId, datePosted } = props.topic
 
+    // retrieving photo url of user and saving it in a state
     const [creatorPhoto, setCreatorPhoto] = useState("")
 
+    // firebase storage method and reference (used for fetching user photo url based off of userId prop)
     const storage = getStorage()
     const storageRef = ref(storage)
 
+    // function fetches users (userId) photo url address
     useEffect(() => {
         const fetchUserPhoto = async () => {
             try {
