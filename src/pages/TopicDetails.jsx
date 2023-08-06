@@ -12,23 +12,33 @@ import formatDate from ".././utils/format-date"
 
 export const TopicDetails = () => {
 
+    // React Router mothod, creates a dynamic page address based off of the topicId property from the "topics" collection in firestore database
+    // this id also specifies the document to query that is within the "topics" collection of the firestore database 
     const { id } = useParams()
 
+    // stores the specific document data from queried from firestore database via fetchTopicData function
     const [topic, setTopic] = useState([])
+
+    // stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
     const [comments, setComments] = useState([])
+
+    // stores user photo URL fetched from firebase storage via fetchTopicData function
     const [userPhoto, setUserPhoto] = useState("")
+
+    // stores user input from form
     const [commentInput, setCommentInput] = useState("")
+
+    // stores the formatted date
     const [displayTimeStamp, setDisplayTimeStamp] = useState("")
 
+    // firebase storage method and reference (used for fetching user photo url based off of userId prop)
     const storage = getStorage()
     const storageRef = ref(storage)
 
+    // redux state properties of current user (used to set properties when posting a comment)
     const currentUser = useSelector((state) => state.user)
 
-    // need to move these two variables within the post functions for all files
-    // const myDate = new Date()
-    // const postTimeStamp = Timestamp.fromDate(myDate)
-
+    // fetch data of specific document id (via useParams()) from "topics" collection in firestore database
     useEffect(() => {
         const fetchTopicData = async () => {
             try {
@@ -51,7 +61,7 @@ export const TopicDetails = () => {
 
 
 
-    //map out the comments subcollection from topics collection
+    // maps out the "comments" subcollection based off of document id (via useParams()) from "topics" collection in firestore database
     useEffect(() => {
         const fetchComments = async () => {
             try {
@@ -64,6 +74,7 @@ export const TopicDetails = () => {
         fetchComments()
     },[])
 
+    // adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT) 
     const handlePostCommentButton = async (e) => {
         e.preventDefault()
         const myDate = new Date()
