@@ -40,7 +40,7 @@ export const TopicDetails = () => {
                     const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${data.userId}`))
                     setUserPhoto(userPhotoURL)
                     setTopic(data)
-                    setDisplayTimeStamp(formatDate(data.datePosted)) // convert timestamp to state during topic data fetching from database
+                    setDisplayTimeStamp(formatDate(data.datePosted)) // immediately convert timestamp with formatDate to state during fetch to avoid errors
                 }
             } catch (error) {
                 console.log(error)
@@ -64,7 +64,7 @@ export const TopicDetails = () => {
         fetchComments()
     },[])
 
-    const handlePostButton = async (e) => {
+    const handlePostCommentButton = async (e) => {
         e.preventDefault()
         const myDate = new Date()
         const postTimeStamp = Timestamp.fromDate(myDate)
@@ -137,7 +137,7 @@ export const TopicDetails = () => {
                 variant="primary" 
                 size="sm" 
                 type="submit"
-                onClick={handlePostButton}
+                onClick={handlePostCommentButton}
                 >
                 Post
             </Button>     
