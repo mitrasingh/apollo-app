@@ -5,8 +5,7 @@ import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
 import PropTypes from "prop-types"
 
-
-export const CreateTopicForm = ({ setIsCreateTopic }) => {
+export const CreateTopicForm = ({ setIsCreateTopic }) => { //prop is from Shoutboard.jsx
 
     // holds the state of user input data 
     const [title, setTitle] = useState("")
@@ -15,12 +14,11 @@ export const CreateTopicForm = ({ setIsCreateTopic }) => {
     // retrieving data from redux state of user
     const user = useSelector((state) => state.user)
 
-    const myDate = new Date()
-    const postTimeStamp = Timestamp.fromDate(myDate)
-
     // submits user created topic to database collection
     const handleSubmit = async (e) => {
         e.preventDefault()
+        const myDate = new Date() // javascript date object
+        const postTimeStamp = Timestamp.fromDate(myDate) // converting date object into a firestore timestamp
         try {
           const addTopic = await addDoc(collection(db,"topics"), { //using firestore to generate task ID
             title,
