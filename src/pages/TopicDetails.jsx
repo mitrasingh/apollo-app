@@ -22,6 +22,9 @@ export const TopicDetails = () => {
     // stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
     const [comments, setComments] = useState([])
 
+    // boolean state which refreshes CommentCard.jsx list when user posts a new comment
+    const [commentsRefreshList, setCommentsRefreshList] = useState(false)
+
     // stores user photo URL fetched from firebase storage via fetchTopicData function
     const [userPhoto, setUserPhoto] = useState("")
 
@@ -72,7 +75,7 @@ export const TopicDetails = () => {
             }
         }
         fetchComments()
-    },[])
+    },[commentsRefreshList])
 
     // adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT) 
     const handlePostCommentButton = async (e) => {
@@ -88,6 +91,8 @@ export const TopicDetails = () => {
                 userComment: commentInput,
                 datePosted: postTimeStamp
             })
+            setCommentsRefreshList(true)
+            setCommentInput("")
         } catch (error) {
             console.log(error)
         }
