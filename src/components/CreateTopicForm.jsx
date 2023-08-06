@@ -5,7 +5,7 @@ import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
 import PropTypes from "prop-types"
 
-export const CreateTopicForm = ({ setIsCreateTopic, setPostRefresh }) => { //prop is from Shoutboard.jsx
+export const CreateTopicForm = ({ setIsCreateTopic, setTopicsRefreshList }) => { //prop is from Shoutboard.jsx
 
     // holds the state of user input data 
     const [title, setTitle] = useState("")
@@ -31,7 +31,7 @@ export const CreateTopicForm = ({ setIsCreateTopic, setPostRefresh }) => { //pro
           if (addTopic) {
             setTitle("")
             setDescription("")
-            setPostRefresh(true)
+            setTopicsRefreshList(true)
             setIsCreateTopic(false)
           }
         } catch (error) {
@@ -94,5 +94,5 @@ export const CreateTopicForm = ({ setIsCreateTopic, setPostRefresh }) => { //pro
 
 CreateTopicForm.propTypes = {
     setIsCreateTopic: PropTypes.func,
-    setPostRefresh: PropTypes.func
+    setTopicsRefreshList: PropTypes.func
 }
