@@ -15,7 +15,7 @@ export const Shoutboard = () => {
   const [isCreateTopic, setIsCreateTopic] = useState(false)
 
   // boolean state which refreshes topic list when user posts a new topic via CreateTopicForm.jsx
-  const [postRefresh, setPostRefresh] = useState(false)
+  const [topicsRefreshList, setTopicsRefreshList] = useState(false)
 
   // function that retrieves data from firestore database by querying "topics" collection
   useEffect(() => {
@@ -28,7 +28,7 @@ export const Shoutboard = () => {
       }
     }
       getTopics()
-  },[postRefresh])
+  },[topicsRefreshList])
 
   // button that handles boolean behavior for the display of component CreateTopicForm.jsx
   const handleCreateTopic = () => {
@@ -47,7 +47,7 @@ export const Shoutboard = () => {
           {!isCreateTopic ? "+ Create Topic" : "- Close"}
         </Button>
 
-        {isCreateTopic ? <CreateTopicForm setIsCreateTopic={setIsCreateTopic} setPostRefresh={setPostRefresh} /> : null}
+        {isCreateTopic ? <CreateTopicForm setIsCreateTopic={setIsCreateTopic} setTopicsRefreshList={setTopicsRefreshList} /> : null}
 
         {topics.map((topic) => {
           return (
