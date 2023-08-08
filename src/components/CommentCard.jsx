@@ -1,4 +1,4 @@
-import { Container, Row, Col, Stack, Image, Card } from "react-bootstrap"
+import { Container, Row, Col, Stack, Image, Card, Button } from "react-bootstrap"
 import PropTypes from 'prop-types';
 import formatDate from ".././utils/format-date"
 
@@ -34,6 +34,29 @@ export const CommentCard = ( props ) => {
                             </Col>
                         </Row>
                     </Stack>
+
+                    { 
+                    <Stack direction="horizontal" gap={1}>
+                    <Button 
+                            style={{fontSize: "10px", maxHeight: "30px", minWidth:"40px"}} 
+                            className="ms-2" 
+                            variant="dark" 
+                            size="sm" 
+                            type="submit"
+                            >
+                                Edit
+                        </Button> 
+                        <Button 
+                            style={{fontSize: "10px", maxHeight: "30px", minWidth:"40px"}} 
+                            className="ms-2" 
+                            variant="danger" 
+                            size="sm" 
+                            type="submit"
+                            >
+                                Delete
+                        </Button> 
+                    </Stack>
+                    }
 
                 </Col>
             </Row>
