@@ -90,7 +90,7 @@ export const TopicCard = ( props ) => {
                     className="d-inline-block align-top"
                     alt="Apollo Logo"
                 />
-                <p style={{fontSize: "9px"}} className="mt-1 ms-2" >{numOfReplies} Replies</p>
+                <p style={{fontSize: "9px"}} className="mt-1 ms-2" >{numOfReplies} {numOfReplies === 1 ? "Reply" : "Replies"}</p>
                 </Col>
 
             </Row>
