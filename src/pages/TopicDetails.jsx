@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer, deleteDoc } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
@@ -8,6 +8,7 @@ import { Container, Card, Row, Col, Image, Stack, Form, Button } from "react-boo
 import CloseButton from 'react-bootstrap/CloseButton';
 import { CommentCard } from "../components/CommentCard"
 import formatDate from ".././utils/format-date"
+import { useNavigate } from "react-router-dom"
 
 
 export const TopicDetails = () => {
@@ -43,6 +44,8 @@ export const TopicDetails = () => {
 
     // redux state properties of current user (used to set properties when posting a comment)
     const currentUser = useSelector((state) => state.user)
+
+    const navigate = useNavigate()
 
     // fetch data of specific document id (via useParams()) from "topics" collection in firestore database
     useEffect(() => {
@@ -115,6 +118,16 @@ export const TopicDetails = () => {
         getNumOfReplies()
         },[])
 
+    const handleDeleteTopic = async () => {
+        const documentRef = doc(db,"topics",id)
+        try {
+            await deleteDoc(documentRef)
+            navigate("/shoutboard")
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <>
         <Container className="mt-4">
@@ -164,7 +177,7 @@ export const TopicDetails = () => {
                         variant="danger" 
                         size="sm" 
                         type="submit"
-                        onClick={handlePostCommentButton}
+                        onClick={handleDeleteTopic}
                         >
                             Delete
                     </Button>
