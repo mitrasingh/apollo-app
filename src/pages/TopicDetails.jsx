@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
@@ -27,6 +27,9 @@ export const TopicDetails = () => {
 
     // stores user photo URL fetched from firebase storage via fetchTopicData function
     const [userPhoto, setUserPhoto] = useState("")
+
+    // displays numbers of replies (how many documents within "comments" subcollection)
+    const [numOfReplies, setNumOfReplies] = useState("")
 
     // stores user input from form
     const [commentInput, setCommentInput] = useState("")
@@ -98,6 +101,20 @@ export const TopicDetails = () => {
         }
     }
 
+    // function returns the total number of documents within the "comments" subcollection
+    useEffect(() => {
+        const getNumOfReplies = async () => {
+            try {
+                const coll = collection(db,"topics",id,"comments")
+                const snapshot = await getCountFromServer(coll)
+                setNumOfReplies(snapshot.data().count)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        getNumOfReplies()
+        },[])
+
     return (
         <>
         <Container className="mt-4">
@@ -127,7 +144,7 @@ export const TopicDetails = () => {
                 <Card.Body>
                     <h5>{topic.title}</h5>
                     <p style={{fontSize: "12px"}}>{topic.description}</p>
-                    <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}</p>
+                    <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}   |   {numOfReplies} {numOfReplies === 1 ? "Reply" : "Replies"}</p>
                 </Card.Body>
             </Card>
 
