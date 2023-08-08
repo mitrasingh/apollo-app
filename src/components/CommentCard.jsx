@@ -1,11 +1,14 @@
 import { Container, Row, Col, Stack, Image, Card, Button } from "react-bootstrap"
 import PropTypes from 'prop-types';
 import formatDate from ".././utils/format-date"
+import { useSelector } from 'react-redux';
 
 
 export const CommentCard = ( props ) => {
     
-    const { userPhoto, firstName, lastName, userComment, datePosted } = props.comment
+    const { userPhoto, userId, firstName, lastName, userComment, datePosted } = props.comment
+
+    const currentUser = useSelector((state) => state.user)
 
     return (
         <Container className="mt-4">
@@ -35,7 +38,8 @@ export const CommentCard = ( props ) => {
                         </Row>
                     </Stack>
 
-                    { 
+                    { userId === currentUser.userId ?
+                    <>
                     <Stack direction="horizontal" gap={1}>
                     <Button 
                             style={{fontSize: "10px", maxHeight: "30px", minWidth:"40px"}} 
@@ -56,6 +60,9 @@ export const CommentCard = ( props ) => {
                                 Delete
                         </Button> 
                     </Stack>
+                    </>
+                    :
+                    null
                     }
 
                 </Col>
