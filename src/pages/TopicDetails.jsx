@@ -145,6 +145,26 @@ export const TopicDetails = () => {
                     <h5>{topic.title}</h5>
                     <p style={{fontSize: "12px"}}>{topic.description}</p>
                     <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}   |   {numOfReplies} {numOfReplies === 1 ? "Reply" : "Replies"}</p>
+                    <Button 
+                        style={{fontSize: "10px", maxHeight: "30px", MozColumnWidth:"40px"}} 
+                        className="ms-2" 
+                        variant="dark" 
+                        size="sm" 
+                        type="submit"
+                        onClick={handlePostCommentButton}
+                        >
+                            Edit
+                    </Button> 
+                    <Button 
+                        style={{fontSize: "10px", maxHeight: "30px", MozColumnWidth:"40px"}} 
+                        className="ms-2" 
+                        variant="danger" 
+                        size="sm" 
+                        type="submit"
+                        onClick={handlePostCommentButton}
+                        >
+                            Delete
+                    </Button> 
                 </Card.Body>
             </Card>
 
@@ -172,7 +192,7 @@ export const TopicDetails = () => {
                 type="submit"
                 onClick={handlePostCommentButton}
                 >
-                Post
+                    Post
             </Button>     
         </Container>
         {comments.map((comment) => {
