@@ -145,6 +145,9 @@ export const TopicDetails = () => {
                     <h5>{topic.title}</h5>
                     <p style={{fontSize: "12px"}}>{topic.description}</p>
                     <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}   |   {numOfReplies} {numOfReplies === 1 ? "Reply" : "Replies"}</p>
+                    
+                    { topic.userId === currentUser.userId ?
+                    <>
                     <Button 
                         style={{fontSize: "10px", maxHeight: "30px", MozColumnWidth:"40px"}} 
                         className="ms-2" 
@@ -164,7 +167,12 @@ export const TopicDetails = () => {
                         onClick={handlePostCommentButton}
                         >
                             Delete
-                    </Button> 
+                    </Button>
+                    </>
+                    :
+                    null
+                    } 
+
                 </Card.Body>
             </Card>
 
