@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { getStorage, getDownloadURL, ref } from 'firebase/storage';
 import { Link } from 'react-router-dom'
 import formatDate from ".././utils/format-date"
+import { db } from "../utils/firebase-config"
+import { collection, getCountFromServer } from "firebase/firestore"
+
 
 
 export const TopicCard = ( props ) => {
@@ -13,6 +16,9 @@ export const TopicCard = ( props ) => {
 
     // retrieving photo url of user and saving it in a state
     const [creatorPhoto, setCreatorPhoto] = useState("")
+
+    // displays numbers of replies (how many documents within "comments" subcollection)
+    const [numOfReplies, setNumOfReplies] = useState("")
 
     // firebase storage method and reference (used for fetching user photo url based off of userId prop)
     const storage = getStorage()
@@ -32,6 +38,20 @@ export const TopicCard = ( props ) => {
         }
         fetchUserPhoto()
     },[])
+
+    // function returns the total number of documents within the "comments" subcollection
+    useEffect(() => {
+        const getNumOfReplies = async () => {
+          try {
+            const coll = collection(db,"topics",topicId,"comments")
+            const snapshot = await getCountFromServer(coll)
+            setNumOfReplies(snapshot.data().count)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        getNumOfReplies()
+      },[])
 
     return (
         <Container className="mt-2">
@@ -70,7 +90,7 @@ export const TopicCard = ( props ) => {
                     className="d-inline-block align-top"
                     alt="Apollo Logo"
                 />
-                <p style={{fontSize: "9px"}} className="mt-1 ms-2" >3 Replies</p>
+                <p style={{fontSize: "9px"}} className="mt-1 ms-2" >{numOfReplies} Replies</p>
                 </Col>
 
             </Row>
