@@ -129,6 +129,10 @@ export const TopicDetails = () => {
         }
     }
 
+    const handleCloseTopic = () => {
+        navigate("/shoutboard")
+    }
+
     return (
         <>
         <Container className="mt-4">
@@ -151,7 +155,7 @@ export const TopicDetails = () => {
                     </Stack>
                     </Col>
                     <Col className="align-items-end">
-                        <CloseButton />
+                        <CloseButton onClick={handleCloseTopic} />
                     </Col>
                 </Row>
             </Card.Header>
