@@ -2,13 +2,29 @@ import { Container, Row, Col, Stack, Image, Card, Button } from "react-bootstrap
 import PropTypes from 'prop-types';
 import formatDate from ".././utils/format-date"
 import { useSelector } from 'react-redux';
+import { doc, deleteDoc } from "firebase/firestore"
+import { db } from "../utils/firebase-config"
+import { useContext } from "react"
+import { TopicIdContext } from "../utils/TopicIdContext";
 
 
 export const CommentCard = ( props ) => {
     
-    const { userPhoto, userId, firstName, lastName, userComment, datePosted } = props.comment
+    const { userPhoto, userId, firstName, lastName, userComment, datePosted, commentId } = props.comment
 
     const currentUser = useSelector((state) => state.user)
+
+    const {id, setCommentsRefreshList} = useContext(TopicIdContext)
+
+    const handleDeleteComment = async () => {
+        const documentRef = doc(db,"topics",id,"comments",commentId)
+        try {
+            await deleteDoc(documentRef)
+            setCommentsRefreshList(true)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <Container className="mt-4">
@@ -56,6 +72,7 @@ export const CommentCard = ( props ) => {
                             variant="danger" 
                             size="sm" 
                             type="submit"
+                            onClick={handleDeleteComment}
                             >
                                 Delete
                         </Button> 
@@ -79,5 +96,6 @@ CommentCard.propTypes = {
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     userComment: PropTypes.string,
-    datePosted: PropTypes.string
+    datePosted: PropTypes.string,
+    commentId: PropTypes.string,
 }
