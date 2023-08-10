@@ -9,6 +9,8 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import { CommentCard } from "../components/CommentCard"
 import formatDate from ".././utils/format-date"
 import { useNavigate } from "react-router-dom"
+import { TopicIdContext } from ".././utils/TopicIdContext"
+
 
 
 export const TopicDetails = () => {
@@ -68,8 +70,6 @@ export const TopicDetails = () => {
         fetchTopicData()
     },[])
 
-
-
     // maps out the "comments" subcollection based off of document id (via useParams()) from "topics" collection in firestore database
     useEffect(() => {
         const fetchComments = async () => {
@@ -116,7 +116,7 @@ export const TopicDetails = () => {
             }
         }
         getNumOfReplies()
-        },[])
+        },[commentsRefreshList])
 
     const handleDeleteTopic = async () => {
         const documentRef = doc(db,"topics",id)
@@ -218,7 +218,11 @@ export const TopicDetails = () => {
         </Container>
         {comments.map((comment) => {
             return (
-                <CommentCard comment={comment} key={comment.commentId} />
+                <>
+                    <TopicIdContext.Provider value={{id, setCommentsRefreshList}}>
+                        <CommentCard comment={comment} key={comment.commentId} />
+                    </TopicIdContext.Provider>
+                </>
             )
         })}
         </>
