@@ -20,7 +20,7 @@ export const CommentCard = ( props ) => {
         const documentRef = doc(db,"topics",id,"comments",commentId)
         try {
             await deleteDoc(documentRef)
-            setCommentsRefreshList(true)
+            setCommentsRefreshList((current) => !current)
         } catch (error) {
             console.log(error)
         }
