@@ -97,7 +97,7 @@ export const TopicDetails = () => {
                 userComment: commentInput,
                 datePosted: postTimeStamp
             })
-            setCommentsRefreshList(true)
+            setCommentsRefreshList((current) => !current)
             setCommentInput("")
         } catch (error) {
             console.log(error)
@@ -117,6 +117,7 @@ export const TopicDetails = () => {
         }
         getNumOfReplies()
         },[commentsRefreshList])
+
 
     const handleDeleteTopic = async () => {
         const documentRef = doc(db,"topics",id)
