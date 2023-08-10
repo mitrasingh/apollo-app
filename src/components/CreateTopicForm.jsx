@@ -31,7 +31,7 @@ export const CreateTopicForm = ({ setIsCreateTopic, setTopicsRefreshList }) => {
           if (addTopic) {
             setTitle("")
             setDescription("")
-            setTopicsRefreshList(true)
+            setTopicsRefreshList((current) => !current)
             setIsCreateTopic(false)
           }
         } catch (error) {
