@@ -167,7 +167,7 @@ export const TopicDetails = () => {
                     { topic.userId === currentUser.userId ?
                     <>
                     <Button 
-                        style={{fontSize: "10px", maxHeight: "30px", MozColumnWidth:"40px"}} 
+                        style={{fontSize: "10px", maxHeight: "30px", minWidth:"50px"}} 
                         className="ms-2" 
                         variant="dark" 
                         size="sm" 
@@ -177,7 +177,7 @@ export const TopicDetails = () => {
                             Edit
                     </Button> 
                     <Button 
-                        style={{fontSize: "10px", maxHeight: "30px", MozColumnWidth:"40px"}} 
+                        style={{fontSize: "10px", maxHeight: "30px", minWidth:"50px"}} 
                         className="ms-2" 
                         variant="danger" 
                         size="sm" 
