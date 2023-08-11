@@ -1,13 +1,31 @@
 import { Form, Stack, Button } from "react-bootstrap"
 import PropTypes from "prop-types"
+import { useState, useContext } from "react"
+import { db } from '../utils/firebase-config'
+import { doc, updateDoc } from 'firebase/firestore'
+import { TopicIdContext } from "../utils/TopicIdContext";
 
-export const EditComment = ({ userComment, setIsEditComment }) => {
 
-    // const handleUpdateButton = () => {
+export const EditComment = ({ userComment, setIsEditComment, commentId }) => {
 
-    // }
+    const [userInput, setUserInput] = useState(userComment)
 
-    console.log(userComment)
+    const { id, setCommentsRefreshList } = useContext(TopicIdContext)
+
+    const handleUpdateButton = async (e) => {
+        e.preventDefault()
+        try {
+            await updateDoc(doc(db,"topics",id,"comments",commentId), {
+                userComment: userInput
+            })
+            if (updateDoc) {
+                setIsEditComment(false)
+                setCommentsRefreshList((current) => !current)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <>
@@ -20,8 +38,8 @@ export const EditComment = ({ userComment, setIsEditComment }) => {
                         type="text" 
                         as="textarea"
                         placeholder="What are your thoughts?"
-                        // value={userComment}
-                        // onChange={}
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
                     />
                 </Form.Group>
             </Form>
@@ -40,10 +58,10 @@ export const EditComment = ({ userComment, setIsEditComment }) => {
                 <Button 
                     style={{fontSize: "10px", maxHeight: "30px", minWidth:"40px"}} 
                     className="ms-2" 
-                    variant="danger" 
+                    variant="dark" 
                     size="sm" 
                     type="submit"
-                    // onClick={handleDeleteComment}
+                    onClick={handleUpdateButton}
                     >
                         Update
                 </Button> 
@@ -54,5 +72,6 @@ export const EditComment = ({ userComment, setIsEditComment }) => {
 
 EditComment.propTypes = {
     userComment: PropTypes.string,
+    commentId: PropTypes.string,
     setIsEditComment: PropTypes.func
 }
