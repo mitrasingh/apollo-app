@@ -10,6 +10,7 @@ import { CommentCard } from "../components/CommentCard"
 import formatDate from ".././utils/format-date"
 import { useNavigate } from "react-router-dom"
 import { TopicIdContext } from ".././utils/TopicIdContext"
+import { EditTopic } from "../components/EditTopic"
 
 
 
@@ -24,6 +25,8 @@ export const TopicDetails = () => {
 
     // stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
     const [comments, setComments] = useState([])
+
+    const [isEditTopic, setIsEditTopic] = useState(false)
 
     // boolean state which refreshes CommentCard.jsx list when user posts a new comment
     const [commentsRefreshList, setCommentsRefreshList] = useState(false)
@@ -69,6 +72,7 @@ export const TopicDetails = () => {
         }
         fetchTopicData()
     },[])
+
 
     // maps out the "comments" subcollection based off of document id (via useParams()) from "topics" collection in firestore database
     useEffect(() => {
@@ -161,24 +165,33 @@ export const TopicDetails = () => {
             </Card.Header>
                 <Card.Body>
                     <h5>{topic.title}</h5>
-                    <p style={{fontSize: "12px"}}>{topic.description}</p>
                     <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}   |   {numOfReplies} {numOfReplies === 1 ? "Reply" : "Replies"}</p>
                     
-                    { topic.userId === currentUser.userId ?
+
+
+                    {isEditTopic ?
+                    <EditTopic setIsEditTopic={setIsEditTopic} /> 
+                    :
+                    <p style={{fontSize: "12px"}} className="mt-4">{topic.description}</p>
+                    }
+
+
+
+                    { topic.userId === currentUser.userId && !isEditTopic ?
                     <>
                     <Button 
                         style={{fontSize: "10px", maxHeight: "30px", minWidth:"50px"}} 
-                        className="ms-2" 
+                        className="ms-2 mt-3" 
                         variant="dark" 
                         size="sm" 
                         type="submit"
-                        onClick={handlePostCommentButton}
+                        onClick={() => setIsEditTopic(true)}
                         >
                             Edit
                     </Button> 
                     <Button 
                         style={{fontSize: "10px", maxHeight: "30px", minWidth:"50px"}} 
-                        className="ms-2" 
+                        className="ms-2 mt-3" 
                         variant="danger" 
                         size="sm" 
                         type="submit"
