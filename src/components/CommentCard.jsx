@@ -4,8 +4,9 @@ import formatDate from ".././utils/format-date"
 import { useSelector } from 'react-redux';
 import { doc, deleteDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { TopicIdContext } from "../utils/TopicIdContext";
+import { EditComment } from "../components/EditComment"
 
 
 export const CommentCard = ( props ) => {
@@ -15,6 +16,8 @@ export const CommentCard = ( props ) => {
     const currentUser = useSelector((state) => state.user)
 
     const {id, setCommentsRefreshList} = useContext(TopicIdContext)
+
+    const [isEditComment, setIsEditComment] = useState(false)
 
     const handleDeleteComment = async () => {
         const documentRef = doc(db,"topics",id,"comments",commentId)
@@ -46,6 +49,9 @@ export const CommentCard = ( props ) => {
                         <p style={{fontSize:"8px", marginTop:"12px"}}>posted at: {formatDate(datePosted)}</p>
                     </Stack>
                     
+                    {isEditComment ? 
+                    <EditComment userComment={userComment} setIsEditComment={setIsEditComment} commentId={commentId} />
+                    :
                     <Stack className="mt-2">
                         <Row>
                             <Col>
@@ -53,8 +59,10 @@ export const CommentCard = ( props ) => {
                             </Col>
                         </Row>
                     </Stack>
+                    }
+                    
 
-                    { userId === currentUser.userId ?
+                    { userId === currentUser.userId && !isEditComment ?
                     <>
                     <Stack direction="horizontal" gap={1}>
                     <Button 
@@ -63,6 +71,7 @@ export const CommentCard = ( props ) => {
                             variant="dark" 
                             size="sm" 
                             type="submit"
+                            onClick={() => setIsEditComment(true)}
                             >
                                 Edit
                         </Button> 
@@ -78,7 +87,7 @@ export const CommentCard = ( props ) => {
                         </Button> 
                     </Stack>
                     </>
-                    :
+                    : 
                     null
                     }
 
