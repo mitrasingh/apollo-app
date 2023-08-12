@@ -1,26 +1,26 @@
 import { Form, Stack, Button } from "react-bootstrap"
 import PropTypes from "prop-types"
-// import { useState } from "react"
-// import { db } from '../utils/firebase-config'
-// import { doc, updateDoc } from 'firebase/firestore'
+import { useState } from "react"
+import { db } from '../utils/firebase-config'
+import { doc, updateDoc } from 'firebase/firestore'
 
-export const EditTopic = ({ setIsEditTopic }) => {
+export const EditTopic = ({ setIsEditTopic, description, id }) => {
 
-    // const [userInput, setUserInput] = useState(description)
-
-    // const handleUpdateButton = async (e) => {
-    //     e.preventDefault()
-    //     try {
-    //         await updateDoc(doc(db,"topics",id), {
-    //             description: userInput
-    //         })
-    //         if (updateDoc) {
-    //             setIsEditTopic(false)
-    //         }
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+    const [userInput, setUserInput] = useState(description)
+    
+    const handleUpdateButton = async (e) => {
+        e.preventDefault()
+        try {
+            await updateDoc(doc(db,"topics",id), {
+                description: userInput
+            })
+            if (updateDoc) {
+                setIsEditTopic(false)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <>
@@ -33,8 +33,8 @@ export const EditTopic = ({ setIsEditTopic }) => {
                         type="text" 
                         as="textarea"
                         placeholder="What are your thoughts?"
-                        // value={userInput}
-                        // onChange={(e) => setUserInput(e.target.value)}
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
                     />
                 </Form.Group>
             </Form>
@@ -49,14 +49,14 @@ export const EditTopic = ({ setIsEditTopic }) => {
                     onClick={() => setIsEditTopic(false)}
                     >
                         Cancel
-                </Button> 
+                </Button>
                 <Button 
                     style={{fontSize: "10px", maxHeight: "30px", minWidth:"40px"}} 
                     className="ms-2" 
                     variant="dark" 
                     size="sm" 
                     type="submit"
-                    // onClick={handleUpdateButton}
+                    onClick={handleUpdateButton}
                     >
                         Update
                 </Button> 
@@ -66,7 +66,7 @@ export const EditTopic = ({ setIsEditTopic }) => {
 }
 
 EditTopic.propTypes = {
-    topic: PropTypes.any,
     description: PropTypes.string,
-    setIsEditTopic: PropTypes.any
+    id: PropTypes.string,
+    setIsEditTopic: PropTypes.func
 }
