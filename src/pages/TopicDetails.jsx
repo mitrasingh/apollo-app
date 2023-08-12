@@ -170,7 +170,7 @@ export const TopicDetails = () => {
 
 
                     {isEditTopic ?
-                    <EditTopic setIsEditTopic={setIsEditTopic} /> 
+                    <EditTopic setIsEditTopic={setIsEditTopic} description={topic.description} id={id}/> 
                     :
                     <p style={{fontSize: "12px"}} className="mt-4">{topic.description}</p>
                     }
