@@ -6,8 +6,10 @@ import { doc, updateDoc } from 'firebase/firestore'
 
 export const EditTopic = ({ setIsEditTopic, description, id, setTopicRefresh }) => {
 
+    // state stores the user data in the form field
     const [userInput, setUserInput] = useState(description)
     
+    // function updates the topic's description and refreshes the topic data for immediate update
     const handleUpdateButton = async (e) => {
         e.preventDefault()
         try {
