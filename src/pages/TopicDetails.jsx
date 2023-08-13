@@ -26,10 +26,14 @@ export const TopicDetails = () => {
     // stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
     const [comments, setComments] = useState([])
 
+    // displays edit fields for the topic description when set to true
     const [isEditTopic, setIsEditTopic] = useState(false)
 
     // boolean state which refreshes CommentCard.jsx list when user posts a new comment
     const [commentsRefreshList, setCommentsRefreshList] = useState(false)
+
+    // boolean state which is set as a dependency if true for fetchTopicData function 
+    const [topicRefresh, setTopicRefresh] =  useState(false)
 
     // stores user photo URL fetched from firebase storage via fetchTopicData function
     const [userPhoto, setUserPhoto] = useState("")
@@ -71,7 +75,7 @@ export const TopicDetails = () => {
             }
         }
         fetchTopicData()
-    },[])
+    },[topicRefresh])
 
 
     // maps out the "comments" subcollection based off of document id (via useParams()) from "topics" collection in firestore database
@@ -122,7 +126,7 @@ export const TopicDetails = () => {
         getNumOfReplies()
         },[commentsRefreshList])
 
-
+    // function deletes the entire topic including it's comments
     const handleDeleteTopic = async () => {
         const documentRef = doc(db,"topics",id)
         try {
@@ -133,6 +137,7 @@ export const TopicDetails = () => {
         }
     }
 
+    // navigates user back to the shoutboard page
     const handleCloseTopic = () => {
         navigate("/shoutboard")
     }
@@ -170,7 +175,7 @@ export const TopicDetails = () => {
 
 
                     {isEditTopic ?
-                    <EditTopic setIsEditTopic={setIsEditTopic} description={topic.description} id={id}/> 
+                    <EditTopic setIsEditTopic={setIsEditTopic} description={topic.description} id={id} setTopicRefresh={setTopicRefresh}/> 
                     :
                     <p style={{fontSize: "12px"}} className="mt-4">{topic.description}</p>
                     }
