@@ -11,14 +11,19 @@ import { EditComment } from "../components/EditComment"
 
 export const CommentCard = ( props ) => {
     
+    // props from the parent TopicDetails.jsx
     const { userPhoto, userId, firstName, lastName, userComment, datePosted, commentId } = props.comment
 
+    // data of currently logged in user from redux
     const currentUser = useSelector((state) => state.user)
 
+    // data from useContext (id and setCommentsRefreshList from TopicDetails.jsx)
     const {id, setCommentsRefreshList} = useContext(TopicIdContext)
 
+    // displays edit fields for the comment when set to true
     const [isEditComment, setIsEditComment] = useState(false)
 
+    // function deletes the comment
     const handleDeleteComment = async () => {
         const documentRef = doc(db,"topics",id,"comments",commentId)
         try {
