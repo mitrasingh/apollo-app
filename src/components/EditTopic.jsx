@@ -4,7 +4,7 @@ import { useState } from "react"
 import { db } from '../utils/firebase-config'
 import { doc, updateDoc } from 'firebase/firestore'
 
-export const EditTopic = ({ setIsEditTopic, description, id }) => {
+export const EditTopic = ({ setIsEditTopic, description, id, setTopicRefresh }) => {
 
     const [userInput, setUserInput] = useState(description)
     
@@ -16,6 +16,7 @@ export const EditTopic = ({ setIsEditTopic, description, id }) => {
             })
             if (updateDoc) {
                 setIsEditTopic(false)
+                setTopicRefresh((current) => !current)
             }
         } catch (error) {
             console.log(error)
@@ -68,5 +69,6 @@ export const EditTopic = ({ setIsEditTopic, description, id }) => {
 EditTopic.propTypes = {
     description: PropTypes.string,
     id: PropTypes.string,
-    setIsEditTopic: PropTypes.func
+    setIsEditTopic: PropTypes.func,
+    setTopicRefresh: PropTypes.func
 }
