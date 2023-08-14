@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer, deleteDoc } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer, deleteDoc, where } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
@@ -89,7 +89,7 @@ export const TopicDetails = () => {
             }
         }
         fetchComments()
-    },[comments])
+    },[commentsRefreshList])
 
     // adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT) 
     const handlePostCommentButton = async (e) => {
@@ -142,8 +142,20 @@ export const TopicDetails = () => {
         navigate("/shoutboard")
     }
 
+    const [likes, setLikes] = useState([])
 
     const likesRef = collection(db, "likes")
+    
+    const likesDoc = query(likesRef, where("topicId", "==", id))
+
+    useEffect(() => {
+        const getLikes = async () => {
+            const data = await getDocs(likesDoc)
+            setLikes(data.docs.map((doc) => ({userId: doc.data().userId})))
+        }
+        getLikes()
+    },[])
+
 
     const addLikeHandle = async () => {
         try {
@@ -151,10 +163,14 @@ export const TopicDetails = () => {
                 userId: currentUser.userId,
                 topicId: id
             })
+            setLikes((prev) => prev ? [...prev, { userId: currentUser.userId }] : [{ userId: currentUser.userId}])
         } catch (error) {
             console.log(error)
         }
     }
+
+    const checkUserLiked = likes.find((like) => like.userId === currentUser.userId)
+    
 
     return (
         <>
@@ -224,11 +240,19 @@ export const TopicDetails = () => {
                     } 
                     <Row>
                         <Stack direction="horizontal" className="mt-3" gap={2}>
-                            <Image 
-                                src="src/img/rocket-takeoff.svg"
-                                onClick={() => addLikeHandle()} 
+                            {!checkUserLiked ? 
+                            <img
+                                src="src/img/rocket.svg"
+                                width="30"
+                                height="30"
+                                className="d-inline-block align-top"
+                                alt="apollo logo"
+                                onClick={addLikeHandle} 
                             />
-                            <p style={{fontSize:"9px", marginTop:"12px"}} className="mt-3">Likes: 0</p>
+                            :
+                            <p style={{fontSize:"9px"}}>you already liked this post</p>
+                            }
+                            {likes && <p style={{fontSize:"9px", marginTop:"12px"}} className="mt-3">Likes: {likes.length} </p>}
                         </Stack>
                     </Row>
 
