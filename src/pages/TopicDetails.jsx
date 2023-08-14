@@ -89,7 +89,7 @@ export const TopicDetails = () => {
             }
         }
         fetchComments()
-    },[commentsRefreshList])
+    },[comments])
 
     // adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT) 
     const handlePostCommentButton = async (e) => {
@@ -124,7 +124,7 @@ export const TopicDetails = () => {
             }
         }
         getNumOfReplies()
-        },[commentsRefreshList])
+    },[commentsRefreshList])
 
     // function deletes the entire topic including it's comments
     const handleDeleteTopic = async () => {
@@ -140,6 +140,20 @@ export const TopicDetails = () => {
     // navigates user back to the shoutboard page
     const handleCloseTopic = () => {
         navigate("/shoutboard")
+    }
+
+
+    const likesRef = collection(db, "likes")
+
+    const addLikeHandle = async () => {
+        try {
+            await addDoc(likesRef, {
+                userId: currentUser.userId,
+                topicId: id
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -208,6 +222,15 @@ export const TopicDetails = () => {
                     :
                     null
                     } 
+                    <Row>
+                        <Stack direction="horizontal" className="mt-3" gap={2}>
+                            <Image 
+                                src="src/img/rocket-takeoff.svg"
+                                onClick={() => addLikeHandle()} 
+                            />
+                            <p style={{fontSize:"9px", marginTop:"12px"}} className="mt-3">Likes: 0</p>
+                        </Stack>
+                    </Row>
 
                 </Card.Body>
             </Card>
