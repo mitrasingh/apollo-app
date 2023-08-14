@@ -51,7 +51,7 @@ export const TopicCard = ( props ) => {
           }
         }
         getNumOfReplies()
-      },[])
+      },[numOfReplies])
 
     return (
         <Container className="mt-2">
