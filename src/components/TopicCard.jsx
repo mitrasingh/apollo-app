@@ -84,7 +84,7 @@ export const TopicCard = ( props ) => {
 
                 <Col className="mt-2 d-flex">
                 <Image
-                    src="src/img/comment-icon.png"
+                    src="public/img/comment-icon.png"
                     width="20"
                     height="20"
                     className="d-inline-block align-top"
