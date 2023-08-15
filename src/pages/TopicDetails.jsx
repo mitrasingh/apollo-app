@@ -255,14 +255,14 @@ export const TopicDetails = () => {
                     <Row>
                         <Stack direction="horizontal" className="mt-3" gap={2}>
                             <img
-                                src="src/img/rocket.svg"
-                                width="30"
-                                height="30"
+                                src={checkUserLiked ? "/public/img/rocketLike.svg" : "/public/img/rocketNoLike.svg"}
+                                width="20"
+                                height="20"
                                 className="d-inline-block align-top"
                                 alt="apollo logo"
                                 onClick={checkUserLiked ? removeLikeHandle : addLikeHandle} 
                             />
-                            {likes && <p style={{fontSize:"9px", marginTop:"12px"}} className="mt-3">Likes: {likes.length} </p>}
+                            <p style={{fontSize:"9px", marginTop:"12px"}} className="mt-3">Likes: {likes.length} </p>
                         </Stack>
                     </Row>
 
