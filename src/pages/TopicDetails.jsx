@@ -143,27 +143,41 @@ export const TopicDetails = () => {
     }
 
     const [likes, setLikes] = useState([])
-
     const likesRef = collection(db, "likes")
-    
     const likesDoc = query(likesRef, where("topicId", "==", id))
 
     useEffect(() => {
         const getLikes = async () => {
             const data = await getDocs(likesDoc)
-            setLikes(data.docs.map((doc) => ({userId: doc.data().userId})))
+            setLikes(data.docs.map((doc) => ({userId: doc.data().userId, likeId: doc.id})))
         }
         getLikes()
     },[])
 
-
     const addLikeHandle = async () => {
         try {
-            await addDoc(likesRef, {
+            const newDoc = await addDoc(likesRef, {
                 userId: currentUser.userId,
                 topicId: id
             })
-            setLikes((prev) => prev ? [...prev, { userId: currentUser.userId }] : [{ userId: currentUser.userId}])
+            setLikes((prev) => prev ? [...prev, { userId: currentUser.userId, likeId: newDoc.id }] : [{ userId: currentUser.userId, likeId: newDoc.id}])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const removeLikeHandle = async () => {
+        try {
+            const likeToDeleteQuery = query(
+                likesRef, 
+                where("topicId", "==", id),
+                where("userId", "==", currentUser.userId)
+            )
+            const likeToDeleteData = await getDocs(likeToDeleteQuery)
+            const likeId = likeToDeleteData.docs[0].id
+            const likeToDelete = doc(db,"likes",likeId)
+            await deleteDoc(likeToDelete)
+            setLikes((prev) => prev.filter((like) => like.likeId !== likeId))
         } catch (error) {
             console.log(error)
         }
@@ -240,18 +254,14 @@ export const TopicDetails = () => {
                     } 
                     <Row>
                         <Stack direction="horizontal" className="mt-3" gap={2}>
-                            {!checkUserLiked ? 
                             <img
                                 src="src/img/rocket.svg"
                                 width="30"
                                 height="30"
                                 className="d-inline-block align-top"
                                 alt="apollo logo"
-                                onClick={addLikeHandle} 
+                                onClick={checkUserLiked ? removeLikeHandle : addLikeHandle} 
                             />
-                            :
-                            <p style={{fontSize:"9px"}}>you already liked this post</p>
-                            }
                             {likes && <p style={{fontSize:"9px", marginTop:"12px"}} className="mt-3">Likes: {likes.length} </p>}
                         </Stack>
                     </Row>
