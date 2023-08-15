@@ -18,7 +18,7 @@ export const SearchBar = ({ userInputSearchBar }) => {
                     <InputGroup>
                         <InputGroup.Text className="bg-white">
                             <img
-                            src="src/img/search.svg"
+                            src="public/img/search.svg"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
