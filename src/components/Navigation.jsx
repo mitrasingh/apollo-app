@@ -28,7 +28,7 @@ export const Navigation = () => {
             <Col xs lg="2">
                 <Navbar.Brand as={Link} to="/">
                     <img
-                    src="src/img/rocket.svg"
+                    src="public/img/rocket.svg"
                     width="30"
                     height="30"
                     className="d-inline-block align-top"
