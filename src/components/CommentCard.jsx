@@ -2,32 +2,38 @@ import { Container, Row, Col, Stack, Image, Card, Button } from "react-bootstrap
 import PropTypes from 'prop-types';
 import formatDate from ".././utils/format-date"
 import { useSelector } from 'react-redux';
-import { doc, deleteDoc } from "firebase/firestore"
+import { deleteDoc, query, collection, where } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 import { useContext, useState } from "react"
 import { TopicIdContext } from "../utils/TopicIdContext";
 import { EditComment } from "../components/EditComment"
+// import { Like } from "../components/Like"
 
 
 export const CommentCard = ( props ) => {
     
     // props from the parent TopicDetails.jsx
-    const { userPhoto, userId, firstName, lastName, userComment, datePosted, commentId } = props.comment
+    const { userPhoto, userId, firstName, lastName, userComment, datePosted, topicId, commentId } = props.comment
 
     // data of currently logged in user from redux
     const currentUser = useSelector((state) => state.user)
 
     // data from useContext (id and setCommentsRefreshList from TopicDetails.jsx)
     const {id, setCommentsRefreshList} = useContext(TopicIdContext)
+    console.log(commentId, id, topicId)
 
     // displays edit fields for the comment when set to true
     const [isEditComment, setIsEditComment] = useState(false)
 
     // function deletes the comment
     const handleDeleteComment = async () => {
-        const documentRef = doc(db,"topics",id,"comments",commentId)
+        // const documentRef = doc(db,"topics",id,"comments",commentId)
+        const commentRefQuery = query(collection(db,"comments"),
+            where("commentId", "==", commentId),
+            where("userId", "==", currentUser.userId)
+        )
         try {
-            await deleteDoc(documentRef)
+            await deleteDoc(commentRefQuery)
             setCommentsRefreshList((current) => !current)
         } catch (error) {
             console.log(error)
@@ -95,7 +101,7 @@ export const CommentCard = ( props ) => {
                     : 
                     null
                     }
-
+                    {/* <Like /> */}
                 </Col>
             </Row>
             </Card>
@@ -111,5 +117,6 @@ CommentCard.propTypes = {
     lastName: PropTypes.string,
     userComment: PropTypes.string,
     datePosted: PropTypes.string,
+    topicId: PropTypes.string,
     commentId: PropTypes.string,
 }
