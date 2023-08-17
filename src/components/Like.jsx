@@ -6,12 +6,12 @@ import { useSelector } from "react-redux"
 import PropTypes from 'prop-types';
 
 
-export const Like = ({ id }) => {
+export const Like = ({ docId }) => {
 
     const [likes, setLikes] = useState([])
     const currentUser = useSelector((state) => state.user)
     const likesRef = collection(db, "likes")
-    const likesDoc = query(likesRef, where("topicId", "==", id))
+    const likesDoc = query(likesRef, where("docRefId", "==", docId))
 
     useEffect(() => {
         const getLikes = async () => {
@@ -25,7 +25,7 @@ export const Like = ({ id }) => {
         try {
             const newDoc = await addDoc(likesRef, {
                 userId: currentUser.userId,
-                topicId: id
+                docRefId: docId
             })
             setLikes((prev) => prev ? [...prev, { userId: currentUser.userId, likeId: newDoc.id }] : [{ userId: currentUser.userId, likeId: newDoc.id}])
         } catch (error) {
@@ -37,7 +37,7 @@ export const Like = ({ id }) => {
         try {
             const likeToDeleteQuery = query(
                 likesRef, 
-                where("topicId", "==", id),
+                where("docRefId", "==", docId),
                 where("userId", "==", currentUser.userId)
             )
             const likeToDeleteData = await getDocs(likeToDeleteQuery)
@@ -70,5 +70,5 @@ export const Like = ({ id }) => {
 }
 
 Like.propTypes = {
-    id: PropTypes.string
+    docId: PropTypes.string
 }
