@@ -10,12 +10,12 @@ export const EditComment = ({ userComment, setIsEditComment, commentId }) => {
 
     const [userInput, setUserInput] = useState(userComment)
 
-    const { id, setCommentsRefreshList } = useContext(TopicIdContext)
+    const { setCommentsRefreshList } = useContext(TopicIdContext)
 
     const handleUpdateButton = async (e) => {
         e.preventDefault()
         try {
-            await updateDoc(doc(db,"topics",id,"comments",commentId), {
+            await updateDoc(doc(db,"comments",commentId), {
                 userComment: userInput
             })
             if (updateDoc) {
