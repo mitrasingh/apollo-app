@@ -7,7 +7,7 @@ import { db } from "../utils/firebase-config"
 import { useContext, useState } from "react"
 import { TopicIdContext } from "../utils/TopicIdContext";
 import { EditComment } from "../components/EditComment"
-// import { Like } from "../components/Like"
+import { Like } from "../components/Like"
 
 
 export const CommentCard = ( props ) => {
@@ -97,7 +97,7 @@ export const CommentCard = ( props ) => {
                     : 
                     null
                     }
-                    {/* <Like /> */}
+                    <Like docId={commentId} />
                 </Col>
             </Row>
             </Card>
