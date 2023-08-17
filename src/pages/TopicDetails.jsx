@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer, deleteDoc } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer, deleteDoc, where } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
@@ -40,7 +40,7 @@ export const TopicDetails = () => {
     const [userPhoto, setUserPhoto] = useState("")
 
     // displays numbers of replies (how many documents within "comments" subcollection)
-    const [numOfReplies, setNumOfReplies] = useState("")
+    const [numOfComments, setNumOfComments] = useState("")
 
     // stores user input from form
     const [commentInput, setCommentInput] = useState("")
@@ -79,11 +79,11 @@ export const TopicDetails = () => {
     },[topicRefresh])
 
 
-    // maps out the "comments" subcollection based off of document id (via useParams()) from "topics" collection in firestore database
+    // maps out the "comments" collection 
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const data = await getDocs(query(collection(db,"topics",id,"comments")))
+                const data = await getDocs(query(collection(db,"comments")))
                 setComments(data.docs.map((doc) => ({...doc.data(), commentId: doc.id})))
             } catch (error) {
                 console.log(error)
@@ -98,13 +98,14 @@ export const TopicDetails = () => {
         const myDate = new Date()
         const postTimeStamp = Timestamp.fromDate(myDate)
         try {
-            await addDoc(collection(doc(db,"topics",id), "comments"), {
+            await addDoc(collection(db,"comments"), {
                 userId: currentUser.userId,
                 userPhoto: currentUser.userPhoto,
                 firstName: currentUser.firstName,
                 lastName: currentUser.lastName, 
                 userComment: commentInput,
-                datePosted: postTimeStamp
+                datePosted: postTimeStamp,
+                topicId: id
             })
             setCommentsRefreshList((current) => !current)
             setCommentInput("")
@@ -115,16 +116,20 @@ export const TopicDetails = () => {
 
     // function returns the total number of documents within the "comments" subcollection
     useEffect(() => {
-        const getNumOfReplies = async () => {
+        const getNumOfComments = async () => {
             try {
-                const coll = collection(db,"topics",id,"comments")
-                const snapshot = await getCountFromServer(coll)
-                setNumOfReplies(snapshot.data().count)
+                // const coll = collection(db,"comments")
+                const commentsToQuery = query(
+                    collection(db,"comments"),
+                    where("topicId", "==", id)
+                )
+                const snapshot = await getCountFromServer(commentsToQuery)
+                setNumOfComments(snapshot.data().count)
             } catch (error) {
                 console.log(error)
             }
         }
-        getNumOfReplies()
+        getNumOfComments()
     },[commentsRefreshList])
 
     // function deletes the entire topic including it's comments
@@ -172,7 +177,7 @@ export const TopicDetails = () => {
             </Card.Header>
                 <Card.Body>
                     <h5>{topic.title}</h5>
-                    <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}   |   {numOfReplies} {numOfReplies === 1 ? "Reply" : "Replies"}</p>
+                    <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}   |   {numOfComments} {numOfComments === 1 ? "Reply" : "Replies"}</p>
                     
 
 
@@ -241,6 +246,7 @@ export const TopicDetails = () => {
                     Post
             </Button>     
         </Container>
+        {/* {comments &&  */}
         {comments.map((comment) => {
             return (
                 <>
