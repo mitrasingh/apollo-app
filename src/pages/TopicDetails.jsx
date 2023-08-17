@@ -219,7 +219,7 @@ export const TopicDetails = () => {
                     :
                     null
                     } 
-                    <Like id={id} />
+                    <Like docId={id} />
                 </Card.Body>
             </Card>
 
