@@ -2,7 +2,7 @@ import { Container, Row, Col, Stack, Image, Card, Button } from "react-bootstrap
 import PropTypes from 'prop-types';
 import formatDate from ".././utils/format-date"
 import { useSelector } from 'react-redux';
-import { deleteDoc, query, collection, where } from "firebase/firestore"
+import { deleteDoc, doc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
 import { useContext, useState } from "react"
 import { TopicIdContext } from "../utils/TopicIdContext";
@@ -28,12 +28,9 @@ export const CommentCard = ( props ) => {
     // function deletes the comment
     const handleDeleteComment = async () => {
         // const documentRef = doc(db,"topics",id,"comments",commentId)
-        const commentRefQuery = query(collection(db,"comments"),
-            where("commentId", "==", commentId),
-            where("userId", "==", currentUser.userId)
-        )
         try {
-            await deleteDoc(commentRefQuery)
+            const commentRef = doc(db,"comments",commentId)
+            await deleteDoc(commentRef)
             setCommentsRefreshList((current) => !current)
         } catch (error) {
             console.log(error)
