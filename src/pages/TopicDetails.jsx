@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc, getDocs, query, Timestamp, getCountFromServer, deleteDoc, where } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc, query, Timestamp, getCountFromServer, deleteDoc, where, getDocs } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { useSelector } from "react-redux"
@@ -83,7 +83,11 @@ export const TopicDetails = () => {
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const data = await getDocs(query(collection(db,"comments")))
+                const commentsToQuery = query(
+                    collection(db,"comments"),
+                    where("topicId", "==", id)
+                )
+                const data = await getDocs(commentsToQuery)
                 setComments(data.docs.map((doc) => ({...doc.data(), commentId: doc.id})))
             } catch (error) {
                 console.log(error)
