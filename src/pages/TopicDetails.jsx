@@ -1,266 +1,297 @@
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, addDoc, query, Timestamp, getCountFromServer, deleteDoc, where, getDocs } from "firebase/firestore"
-import { getStorage, getDownloadURL, ref } from "firebase/storage"
-import { db } from "../utils/firebase-config"
-import { useSelector } from "react-redux"
-import { Container, Card, Row, Col, Image, Stack, Form, Button } from "react-bootstrap"
-import CloseButton from 'react-bootstrap/CloseButton';
-import { CommentCard } from "../components/CommentCard"
-import formatDate from ".././utils/format-date"
-import { useNavigate } from "react-router-dom"
-import { TopicIdContext } from ".././utils/TopicIdContext"
-import { EditTopic } from "../components/EditTopic"
-import { Like } from "../components/Like"
-
-
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  query,
+  Timestamp,
+  getCountFromServer,
+  deleteDoc,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { getStorage, getDownloadURL, ref } from "firebase/storage";
+import { db } from "../utils/firebase-config";
+import { useSelector } from "react-redux";
+import {
+  Container,
+  Card,
+  Row,
+  Col,
+  Image,
+  Stack,
+  Form,
+  Button,
+  Dropdown,
+} from "react-bootstrap";
+import CloseButton from "react-bootstrap/CloseButton";
+import { CommentCard } from "../components/CommentCard";
+import formatDate from ".././utils/format-date";
+import { useNavigate } from "react-router-dom";
+import { TopicIdContext } from ".././utils/TopicIdContext";
+import { EditTopic } from "../components/EditTopic";
+import { Like } from "../components/Like";
 
 export const TopicDetails = () => {
+  // React Router mothod, creates a dynamic page address based off of the topicId property from the "topics" collection in firestore database
+  // this id also specifies the document to query that is within the "topics" collection of the firestore database
+  const { id } = useParams();
 
-    // React Router mothod, creates a dynamic page address based off of the topicId property from the "topics" collection in firestore database
-    // this id also specifies the document to query that is within the "topics" collection of the firestore database 
-    const { id } = useParams()
+  // stores the specific document data from queried from firestore database via fetchTopicData function
+  const [topic, setTopic] = useState([]);
 
-    // stores the specific document data from queried from firestore database via fetchTopicData function
-    const [topic, setTopic] = useState([])
+  // stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
+  const [comments, setComments] = useState([]);
 
-    // stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
-    const [comments, setComments] = useState([])
+  // displays edit fields for the topic description when set to true
+  const [isEditTopic, setIsEditTopic] = useState(false);
 
-    // displays edit fields for the topic description when set to true
-    const [isEditTopic, setIsEditTopic] = useState(false)
+  // boolean state which refreshes CommentCard.jsx list when user posts a new comment
+  const [commentsRefreshList, setCommentsRefreshList] = useState(false);
 
-    // boolean state which refreshes CommentCard.jsx list when user posts a new comment
-    const [commentsRefreshList, setCommentsRefreshList] = useState(false)
+  // boolean state which is set as a dependency if true for fetchTopicData function
+  const [topicRefresh, setTopicRefresh] = useState(false);
 
-    // boolean state which is set as a dependency if true for fetchTopicData function 
-    const [topicRefresh, setTopicRefresh] =  useState(false)
+  // stores user photo URL fetched from firebase storage via fetchTopicData function
+  const [userPhoto, setUserPhoto] = useState("");
 
-    // stores user photo URL fetched from firebase storage via fetchTopicData function
-    const [userPhoto, setUserPhoto] = useState("")
+  // displays numbers of replies (how many documents within "comments" subcollection)
+  const [numOfComments, setNumOfComments] = useState("");
 
-    // displays numbers of replies (how many documents within "comments" subcollection)
-    const [numOfComments, setNumOfComments] = useState("")
+  // stores user input from form
+  const [commentInput, setCommentInput] = useState("");
 
-    // stores user input from form
-    const [commentInput, setCommentInput] = useState("")
+  // stores the formatted date
+  const [displayTimeStamp, setDisplayTimeStamp] = useState("");
 
-    // stores the formatted date
-    const [displayTimeStamp, setDisplayTimeStamp] = useState("")
+  // firebase storage method and reference (used for fetching user photo url based off of userId prop)
+  const storage = getStorage();
+  const storageRef = ref(storage);
 
-    // firebase storage method and reference (used for fetching user photo url based off of userId prop)
-    const storage = getStorage()
-    const storageRef = ref(storage)
+  // redux state properties of current user (used to set properties when posting a comment)
+  const currentUser = useSelector((state) => state.user);
 
-    // redux state properties of current user (used to set properties when posting a comment)
-    const currentUser = useSelector((state) => state.user)
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
+  // fetch data of specific document id (via useParams()) from "topics" collection in firestore database
+  useEffect(() => {
+    const fetchTopicData = async () => {
+      try {
+        const docRef = doc(db, "topics", id);
+        const docSnap = await getDoc(docRef);
 
-    // fetch data of specific document id (via useParams()) from "topics" collection in firestore database
-    useEffect(() => {
-        const fetchTopicData = async () => {
-            try {
-                const docRef = doc(db,"topics",id)
-                const docSnap = await getDoc(docRef)
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data()
-                    const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${data.userId}`))
-                    setUserPhoto(userPhotoURL)
-                    setTopic(data)
-                    setDisplayTimeStamp(formatDate(data.datePosted)) // immediately convert timestamp with formatDate to state during fetch to avoid errors
-                }
-            } catch (error) {
-                console.log(error)
-            }
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const userPhotoURL = await getDownloadURL(
+            ref(storageRef, `user-photo/${data.userId}`)
+          );
+          setUserPhoto(userPhotoURL);
+          setTopic(data);
+          setDisplayTimeStamp(formatDate(data.datePosted)); // immediately convert timestamp with formatDate to state during fetch to avoid errors
         }
-        fetchTopicData()
-    },[topicRefresh])
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchTopicData();
+  }, [topicRefresh]);
 
+  // maps out the "comments" collection
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const commentsToQuery = query(
+          collection(db, "comments"),
+          where("topicId", "==", id)
+        );
+        const data = await getDocs(commentsToQuery);
+        setComments(
+          data.docs.map((doc) => ({ ...doc.data(), commentId: doc.id }))
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchComments();
+  }, [commentsRefreshList]);
 
-    // maps out the "comments" collection 
-    useEffect(() => {
-        const fetchComments = async () => {
-            try {
-                const commentsToQuery = query(
-                    collection(db,"comments"),
-                    where("topicId", "==", id)
-                )
-                const data = await getDocs(commentsToQuery)
-                setComments(data.docs.map((doc) => ({...doc.data(), commentId: doc.id})))
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        fetchComments()
-    },[commentsRefreshList])
-
-    // adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT) 
-    const handlePostCommentButton = async (e) => {
-        e.preventDefault()
-        const myDate = new Date()
-        const postTimeStamp = Timestamp.fromDate(myDate)
-        try {
-            await addDoc(collection(db,"comments"), {
-                userId: currentUser.userId,
-                userPhoto: currentUser.userPhoto,
-                firstName: currentUser.firstName,
-                lastName: currentUser.lastName, 
-                userComment: commentInput,
-                datePosted: postTimeStamp,
-                topicId: id
-            })
-            setCommentsRefreshList((current) => !current)
-            setCommentInput("")
-        } catch (error) {
-            console.log(error)
-        }
+  // adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT)
+  const handlePostCommentButton = async (e) => {
+    e.preventDefault();
+    const myDate = new Date();
+    const postTimeStamp = Timestamp.fromDate(myDate);
+    try {
+      await addDoc(collection(db, "comments"), {
+        userId: currentUser.userId,
+        userPhoto: currentUser.userPhoto,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        userComment: commentInput,
+        datePosted: postTimeStamp,
+        topicId: id,
+      });
+      setCommentsRefreshList((current) => !current);
+      setCommentInput("");
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    // function returns the total number of documents within the "comments" subcollection
-    useEffect(() => {
-        const getNumOfComments = async () => {
-            try {
-                // const coll = collection(db,"comments")
-                const commentsToQuery = query(
-                    collection(db,"comments"),
-                    where("topicId", "==", id)
-                )
-                const snapshot = await getCountFromServer(commentsToQuery)
-                setNumOfComments(snapshot.data().count)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        getNumOfComments()
-    },[commentsRefreshList])
+  // function returns the total number of documents within the "comments" subcollection
+  useEffect(() => {
+    const getNumOfComments = async () => {
+      try {
+        // const coll = collection(db,"comments")
+        const commentsToQuery = query(
+          collection(db, "comments"),
+          where("topicId", "==", id)
+        );
+        const snapshot = await getCountFromServer(commentsToQuery);
+        setNumOfComments(snapshot.data().count);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getNumOfComments();
+  }, [commentsRefreshList]);
 
-    // function deletes the entire topic including it's comments
-    const handleDeleteTopic = async () => {
-        const documentRef = doc(db,"topics",id)
-        try {
-            await deleteDoc(documentRef)
-            navigate("/shoutboard")
-        } catch (error) {
-            console.log(error)
-        }
+  // function deletes the entire topic including it's comments
+  const handleDeleteTopic = async () => {
+    const documentRef = doc(db, "topics", id);
+    try {
+      await deleteDoc(documentRef);
+      navigate("/shoutboard");
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    // navigates user back to the shoutboard page
-    const handleCloseTopic = () => {
-        navigate("/shoutboard")
-    }
+  // navigates user back to the shoutboard page
+  const handleCloseTopic = () => {
+    navigate("/shoutboard");
+  };
 
-
-    return (
-        <>
-        <Container className="mt-4">
-            <Card>
-            <Card.Header style={{fontSize:"9px", height: "45px"}}>
-                <Row>
-                    <Col xs lg="3">
-                    <Stack direction="horizontal" gap={2}>
-                            <Image
-                                style={{
-                                    height: "25px",
-                                    width: "25px",
-                                    objectFit: "cover",
-                                    borderRadius: "50%"
-                                }} 
-                                src={userPhoto}
-                                roundedCircle 
-                            />
-                            <p>Posted by: {topic.firstName} {topic.lastName}</p>
-                    </Stack>
-                    </Col>
-                    <Col className="align-items-end">
-                        <CloseButton onClick={handleCloseTopic} />
-                    </Col>
-                </Row>
-            </Card.Header>
-                <Card.Body>
-                    <h5>{topic.title}</h5>
-                    <p style={{fontSize: "9px"}}>posted on: {displayTimeStamp}   |   {numOfComments} {numOfComments === 1 ? "Reply" : "Replies"}</p>
-                    
-
-
-                    {isEditTopic ?
-                    <EditTopic setIsEditTopic={setIsEditTopic} description={topic.description} id={id} setTopicRefresh={setTopicRefresh}/> 
-                    :
-                    <p style={{fontSize: "12px"}} className="mt-4">{topic.description}</p>
-                    }
-
-
-
-                    { topic.userId === currentUser.userId && !isEditTopic ?
+  return (
+    <>
+      <Container className="mt-4">
+        <Card>
+          <Card.Header style={{ fontSize: "9px", height: "45px" }}>
+            <Row>
+              <Col xs lg="10">
+                <Stack direction="horizontal" gap={2}>
+                  <Image
+                    style={{
+                      height: "25px",
+                      width: "25px",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}
+                    src={userPhoto}
+                    roundedCircle
+                  />
+                  <p>
+                    Posted by: {topic.firstName} {topic.lastName}
+                  </p>
+                </Stack>
+              </Col>
+              <Col>
+                <Stack direction="horizontal" gap={4}>
+                  {topic.userId === currentUser.userId ? (
                     <>
-                    <Button 
-                        style={{fontSize: "10px", maxHeight: "30px", minWidth:"50px"}} 
-                        className="ms-2 mt-3" 
-                        variant="dark" 
-                        size="sm" 
-                        type="submit"
-                        onClick={() => setIsEditTopic(true)}
-                        >
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          style={{ maxHeight: "20px" }}
+                          className="d-flex align-items-center"
+                          split
+                          variant="dark"
+                          id="dropdown-split-basic"
+                        ></Dropdown.Toggle>
+
+                        <Dropdown.Menu style={{ fontSize: "10px" }}>
+                          <Dropdown.Item onClick={() => setIsEditTopic(true)}>
                             Edit
-                    </Button> 
-                    <Button 
-                        style={{fontSize: "10px", maxHeight: "30px", minWidth:"50px"}} 
-                        className="ms-2 mt-3" 
-                        variant="danger" 
-                        size="sm" 
-                        type="submit"
-                        onClick={handleDeleteTopic}
-                        >
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={handleDeleteTopic}>
                             Delete
-                    </Button>
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
                     </>
-                    :
-                    null
-                    } 
-                    <Like docId={id} />
-                </Card.Body>
-            </Card>
+                  ) : null}
+                  <CloseButton onClick={handleCloseTopic} />
+                </Stack>
+              </Col>
+            </Row>
+          </Card.Header>
 
-            <Form className="mt-4">
-                <Form.Group className="mb-3" controlId="description">
-                    <Form.Label style={{fontSize:"9px"}}>comment as {currentUser.firstName} {currentUser.lastName}</Form.Label>
-                    <Form.Control 
-                        style={{fontSize: "10px"}} 
-                        maxLength={100000}
-                        rows={5}
-                        type="text" 
-                        as="textarea"
-                        placeholder="What are your thoughts?"
-                        value={commentInput}
-                        onChange={(e) => setCommentInput(e.target.value)}
-                    />
-                </Form.Group>
-            </Form>
+          <Card.Body>
+            <h5>{topic.title}</h5>
+            <p style={{ fontSize: "9px" }}>
+              posted on: {displayTimeStamp} | {numOfComments}{" "}
+              {numOfComments === 1 ? "Reply" : "Replies"}
+            </p>
 
-            <Button 
-                style={{fontSize: "10px", maxHeight: "30px", MozColumnWidth:"40px"}} 
-                className="ms-2" 
-                variant="primary" 
-                size="sm" 
-                type="submit"
-                onClick={handlePostCommentButton}
-                >
-                    Post
-            </Button>     
-        </Container>
-        {/* {comments &&  */}
-        {comments.map((comment) => {
-            return (
-                <>
-                    <TopicIdContext.Provider value={{id, setCommentsRefreshList}}>
-                        <CommentCard comment={comment} key={comment.commentId} />
-                    </TopicIdContext.Provider>
-                </>
-            )
-        })}
-        </>
-    )
-}
+            {isEditTopic ? (
+              <EditTopic
+                setIsEditTopic={setIsEditTopic}
+                description={topic.description}
+                id={id}
+                setTopicRefresh={setTopicRefresh}
+              />
+            ) : (
+              <p style={{ fontSize: "12px" }} className="mt-4">
+                {topic.description}
+              </p>
+            )}
+            <Like docId={id} />
+          </Card.Body>
+        </Card>
 
+        <Form className="mt-4">
+          <Form.Group className="mb-3" controlId="description">
+            <Form.Label style={{ fontSize: "9px" }}>
+              comment as {currentUser.firstName} {currentUser.lastName}
+            </Form.Label>
+            <Form.Control
+              style={{ fontSize: "10px" }}
+              maxLength={100000}
+              rows={5}
+              type="text"
+              as="textarea"
+              placeholder="What are your thoughts?"
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+            />
+          </Form.Group>
+        </Form>
+
+        <Button
+          style={{
+            fontSize: "10px",
+            maxHeight: "30px",
+            MozColumnWidth: "40px",
+          }}
+          className="ms-2"
+          variant="primary"
+          size="sm"
+          type="submit"
+          onClick={handlePostCommentButton}
+        >
+          Post
+        </Button>
+      </Container>
+      {/* {comments &&  */}
+      {comments.map((comment) => {
+        return (
+          <>
+            <TopicIdContext.Provider value={{ id, setCommentsRefreshList }}>
+              <CommentCard comment={comment} key={comment.commentId} />
+            </TopicIdContext.Provider>
+          </>
+        );
+      })}
+    </>
+  );
+};
