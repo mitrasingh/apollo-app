@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 import { ViewTaskModal } from "./ViewTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
-import { Button, Card, Col, Container, Row, Image } from "react-bootstrap";
+import {
+	Button,
+	Card,
+	Col,
+	Container,
+	Row,
+	Image,
+	NavLink,
+} from "react-bootstrap";
 import PropTypes from "prop-types";
 import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { db } from "../utils/firebase-config";
-import { doc, getDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { useSelector } from "react-redux";
+import { DeleteModal } from "./DeleteModal";
 
 export const TaskCard = (props) => {
 	//retrieving prop data from Home.jsx
@@ -16,13 +25,13 @@ export const TaskCard = (props) => {
 
 	const currentUser = useSelector((state) => state.user);
 
-	const [show, setShow] = useState(false);
+	const [showViewModal, setShowViewModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [creatorPhoto, setCreatorPhoto] = useState("");
 	const [creatorName, setCreatorName] = useState("");
 
 	// visibility functionality for modals
-	const handleClose = () => setShow(false);
+	const handleClose = () => setShowViewModal(false);
 	const handleEditModalClose = () => setShowEditModal(false);
 
 	// routing for database
@@ -52,12 +61,43 @@ export const TaskCard = (props) => {
 		fetchCreatorInfo();
 	}, []);
 
+	const [show, setShow] = useState(false);
+	const handleShow = () => setShow(true);
+
+	const handleDeleteTaskCard = async () => {
+		try {
+			const documentRef = doc(db, "tasks", taskId);
+			await deleteDoc(documentRef);
+			refreshTasksHandle();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<>
 			<Container className="mt-3">
 				<Card>
 					<Card.Header style={{ fontSize: "9px", height: "30px" }}>
-						Task ID: {taskId}
+						<Row>
+							<Col>Task ID: {taskId}</Col>
+							{userId === currentUser.userId ? (
+								<Col
+									style={{ fontSize: "10px", color: "red" }}
+									className="fw-bold"
+								>
+									<NavLink onClick={handleShow}>Delete Task</NavLink>
+								</Col>
+							) : null}
+							{show ? (
+								<DeleteModal
+									handleDelete={handleDeleteTaskCard}
+									setShow={setShow}
+									show={show}
+									type={"task"}
+								/>
+							) : null}
+						</Row>
 					</Card.Header>
 					<Card.Body>
 						<Row style={{ fontSize: "9px" }} className="fw-bold">
@@ -132,7 +172,7 @@ export const TaskCard = (props) => {
 
 								{/* IF VIEW BUTTON IS CLICKED MODAL IS SHOWN */}
 								<ViewTaskModal
-									show={show}
+									show={showViewModal}
 									handleClose={handleClose}
 									taskId={taskId}
 									creatorPhoto={creatorPhoto}
@@ -143,7 +183,7 @@ export const TaskCard = (props) => {
 									variant="primary"
 									size="sm"
 									className="px-3 ms-2"
-									onClick={() => setShow(true)}
+									onClick={() => setShowViewModal(true)}
 								>
 									Details
 								</Button>
