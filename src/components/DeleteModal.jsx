@@ -1,12 +1,17 @@
 import { Modal, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 
-export const DeleteModal = ({ handleDelete, setShow, show, type }) => {
-	const handleClose = () => setShow(false);
+export const DeleteModal = ({
+	handleDelete,
+	setIsVisible,
+	isVisible,
+	type,
+}) => {
+	const handleClose = () => setIsVisible(false);
 
 	return (
 		<>
-			<Modal show={show} onHide={handleClose}>
+			<Modal show={isVisible} onHide={handleClose}>
 				<Modal.Header closeButton>
 					<Modal.Title style={{ fontSize: "11px" }}>Confirm Delete</Modal.Title>
 				</Modal.Header>
@@ -27,8 +32,8 @@ export const DeleteModal = ({ handleDelete, setShow, show, type }) => {
 };
 
 DeleteModal.propTypes = {
-	setShow: PropTypes.func,
-	show: PropTypes.bool,
+	setIsVisible: PropTypes.func,
+	isVisible: PropTypes.bool,
 	type: PropTypes.string,
 	handleDelete: PropTypes.func,
 };
