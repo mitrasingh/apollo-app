@@ -47,13 +47,13 @@ export const TopicDetails = () => {
 	const [comments, setComments] = useState([]);
 
 	// displays edit fields for the topic description when set to true
-	const [isEditTopic, setIsEditTopic] = useState(false);
+	const [isEditTopicDisplayed, setIsEditTopicDisplayed] = useState(false);
 
 	// boolean state which refreshes CommentCard.jsx list when user posts a new comment
-	const [commentsRefreshList, setCommentsRefreshList] = useState(false);
+	const [isCommentsRefreshed, setIsCommentsRefreshed] = useState(false);
 
 	// boolean state which is set as a dependency if true for fetchTopicData function
-	const [topicRefresh, setTopicRefresh] = useState(false);
+	const [isTopicRefreshed, setIsTopicRefreshed] = useState(false);
 
 	// stores user photo URL fetched from firebase storage via fetchTopicData function
 	const [userPhoto, setUserPhoto] = useState("");
@@ -97,7 +97,7 @@ export const TopicDetails = () => {
 			}
 		};
 		fetchTopicData();
-	}, [topicRefresh]);
+	}, [isTopicRefreshed]);
 
 	// maps out the "comments" collection
 	useEffect(() => {
@@ -116,7 +116,7 @@ export const TopicDetails = () => {
 			}
 		};
 		fetchComments();
-	}, [commentsRefreshList]);
+	}, [isCommentsRefreshed]);
 
 	// adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT)
 	const handlePostCommentButton = async (e) => {
@@ -133,7 +133,7 @@ export const TopicDetails = () => {
 				datePosted: postTimeStamp,
 				topicId: id,
 			});
-			setCommentsRefreshList((current) => !current);
+			setIsCommentsRefreshed((current) => !current);
 			setCommentInput("");
 		} catch (error) {
 			console.log(error);
@@ -156,7 +156,7 @@ export const TopicDetails = () => {
 			}
 		};
 		getNumOfComments();
-	}, [commentsRefreshList]);
+	}, [isCommentsRefreshed]);
 
 	// function deletes the entire topic including it's comments
 	const [show, setShow] = useState(false);
@@ -215,7 +215,9 @@ export const TopicDetails = () => {
 												></Dropdown.Toggle>
 
 												<Dropdown.Menu style={{ fontSize: "10px" }}>
-													<Dropdown.Item onClick={() => setIsEditTopic(true)}>
+													<Dropdown.Item
+														onClick={() => setIsEditTopicDisplayed(true)}
+													>
 														Edit
 													</Dropdown.Item>
 													<Dropdown.Item onClick={handleShow}>
@@ -246,12 +248,12 @@ export const TopicDetails = () => {
 							{numOfComments === 1 ? "Reply" : "Replies"}
 						</p>
 
-						{isEditTopic ? (
+						{isEditTopicDisplayed ? (
 							<EditTopic
-								setIsEditTopic={setIsEditTopic}
+								setIsEditTopicDisplayed={setIsEditTopicDisplayed}
 								description={topic.description}
 								id={id}
-								setTopicRefresh={setTopicRefresh}
+								setIsTopicRefreshed={setIsTopicRefreshed}
 							/>
 						) : (
 							<p style={{ fontSize: "12px" }} className="mt-4">
@@ -299,7 +301,7 @@ export const TopicDetails = () => {
 			{comments.map((comment) => {
 				return (
 					<>
-						<TopicIdContext.Provider value={{ id, setCommentsRefreshList }}>
+						<TopicIdContext.Provider value={{ id, setIsCommentsRefreshed }}>
 							<CommentCard comment={comment} key={comment.commentId} />
 						</TopicIdContext.Provider>
 					</>
