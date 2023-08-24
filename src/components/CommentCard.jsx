@@ -34,7 +34,7 @@ export const CommentCard = (props) => {
 	const currentUser = useSelector((state) => state.user);
 
 	// data from useContext (id and setCommentsRefreshList from TopicDetails.jsx)
-	const { setCommentsRefreshList } = useContext(TopicIdContext);
+	const { setIsCommentsRefreshed } = useContext(TopicIdContext);
 
 	// displays edit fields for the comment when set to true
 	const [isEditComment, setIsEditComment] = useState(false);
@@ -48,7 +48,7 @@ export const CommentCard = (props) => {
 		try {
 			const commentRef = doc(db, "comments", commentId);
 			await deleteDoc(commentRef);
-			setCommentsRefreshList((current) => !current);
+			setIsCommentsRefreshed((current) => !current);
 			setShow(false);
 		} catch (error) {
 			console.log(error);
