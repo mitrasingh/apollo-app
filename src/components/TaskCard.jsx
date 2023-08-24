@@ -25,14 +25,14 @@ export const TaskCard = (props) => {
 
 	const currentUser = useSelector((state) => state.user);
 
-	const [showViewModal, setShowViewModal] = useState(false);
-	const [showEditModal, setShowEditModal] = useState(false);
+	const [isViewModal, setIsViewModal] = useState(false);
+	const [isEditModal, setIsEditModal] = useState(false);
 	const [creatorPhoto, setCreatorPhoto] = useState("");
 	const [creatorName, setCreatorName] = useState("");
 
 	// visibility functionality for modals
-	const handleClose = () => setShowViewModal(false);
-	const handleEditModalClose = () => setShowEditModal(false);
+	const handleClose = () => setIsViewModal(false);
+	const handleEditModalClose = () => setIsEditModal(false);
 
 	// routing for database
 	const storage = getStorage();
@@ -150,7 +150,7 @@ export const TaskCard = (props) => {
 								{currentUser.userId !== userId ? null : (
 									<>
 										<EditTaskModal
-											showEditModal={showEditModal}
+											showEditModal={isEditModal}
 											handleEditModalClose={handleEditModalClose}
 											taskId={taskId}
 											creatorPhoto={creatorPhoto}
@@ -163,7 +163,7 @@ export const TaskCard = (props) => {
 											variant="primary"
 											size="sm"
 											className="px-3"
-											onClick={() => setShowEditModal(true)}
+											onClick={() => setIsEditModal(true)}
 										>
 											Edit
 										</Button>
@@ -172,7 +172,7 @@ export const TaskCard = (props) => {
 
 								{/* IF VIEW BUTTON IS CLICKED MODAL IS SHOWN */}
 								<ViewTaskModal
-									show={showViewModal}
+									show={isViewModal}
 									handleClose={handleClose}
 									taskId={taskId}
 									creatorPhoto={creatorPhoto}
@@ -183,7 +183,7 @@ export const TaskCard = (props) => {
 									variant="primary"
 									size="sm"
 									className="px-3 ms-2"
-									onClick={() => setShowViewModal(true)}
+									onClick={() => setIsViewModal(true)}
 								>
 									Details
 								</Button>
