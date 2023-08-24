@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 export const ViewTaskModal = ({
-	show,
+	isViewModal,
 	handleClose,
 	taskId,
 	creatorPhoto,
@@ -35,14 +35,14 @@ export const ViewTaskModal = ({
 				console.log(error);
 			}
 		};
-		if (show) {
+		if (isViewModal) {
 			taskContent();
 		}
-	}, [show]);
+	}, [isViewModal]);
 
 	return (
 		<>
-			<Modal show={show} onHide={handleClose}>
+			<Modal show={isViewModal} onHide={handleClose}>
 				<Modal.Header closeButton>
 					<Modal.Title style={{ fontSize: "15px" }} className="fw-bold">
 						{taskName}
@@ -104,7 +104,7 @@ export const ViewTaskModal = ({
 };
 
 ViewTaskModal.propTypes = {
-	show: PropTypes.any,
+	isViewModal: PropTypes.bool,
 	handleClose: PropTypes.func,
 	taskId: PropTypes.any,
 	creatorPhoto: PropTypes.any,
