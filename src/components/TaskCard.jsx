@@ -61,8 +61,8 @@ export const TaskCard = (props) => {
 		fetchCreatorInfo();
 	}, []);
 
-	const [show, setShow] = useState(false);
-	const handleShow = () => setShow(true);
+	const [isVisible, setIsVisible] = useState(false);
+	const handleShow = () => setIsVisible(true);
 
 	const handleDeleteTaskCard = async () => {
 		try {
@@ -89,11 +89,11 @@ export const TaskCard = (props) => {
 									<NavLink onClick={handleShow}>Delete Task</NavLink>
 								</Col>
 							) : null}
-							{show ? (
+							{isVisible ? (
 								<DeleteModal
 									handleDelete={handleDeleteTaskCard}
-									setShow={setShow}
-									show={show}
+									setIsVisible={setIsVisible}
+									isVisible={isVisible}
 									type={"task"}
 								/>
 							) : null}
@@ -150,7 +150,7 @@ export const TaskCard = (props) => {
 								{currentUser.userId !== userId ? null : (
 									<>
 										<EditTaskModal
-											showEditModal={isEditModal}
+											isEditModal={isEditModal}
 											handleEditModalClose={handleEditModalClose}
 											taskId={taskId}
 											creatorPhoto={creatorPhoto}
@@ -172,7 +172,7 @@ export const TaskCard = (props) => {
 
 								{/* IF VIEW BUTTON IS CLICKED MODAL IS SHOWN */}
 								<ViewTaskModal
-									show={isViewModal}
+									isViewModal={isViewModal}
 									handleClose={handleClose}
 									taskId={taskId}
 									creatorPhoto={creatorPhoto}
