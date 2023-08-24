@@ -6,7 +6,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 // props are from TaskCard.jsx
 export const EditTaskModal = ({
-	showEditModal,
+	isEditModal,
 	handleEditModalClose,
 	taskId,
 	creatorPhoto,
@@ -37,10 +37,10 @@ export const EditTaskModal = ({
 				console.log(error);
 			}
 		};
-		if (showEditModal) {
+		if (isEditModal) {
 			taskContent();
 		}
-	}, [showEditModal]);
+	}, [isEditModal]);
 
 	// updating new task content to database
 	const handleUpdate = async () => {
@@ -73,7 +73,7 @@ export const EditTaskModal = ({
 
 	return (
 		<>
-			<Modal show={showEditModal} onHide={handleEditModalClose}>
+			<Modal show={isEditModal} onHide={handleEditModalClose}>
 				<Modal.Header closeButton>
 					<Modal.Title style={{ fontSize: "15px" }} className="fw-bold">
 						Edit Task
@@ -200,7 +200,7 @@ export const EditTaskModal = ({
 };
 
 EditTaskModal.propTypes = {
-	showEditModal: PropTypes.any,
+	isEditModal: PropTypes.any,
 	handleEditModalClose: PropTypes.func,
 	creatorPhoto: PropTypes.any,
 	creatorName: PropTypes.any,
