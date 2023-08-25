@@ -1,31 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-	doc,
-	getDoc,
-	collection,
-	addDoc,
-	query,
-	Timestamp,
-	getCountFromServer,
-	deleteDoc,
-	where,
-	getDocs,
-} from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, query, Timestamp, getCountFromServer, deleteDoc, where, getDocs } from "firebase/firestore";
 import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { db } from "../utils/firebase-config";
 import { useSelector } from "react-redux";
-import {
-	Container,
-	Card,
-	Row,
-	Col,
-	Image,
-	Stack,
-	Form,
-	Button,
-	Dropdown,
-} from "react-bootstrap";
+import { Container, Card, Row, Col, Image, Stack, Form, Button, Dropdown } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 import { CommentCard } from "../components/CommentCard";
 import formatDate from ".././utils/format-date";
