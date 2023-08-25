@@ -39,8 +39,8 @@ export const CommentCard = (props) => {
 	// displays edit fields for the comment when set to true
 	const [isEditComment, setIsEditComment] = useState(false);
 
-	const [show, setShow] = useState(false);
-	const handleShow = () => setShow(true);
+	const [isVisible, setIsVisible] = useState(false);
+	const handleShow = () => setIsVisible(true);
 
 	// function deletes the comment
 	const handleDeleteComment = async () => {
@@ -49,7 +49,7 @@ export const CommentCard = (props) => {
 			const commentRef = doc(db, "comments", commentId);
 			await deleteDoc(commentRef);
 			setIsCommentsRefreshed((current) => !current);
-			setShow(false);
+			setIsVisible(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -94,11 +94,11 @@ export const CommentCard = (props) => {
 												Edit
 											</Dropdown.Item>
 											<Dropdown.Item onClick={handleShow}>Delete</Dropdown.Item>
-											{show ? (
+											{isVisible ? (
 												<DeleteModal
 													handleDelete={handleDeleteComment}
-													setShow={setShow}
-													show={show}
+													setIsVisible={setIsVisible}
+													isVisible={isVisible}
 													type={"comment"}
 												/>
 											) : null}
