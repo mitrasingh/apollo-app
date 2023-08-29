@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import { ViewTaskModal } from "./ViewTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
-import {
-	Button,
-	Card,
-	Col,
-	Container,
-	Row,
-	Image,
-	NavLink,
-} from "react-bootstrap";
+import { Button, Card, Col, Container, Row, Image, NavLink } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { db } from "../utils/firebase-config";
