@@ -1,7 +1,7 @@
-import { Col, Container, Form, FormControl, InputGroup, Row } from 'react-bootstrap'
+import { Col, Container, Form, FormControl, InputGroup, Row, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types';
 
-export const SearchBar = ({ userInputSearchBar }) => {
+export const SearchBar = ({ userInputSearchBar, filterSearchHandle }) => {
 
     // sending input form value to parent (Home.jsx)
     const handleUserInput = (e) => {
@@ -15,15 +15,16 @@ export const SearchBar = ({ userInputSearchBar }) => {
                 <Col sm={5}>
                     <Form className="d-flex">
                         <InputGroup>
-                            <InputGroup.Text className="bg-white">
+                            <Button variant="light">
                                 <img
                                     src="public/img/search.svg"
                                     width="30"
                                     height="30"
                                     className="d-inline-block align-top"
                                     alt="Search bar button"
+                                    onClick={filterSearchHandle}
                                 />
-                            </InputGroup.Text>
+                            </Button>
                             <FormControl
                                 style={{ fontSize: "11px" }}
                                 type="text"
@@ -41,4 +42,5 @@ export const SearchBar = ({ userInputSearchBar }) => {
 
 SearchBar.propTypes = {
     userInputSearchBar: PropTypes.func,
+    filterSearchHandle: PropTypes.func
 }
