@@ -11,7 +11,7 @@ export const Home = () => {
 	// initial state for task data from database
 	const [tasks, setTasks] = useState([]);
 	const [tasksFiltered, setTasksFiltered] = useState([])
-	// const [tasksSearched, setTasksSearched] = useState([])
+	const [isClearFilterDisplayed, setIsClearFilterDisplayed] = useState(false)
 
 	//user input for SearchBar
 	const [userInput, setUserInput] = useState("");
@@ -34,6 +34,7 @@ export const Home = () => {
 	// refreshes tasks state by retrieving any new data from database, clears displays to original list, clears user search value
 	const refreshTasksHandle = () => {
 		fetchTasks()
+		setIsClearFilterDisplayed(false)
 	};
 
 	// receiving user input from SearchBar component
@@ -45,11 +46,13 @@ export const Home = () => {
 	const filterNewestHandle = () => {
 		const sortNew = [...tasks].sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
 		setTasksFiltered(sortNew)
+		setIsClearFilterDisplayed((current) => !current)
 	};
 
 	const filterOldestHandle = () => {
 		const sortOld = [...tasks].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
 		setTasksFiltered(sortOld)
+		setIsClearFilterDisplayed((current) => !current)
 	};
 
 	const filterPriorityHandle = (priority) => {
@@ -58,15 +61,20 @@ export const Home = () => {
 
 	const filterStatusHandle = (status) => {
 		setTasksFiltered(tasks.filter((task) => task.statusProject === status));
+		setIsClearFilterDisplayed((current) => !current)
 	};
 
 	const filterSearchHandle = () => {
 		setTasksFiltered(tasks.filter((task) => task.taskName.toLowerCase().includes(userInput.toLowerCase())));
+		setIsClearFilterDisplayed((current) => !current)
 	}
 
 	return (
 		<>
-			<SearchBar userInputSearchBar={userInputSearchBar} filterSearchHandle={filterSearchHandle} />
+			<SearchBar
+				userInputSearchBar={userInputSearchBar}
+				filterSearchHandle={filterSearchHandle}
+			/>
 			<Container className="mt-2">
 				<Row>
 					<Col xs lg="1">
@@ -81,6 +89,7 @@ export const Home = () => {
 						<RefreshButton
 							refreshTasksHandle={refreshTasksHandle}
 							filterSearchHandle={filterSearchHandle}
+							isClearFilterDisplayed={isClearFilterDisplayed}
 						/>
 					</Col>
 				</Row>
