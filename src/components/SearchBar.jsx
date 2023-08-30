@@ -1,11 +1,13 @@
 import { Col, Container, Form, FormControl, InputGroup, Row, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 export const SearchBar = ({ userInputSearchBar, filterSearchHandle }) => {
 
-    // sending input form value to parent (Home.jsx)
+    const [userInput, setUserInput] = useState("")
+
     const handleUserInput = (e) => {
-        const userInput = e.target.value
+        setUserInput(e.target.value)
         userInputSearchBar(userInput)
     }
 
@@ -30,6 +32,7 @@ export const SearchBar = ({ userInputSearchBar, filterSearchHandle }) => {
                                 type="text"
                                 className="me-2"
                                 placeholder="Search by task name..."
+                                value={userInput}
                                 onChange={handleUserInput}
                             />
                         </InputGroup>
@@ -42,5 +45,5 @@ export const SearchBar = ({ userInputSearchBar, filterSearchHandle }) => {
 
 SearchBar.propTypes = {
     userInputSearchBar: PropTypes.func,
-    filterSearchHandle: PropTypes.func
+    filterSearchHandle: PropTypes.func,
 }
