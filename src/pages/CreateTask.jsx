@@ -1,64 +1,46 @@
-// import { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
-// import { useNavigate } from "react-router-dom"
-// import { useSelector } from "react-redux"
-// import { collection, addDoc } from "firebase/firestore"
-// import { db } from "../utils/firebase-config"
+import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { collection, addDoc } from "firebase/firestore"
+import { db } from "../utils/firebase-config"
 import { useForm } from "react-hook-form"
-import { DevTool } from '@hookform/devtools'
 
 export const CreateTask = () => {
 
   const form = useForm()
-  const { register, control, handleSubmit } = form
+  const { register, handleSubmit, formState } = form
+  const { errors } = formState
 
-  // state to retrieve and hold users form field information
-  // const [taskName, setTaskName] = useState("")
-  // const [descriptionTask, setDescriptionTask] = useState("")
-  // const [statusProject, setStatusProject] = useState("")
-  // const [priorityLevel, setPriorityLevel] = useState("")
-  // const [dueDate, setDueDate] = useState("")
+  const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
 
   // redirect user to home after submission via react router
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   // accessing redux state for users current properties
-  // const user = useSelector((state) => state.user)
-
-  // sets state status level of the task
-  // const handleSetStatusProjectChange = (e) => {
-  //   e.preventDefault()
-  //   setStatusProject(e.target.value)
-  // }
-
-  // sets state priority level of the task
-  // const handleSetPriorityLevel = (e) => {
-  //   e.preventDefault()
-  //   setPriorityLevel(e.target.value)
-  // }
+  const user = useSelector((state) => state.user)
 
   // uploads new task to database
   const onSubmit = async (data) => {
     // e.preventDefault()
     console.log("form submitted", data)
-    // try {
-    //   await addDoc(collection(db, "tasks"), { //using firestore to generate task ID
-    //     taskName,
-    //     descriptionTask,
-    //     statusProject,
-    //     priorityLevel,
-    //     dueDate,
-    //     userId: user.userId,
-    //   })
-    //   navigate("/")
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    try {
+      await addDoc(collection(db, "tasks"), { //using firestore to generate task ID
+        taskName: data.taskname,
+        descriptionTask: data.taskdescription,
+        statusProject: data.taskstatus,
+        priorityLevel: data.taskpriority,
+        dueDate: data.taskduedate,
+        userId: user.userId,
+      })
+      navigate("/")
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
     <Container className="mt-4">
-      <Form>
+      <Form onSubmit={handleSubmit(onSubmit)} noValidate>
 
         <Form.Group className="mb-3">
           <Form.Label style={{ fontSize: "10px" }} className="fw-bold">Task name</Form.Label>
@@ -67,10 +49,15 @@ export const CreateTask = () => {
             maxLength={50}
             type="text"
             id="taskname"
-            {...register("taskname")}
-          // placeholder="Enter the name of task"
-          // onChange={(e) => setTaskName(e.target.value)}
+            {...register("taskname", {
+              required: {
+                value: true,
+                message: "Task name is required!"
+              }
+            })}
+            placeholder="Enter the name of task"
           />
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskname?.message}</p>
         </Form.Group>
 
         <Form.Group className="mb-3">
@@ -82,10 +69,15 @@ export const CreateTask = () => {
             maxLength={450}
             type="text"
             id="taskdescription"
-            {...register("taskdescription")}
-          // placeholder="Give a short description of the task you are requesting."
-          // onChange={(e) => setDescriptionTask(e.target.value)}
+            {...register("taskdescription", {
+              required: {
+                value: true,
+                message: "Description of task is required!"
+              }
+            })}
+            placeholder="Give a short description of the task you are requesting."
           />
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskdescription?.message}</p>
         </Form.Group>
 
         <Form.Group className="mb-3">
@@ -94,9 +86,12 @@ export const CreateTask = () => {
             style={{ fontSize: "10px" }}
             aria-label="Default select example"
             id="taskstatus"
-            {...register("taskstatus")}
-          // value={statusProject}
-          // onChange={handleSetStatusProjectChange}
+            {...register("taskstatus", {
+              required: {
+                value: true,
+                message: "Choosing a status is required!"
+              }
+            })}
           >
             <option value="">Select status options</option>
             <option value="On Hold">On Hold</option>
@@ -104,6 +99,7 @@ export const CreateTask = () => {
             <option value="Done">Done</option>
             <option value="Cancelled">Cancelled</option>
           </Form.Select>
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskstatus?.message}</p>
         </Form.Group>
 
         <Form.Group className="mb-3">
@@ -112,9 +108,12 @@ export const CreateTask = () => {
             style={{ fontSize: "10px" }}
             aria-label="Default select example"
             id="taskpriority"
-            {...register("taskpriority")}
-          // value={priorityLevel}
-          // onChange={handleSetPriorityLevel}
+            {...register("taskpriority", {
+              required: {
+                value: true,
+                message: "Choosing a priority is required!"
+              }
+            })}
           >
             <option value="">Select priority level options</option>
             <option value="Urgent">Urgent</option>
@@ -122,6 +121,7 @@ export const CreateTask = () => {
             <option value="Medium">Medium</option>
             <option value="Low">Low</option>
           </Form.Select>
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskpriority?.message}</p>
         </Form.Group>
 
         <Form.Group className="mb-3">
@@ -130,12 +130,20 @@ export const CreateTask = () => {
             style={{ fontSize: "10px" }}
             type="text"
             id="taskduedate"
-            {...register("taskduedate")}
-          // placeholder="mm/dd/yyyy"
-          // onChange={(e) => setDueDate(e.target.value)}
+            {...register("taskduedate", {
+              required: {
+                value: true,
+                message: "Due date is required!"
+              },
+              pattern: {
+                value: dateRegex,
+                message: "Invalid date format"
+              }
+            })}
+            placeholder="mm/dd/yyyy"
           />
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskduedate?.message}</p>
         </Form.Group>
-
 
         <Button style={{ fontSize: "10px", maxHeight: "30px" }} variant="secondary" size="sm" href="/">
           Cancel
@@ -146,12 +154,11 @@ export const CreateTask = () => {
           className="ms-2" variant="primary"
           size="sm"
           type="submit"
-          onClick={handleSubmit(onSubmit)}
         >
           Submit
         </Button>
+
       </Form>
-      <DevTool control={control} />
     </Container>
   )
 }
