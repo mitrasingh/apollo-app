@@ -22,7 +22,6 @@ export const CreateTask = () => {
   // uploads new task to database
   const onSubmit = async (data) => {
     // e.preventDefault()
-    console.log("form submitted", data)
     try {
       await addDoc(collection(db, "tasks"), { //using firestore to generate task ID
         taskName: data.taskname,
