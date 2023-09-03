@@ -1,38 +1,35 @@
-import { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import { useForm } from "react-hook-form";
 
 export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 	//prop is from Shoutboard.jsx
 
-	// holds the state of user input data
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
+	const form = useForm();
+	const { register, handleSubmit, formState } = form;
+	const { errors } = formState
 
 	// retrieving data from redux state of user
 	const user = useSelector((state) => state.user);
 
 	// submits user created topic to database collection
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+	const onSubmit = async (data) => {
 		const myDate = new Date(); // javascript date object
 		const postTimeStamp = Timestamp.fromDate(myDate); // converting date object into a firestore timestamp
 		try {
 			const addTopic = await addDoc(collection(db, "topics"), {
 				//using firestore to generate task ID
-				title,
-				description,
+				title: data.title,
+				description: data.description,
 				userId: user.userId, // from redux state
 				firstName: user.firstName, // from redux state
 				lastName: user.lastName, // from redux state
 				datePosted: postTimeStamp,
 			});
 			if (addTopic) {
-				setTitle("");
-				setDescription("");
 				setIsTopicsRefreshed((current) => !current);
 				setIsCreateTopic(false);
 			}
@@ -47,19 +44,26 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 			className="mt-3 mb-3 pb-3"
 		>
 			<Container style={{ maxWidth: "85%" }} className="mt-3">
-				<Form>
-					<Form.Group className="mb-3" controlId="title">
+
+				<Form onSubmit={handleSubmit(onSubmit)} noValidate>
+					<Form.Group className="mb-3">
 						<Form.Control
 							style={{ fontSize: "10px" }}
 							maxLength={50}
 							type="text"
 							placeholder="Title"
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
+							id="title"
+							{...register("title", {
+								required: {
+									value: true,
+									message: "Title is required"
+								}
+							})}
 						/>
+						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.title?.message}</p>
 					</Form.Group>
 
-					<Form.Group className="mb-3" controlId="description">
+					<Form.Group className="mb-3">
 						<Form.Control
 							style={{ fontSize: "10px" }}
 							maxLength={100000}
@@ -67,35 +71,41 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 							type="text"
 							as="textarea"
 							placeholder="Shout it out..."
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
+							id="description"
+							{...register("description", {
+								required: {
+									value: true,
+									message: "Description is required"
+								}
+							})}
 						/>
+						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.description?.message}</p>
 					</Form.Group>
-				</Form>
-				<Button
-					style={{ fontSize: "10px", maxHeight: "30px" }}
-					className="ms-2"
-					variant="secondary"
-					size="sm"
-					onClick={() => setIsCreateTopic(false)}
-				>
-					Cancel
-				</Button>
+					<Button
+						style={{ fontSize: "10px", maxHeight: "30px" }}
+						className="ms-2"
+						variant="secondary"
+						size="sm"
+						onClick={() => setIsCreateTopic(false)}
+					>
+						Cancel
+					</Button>
 
-				<Button
-					style={{
-						fontSize: "10px",
-						maxHeight: "30px",
-						MozColumnWidth: "40px",
-					}}
-					className="ms-2"
-					variant="primary"
-					size="sm"
-					type="submit"
-					onClick={handleSubmit}
-				>
-					Post
-				</Button>
+					<Button
+						style={{
+							fontSize: "10px",
+							maxHeight: "30px",
+							MozColumnWidth: "40px",
+						}}
+						className="ms-2"
+						variant="primary"
+						size="sm"
+						type="submit"
+					>
+						Post
+					</Button>
+				</Form>
+
 			</Container>
 		</Container>
 	);
