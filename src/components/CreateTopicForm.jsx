@@ -16,7 +16,7 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 	const user = useSelector((state) => state.user);
 
 	// submits user created topic to database collection
-	const onSubmit = async (data) => {
+	const handleCreateTopic = async (data) => {
 		const myDate = new Date(); // javascript date object
 		const postTimeStamp = Timestamp.fromDate(myDate); // converting date object into a firestore timestamp
 		try {
@@ -45,7 +45,7 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 		>
 			<Container style={{ maxWidth: "85%" }} className="mt-3">
 
-				<Form onSubmit={handleSubmit(onSubmit)} noValidate>
+				<Form onSubmit={handleSubmit(handleCreateTopic)} noValidate>
 					<Form.Group className="mb-3">
 						<Form.Control
 							style={{ fontSize: "10px" }}
