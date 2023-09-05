@@ -15,7 +15,7 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 	const { errors } = formState;
 
 	// function updates the topic's description and refreshes the topic data for immediate update
-	const onSubmit = async (data) => {
+	const handleEditTopic = async (data) => {
 		console.log("submitted")
 		try {
 			await updateDoc(doc(db, "topics", id), {
@@ -32,7 +32,7 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 
 	return (
 		<>
-			<Form className="mt-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+			<Form className="mt-4" onSubmit={handleSubmit(handleEditTopic)} noValidate>
 				<Form.Group className="mb-3">
 					<Form.Control
 						style={{ fontSize: "10px" }}
