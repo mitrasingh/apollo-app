@@ -20,7 +20,7 @@ export const CreateTask = () => {
   const user = useSelector((state) => state.user)
 
   // uploads new task to database
-  const onSubmit = async (data) => {
+  const handleCreateTask = async (data) => {
     // e.preventDefault()
     try {
       await addDoc(collection(db, "tasks"), { //using firestore to generate task ID
@@ -39,7 +39,7 @@ export const CreateTask = () => {
 
   return (
     <Container className="mt-4">
-      <Form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <Form onSubmit={handleSubmit(handleCreateTask)} noValidate>
 
         <Form.Group className="mb-3">
           <Form.Label style={{ fontSize: "10px" }} className="fw-bold">Task name</Form.Label>
