@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 
 export const EditComment = ({ userComment, setIsEditComment, commentId }) => {
 
-	// const [userInput, setUserInput] = useState(userComment);
 	const { setIsCommentsRefreshed } = useContext(TopicIdContext);
 
 	const form = useForm({
@@ -51,8 +50,6 @@ export const EditComment = ({ userComment, setIsEditComment, commentId }) => {
 								message: "This field cannot be empty!"
 							}
 						})}
-					// value={userInput}
-					// onChange={(e) => setUserInput(e.target.value)}
 					/>
 				</Form.Group>
 
@@ -73,7 +70,6 @@ export const EditComment = ({ userComment, setIsEditComment, commentId }) => {
 						variant="dark"
 						size="sm"
 						type="submit"
-					// onClick={handleUpdateButton}
 					>
 						Update
 					</Button>
