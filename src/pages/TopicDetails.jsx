@@ -13,6 +13,7 @@ import { TopicIdContext } from ".././utils/TopicIdContext";
 import { EditTopic } from "../components/EditTopic";
 import { Like } from "../components/Like";
 import { DeleteModal } from "../components/DeleteModal";
+import { useForm } from "react-hook-form";
 
 export const TopicDetails = () => {
 	// React Router mothod, creates a dynamic page address based off of the topicId property from the "topics" collection in firestore database
@@ -41,7 +42,7 @@ export const TopicDetails = () => {
 	const [numOfComments, setNumOfComments] = useState("");
 
 	// stores user input from form
-	const [commentInput, setCommentInput] = useState("");
+	// const [commentInput, setCommentInput] = useState("");
 
 	// stores the formatted date
 	const [displayTimeStamp, setDisplayTimeStamp] = useState("");
@@ -54,6 +55,10 @@ export const TopicDetails = () => {
 	const currentUser = useSelector((state) => state.user);
 
 	const navigate = useNavigate();
+
+	const form = useForm();
+	const { register, handleSubmit, reset, formState } = form;
+	const { errors, isSubmitSuccessful } = formState;
 
 	// fetch data of specific document id (via useParams()) from "topics" collection in firestore database
 	useEffect(() => {
@@ -98,8 +103,7 @@ export const TopicDetails = () => {
 	}, [isCommentsRefreshed]);
 
 	// adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT)
-	const handlePostCommentButton = async (e) => {
-		e.preventDefault();
+	const handlePostCommentButton = async (data) => {
 		const myDate = new Date();
 		const postTimeStamp = Timestamp.fromDate(myDate);
 		try {
@@ -108,16 +112,22 @@ export const TopicDetails = () => {
 				userPhoto: currentUser.userPhoto,
 				firstName: currentUser.firstName,
 				lastName: currentUser.lastName,
-				userComment: commentInput,
+				userComment: data.postcomment,
 				datePosted: postTimeStamp,
 				topicId: id,
 			});
 			setIsCommentsRefreshed((current) => !current);
-			setCommentInput("");
+			// setCommentInput("");
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			reset()
+		}
+	}, [isSubmitSuccessful, reset])
 
 	// function returns the total number of documents within the "comments" subcollection
 	useEffect(() => {
@@ -243,8 +253,8 @@ export const TopicDetails = () => {
 					</Card.Body>
 				</Card>
 
-				<Form className="mt-4">
-					<Form.Group className="mb-3" controlId="description">
+				<Form className="mt-4" onSubmit={handleSubmit(handlePostCommentButton)} noValidate>
+					<Form.Group className="mb-3">
 						<Form.Label style={{ fontSize: "9px" }}>
 							comment as {currentUser.firstName} {currentUser.lastName}
 						</Form.Label>
@@ -255,26 +265,31 @@ export const TopicDetails = () => {
 							type="text"
 							as="textarea"
 							placeholder="What are your thoughts?"
-							value={commentInput}
-							onChange={(e) => setCommentInput(e.target.value)}
+							id="postcomment"
+							{...register("postcomment", {
+								required: {
+									value: true,
+									message: "Post cannot be empty!"
+								}
+							})}
 						/>
+						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.postcomment?.message}</p>
 					</Form.Group>
-				</Form>
 
-				<Button
-					style={{
-						fontSize: "10px",
-						maxHeight: "30px",
-						MozColumnWidth: "40px",
-					}}
-					className="ms-2"
-					variant="primary"
-					size="sm"
-					type="submit"
-					onClick={handlePostCommentButton}
-				>
-					Post
-				</Button>
+					<Button
+						style={{
+							fontSize: "10px",
+							maxHeight: "30px",
+							MozColumnWidth: "40px",
+						}}
+						className="ms-2"
+						variant="primary"
+						size="sm"
+						type="submit"
+					>
+						Post
+					</Button>
+				</Form>
 			</Container>
 			{/* {comments &&  */}
 			{comments.map((comment) => {
