@@ -40,7 +40,6 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 						rows={5}
 						type="text"
 						as="textarea"
-						id="newdescription"
 						{...register("newdescription", {
 							required: {
 								value: true,
