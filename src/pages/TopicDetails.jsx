@@ -265,7 +265,6 @@ export const TopicDetails = () => {
 							type="text"
 							as="textarea"
 							placeholder="What are your thoughts?"
-							id="postcomment"
 							{...register("postcomment", {
 								required: {
 									value: true,

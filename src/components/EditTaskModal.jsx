@@ -76,7 +76,6 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 							<Form.Control
 								style={{ fontSize: "10px" }}
 								type="text"
-								id="taskname"
 								{...register("taskname", {
 									required: {
 										value: true,
@@ -96,7 +95,6 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 								type="text"
 								as="textarea"
 								rows={3}
-								id="taskdescription"
 								{...register("taskdescription", {
 									required: {
 										value: true,
@@ -114,7 +112,6 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 							<Form.Select
 								style={{ fontSize: "10px" }}
 								aria-label="Default select example"
-								id="taskstatus"
 								{...register("taskstatus", {
 									required: true,
 									message: "Status must be chosen!"
@@ -136,7 +133,6 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 							<Form.Select
 								style={{ fontSize: "10px" }}
 								aria-label="Default select example"
-								id="taskpriority"
 								{...register("taskpriority", {
 									required: true,
 									message: "Priority must be chosen!"
@@ -158,7 +154,6 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 							<Form.Control
 								style={{ fontSize: "10px" }}
 								type="text"
-								id="taskduedate"
 								{...register("taskduedate", {
 									required: {
 										value: true,

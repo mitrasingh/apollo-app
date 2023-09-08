@@ -47,7 +47,6 @@ export const CreateTask = () => {
             style={{ fontSize: "10px" }}
             maxLength={50}
             type="text"
-            id="taskname"
             {...register("taskname", {
               required: {
                 value: true,
@@ -67,7 +66,6 @@ export const CreateTask = () => {
             rows={3}
             maxLength={450}
             type="text"
-            id="taskdescription"
             {...register("taskdescription", {
               required: {
                 value: true,
@@ -84,7 +82,6 @@ export const CreateTask = () => {
           <Form.Select
             style={{ fontSize: "10px" }}
             aria-label="Default select example"
-            id="taskstatus"
             {...register("taskstatus", {
               required: {
                 value: true,
@@ -106,7 +103,6 @@ export const CreateTask = () => {
           <Form.Select
             style={{ fontSize: "10px" }}
             aria-label="Default select example"
-            id="taskpriority"
             {...register("taskpriority", {
               required: {
                 value: true,
@@ -128,7 +124,6 @@ export const CreateTask = () => {
           <Form.Control
             style={{ fontSize: "10px" }}
             type="text"
-            id="taskduedate"
             {...register("taskduedate", {
               required: {
                 value: true,

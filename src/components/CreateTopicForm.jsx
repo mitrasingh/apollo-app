@@ -52,7 +52,6 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 							maxLength={50}
 							type="text"
 							placeholder="Title"
-							id="title"
 							{...register("title", {
 								required: {
 									value: true,
@@ -71,7 +70,6 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 							type="text"
 							as="textarea"
 							placeholder="Shout it out..."
-							id="description"
 							{...register("description", {
 								required: {
 									value: true,
