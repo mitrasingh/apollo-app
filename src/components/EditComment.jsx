@@ -43,7 +43,6 @@ export const EditComment = ({ userComment, setIsEditComment, commentId }) => {
 						type="text"
 						as="textarea"
 						placeholder="What are your thoughts?"
-						id="editcomment"
 						{...register("editcomment", {
 							required: {
 								value: true,
