@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Button, Card, Container, Form, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
 import { doc, getDoc } from "firebase/firestore";
@@ -138,7 +137,9 @@ export const SignIn = () => {
 
                         <Link
                             className="d-flex justify-content-center link-primary mt-3"
-                            onClick={() => setShow(true)}
+                            as={Link}
+                            to="/forgotpassword"
+                        // onClick={() => setShow(true)}
                         >
                             Forgot password?
                         </Link>
