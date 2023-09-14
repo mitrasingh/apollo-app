@@ -8,13 +8,9 @@ import { Container } from "react-bootstrap"
 
 export const ForgotPassword = () => {
 
-    // const [email, setEmail] = useState("")
     const form = useForm();
     const { register, handleSubmit, formState } = form;
     const { errors } = formState;
-
-    // const navigate = useNavigate();
-
 
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -23,19 +19,12 @@ export const ForgotPassword = () => {
     const auth = getAuth();
     const handleForgotPassword = async (data) => {
         try {
-            if (data && data.email) {
-                await sendPasswordResetEmail(auth, data.email);
-                setModalAlertMessage("Email has been sent!");
-            }
+            await sendPasswordResetEmail(auth, data.email);
+            setModalAlertMessage("Email has been sent!");
         } catch (error) {
             setModalAlertMessage(error.message)
         }
     };
-
-    // Resets alerts if Forgot Password (from SignIn component) is clicked again
-    // useEffect(() => {
-    //     setModalAlertMessage("");
-    // }, [show]);
 
     return (
         <Container style={{ fontSize: "10px", maxWidth: "400px" }} className="mt-4">
@@ -61,9 +50,6 @@ export const ForgotPassword = () => {
                     )}
 
                     <Form.Group>
-                        {/* <Form.Label style={{ fontSize: "11px", display: "flex", justifyContent: "center" }}>
-                            We will email you a link to reset your password.
-                        </Form.Label> */}
                         <Form.Control
                             style={{ fontSize: "10px" }}
                             type="text"
@@ -78,7 +64,6 @@ export const ForgotPassword = () => {
                                     message: "Email is not valid!"
                                 }
                             })}
-                        // onChange={(e) => setEmail(e.target.value)}
                         />
                         <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.email?.message}</p>
                     </Form.Group>
@@ -91,7 +76,6 @@ export const ForgotPassword = () => {
                                 variant="primary"
                                 size="sm"
                                 type="submit"
-                                onClick={handleForgotPassword}
                             >
                                 Submit
                             </Button>
@@ -103,7 +87,6 @@ export const ForgotPassword = () => {
                                 size="sm"
                                 as={Link}
                                 to="/"
-                            // onClick={handleCloseForgotPasswordModal}
                             >
                                 Back To Sign In
                             </Button>
