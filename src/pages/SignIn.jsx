@@ -6,21 +6,15 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
-import { ForgotPasswordModal } from "../components/ForgotPasswordModal";
 import { useForm } from "react-hook-form";
 
 export const SignIn = () => {
-
-    // const [email, setEmail] = useState("");
-    // const [password, setPassword] = useState("");
 
     const auth = getAuth();
     const dispatch = useDispatch();
 
     const [alert, setAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
-
-    const [show, setShow] = useState(false);
 
     const form = useForm();
     const { register, handleSubmit, formState } = form;
@@ -31,7 +25,6 @@ export const SignIn = () => {
     const navigate = useNavigate();
 
     const handleLogin = async (data) => {
-        // e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, data.email, data.password);
             const docRef = doc(db, "users", auth.currentUser.uid);
@@ -54,10 +47,6 @@ export const SignIn = () => {
             setAlert(true);
             setAlertMessage(error.code);
         }
-    };
-
-    const handleCloseForgotPasswordModal = () => {
-        setShow(false);
     };
 
     return (
@@ -103,7 +92,6 @@ export const SignIn = () => {
                                         message: "Invalid email format!"
                                     }
                                 })}
-                            // onChange={(e) => setEmail(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.email?.message}</p>
                         </Form.Group>
@@ -120,7 +108,6 @@ export const SignIn = () => {
                                         message: "Password is required!"
                                     }
                                 })}
-                            // onChange={(e) => setPassword(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.password?.message}</p>
                         </Form.Group>
@@ -130,7 +117,6 @@ export const SignIn = () => {
                             variant="primary"
                             size="sm"
                             type="submit"
-                        // onClick={handleLogin}
                         >
                             Login
                         </Button>
@@ -139,15 +125,10 @@ export const SignIn = () => {
                             className="d-flex justify-content-center link-primary mt-3"
                             as={Link}
                             to="/forgotpassword"
-                        // onClick={() => setShow(true)}
                         >
                             Forgot password?
                         </Link>
 
-                        <ForgotPasswordModal
-                            show={show}
-                            handleCloseForgotPasswordModal={handleCloseForgotPasswordModal}
-                        />
                     </Card>
                 </Form>
             </Container>
