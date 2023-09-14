@@ -70,28 +70,44 @@ export const ForgotPassword = () => {
 
                     <Modal.Footer>
                         <Stack>
-                            <Button
-                                style={{ fontSize: "10px", maxHeight: "30px" }}
-                                className="ms-2"
-                                variant="primary"
-                                size="sm"
-                                type="submit"
-                            >
-                                Submit
-                            </Button>
+                            {modalAlertMessage === "Email has been sent!" ? null :
+                                <Button
+                                    style={{ fontSize: "10px", maxHeight: "30px" }}
+                                    className="ms-2"
+                                    variant="primary"
+                                    size="sm"
+                                    type="submit"
+                                >
+                                    Submit
+                                </Button>
+                            }
 
-                            <Button
-                                style={{ fontSize: "10px", maxHeight: "30px" }}
-                                className="ms-2 mt-2"
-                                variant="secondary"
-                                size="sm"
-                                as={Link}
-                                to="/"
-                            >
-                                Back To Sign In
-                            </Button>
+                            {modalAlertMessage === "Email has been sent!" ?
+                                <Button
+                                    style={{ fontSize: "10px", maxHeight: "30px" }}
+                                    className="ms-2"
+                                    variant="primary"
+                                    size="sm"
+                                    as={Link}
+                                    to="/"
+                                >
+                                    Back To Sign In
+                                </Button>
+                                :
+                                <Button
+                                    style={{ fontSize: "10px", maxHeight: "30px" }}
+                                    className="ms-2 mt-2"
+                                    variant="secondary"
+                                    size="sm"
+                                    as={Link}
+                                    to="/"
+                                >
+                                    Back To Sign In
+                                </Button>
+                            }
                         </Stack>
                     </Modal.Footer>
+
                 </Modal.Body>
             </Form>
         </Container>
