@@ -6,17 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
-import {
-	Container,
-	Form,
-	Card,
-	Button,
-	Alert,
-	Row,
-	Col,
-	Stack,
-	Image,
-} from "react-bootstrap";
+import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "react-bootstrap";
 
 export const PhotoUpload = () => {
 	const [userPhoto, setUserPhoto] = useState(null);
@@ -113,7 +103,7 @@ export const PhotoUpload = () => {
 											borderRadius: "50%",
 										}}
 										src={
-											photoURL === "" ? "src/img/default-profile.png" : photoURL
+											photoURL === "" ? "public/img/default-profile.png" : photoURL
 										}
 										roundedCircle
 									/>
