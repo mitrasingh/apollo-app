@@ -12,49 +12,50 @@ import { loginUser } from "../features/user/userSlice"
 import { useDispatch } from 'react-redux';
 
 export const ProtectedRoute = ({ children }) => {
-    const location = useLocation();
-    const authUser = getAuth();
-    const [user, loading] = useAuthState(authUser)
+  const location = useLocation();
+  const authUser = getAuth();
+  const [user, loading] = useAuthState(authUser)
 
-    const dispatch = useDispatch()
-    const storage = getStorage()
-    const storageRef = ref(storage)
-  
-    useEffect(() => {
-      getAuth().onAuthStateChanged(async (user) => {
-        try {
-          if (!user) {
-            signOut(auth)
-          } else {
-            const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`))
-            const docRef = doc(db, "users", user.uid)
-            const docSnap = await getDoc(docRef)
-            if (user && docSnap.exists()) {
-              const data = docSnap.data()
-              dispatch(loginUser({
-                userId: user.uid,
-                userPhoto: userPhotoURL,
-                firstName: user.displayName,
-                lastName: data.lastname, 
-                title: data.title,
-                email: user.email
-              }))
-            }
-          }
-        } catch (error) {
-          console.log(error)
+  const dispatch = useDispatch()
+  const storage = getStorage()
+  const storageRef = ref(storage)
+
+  useEffect(() => {
+    getAuth().onAuthStateChanged(async (user) => {
+      if (!user) {
+        signOut(auth);
+      }
+      try {
+        const userPhotoURL = user.uid ? await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) : null;
+        const docRef = doc(db, "users", user.uid)
+        const docSnap = await getDoc(docRef)
+
+        if (user && docSnap.exists()) {
+          const data = docSnap.data()
+          dispatch(loginUser({
+            userId: user.uid,
+            userPhoto: userPhotoURL,
+            firstName: user.displayName,
+            lastName: data.lastname,
+            title: data.title,
+            email: user.email
+          }))
         }
-        }
-    )}, [])
-  
-    
-    if (loading) {
-        return <LoadAnimation />
-    } 
-    return user ? (<><Navigation />{children}</>) : (<Navigate to="/signin" state={{from: location}} />)  
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    )
+  }, [])
+
+
+  if (loading) {
+    return <LoadAnimation />
+  }
+  return user ? (<><Navigation />{children}</>) : (<Navigate to="/signin" state={{ from: location }} />)
 }
 
 ProtectedRoute.propTypes = {
-    children: PropTypes.node
+  children: PropTypes.node
 }
 
