@@ -4,19 +4,19 @@ import { db } from "../utils/firebase-config";
 import { doc, updateDoc } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 
-export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopicRefreshed, }) => {
+export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopicRefreshed }) => { // Props from TopicDetails.jsx
 
+	// React Hook Form
 	const form = useForm({
 		defaultValues: {
-			newdescription: description
-		}
+			newdescription: description,
+		},
 	});
 	const { register, handleSubmit, formState } = form;
 	const { errors } = formState;
 
-	// function updates the topic's description and refreshes the topic data for immediate update
+	// Update the topic's description and refreshes the topic data for immediate update
 	const handleEditTopic = async (data) => {
-		console.log("submitted")
 		try {
 			await updateDoc(doc(db, "topics", id), {
 				description: data.newdescription,
@@ -32,7 +32,11 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 
 	return (
 		<>
-			<Form className="mt-4" onSubmit={handleSubmit(handleEditTopic)} noValidate>
+			<Form
+				className="mt-4"
+				onSubmit={handleSubmit(handleEditTopic)}
+				noValidate
+			>
 				<Form.Group className="mb-3">
 					<Form.Control
 						style={{ fontSize: "10px" }}
@@ -43,13 +47,14 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 						{...register("newdescription", {
 							required: {
 								value: true,
-								message: "Description of task is required!"
-							}
+								message: "Description of task is required!",
+							},
 						})}
 					/>
-					<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.newdescription?.message}</p>
+					<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+						{errors.newdescription?.message}
+					</p>
 				</Form.Group>
-
 
 				<Stack direction="horizontal" gap={1}>
 					<Button
