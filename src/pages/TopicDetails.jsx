@@ -16,46 +16,45 @@ import { DeleteModal } from "../components/DeleteModal";
 import { useForm } from "react-hook-form";
 
 export const TopicDetails = () => {
-	// React Router mothod, creates a dynamic page address based off of the topicId property from the "topics" collection in firestore database
-	// this id also specifies the document to query that is within the "topics" collection of the firestore database
+
+	// React Router method, useParams, will create a dynamic page address based off of the topicId property from the "topics" collection in firestore database
+	// This shared id also specifies the document to query that is within the "topics" collection of the firestore database
 	const { id } = useParams();
 
-	// stores the specific document data from queried from firestore database via fetchTopicData function
+	// Stores the document data fetched from firestore database via fetchTopicData function
 	const [topic, setTopic] = useState([]);
 
-	// stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
+	// Stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
 	const [comments, setComments] = useState([]);
 
-	// displays edit fields for the topic description when set to true
+	// Displays edit fields for the topic description when set to true
 	const [isEditTopicDisplayed, setIsEditTopicDisplayed] = useState(false);
 
-	// boolean state which refreshes CommentCard.jsx list when user posts a new comment
+	// Refreshes CommentCard.jsx list when user posts a new comment
 	const [isCommentsRefreshed, setIsCommentsRefreshed] = useState(false);
 
-	// boolean state which is set as a dependency if true for fetchTopicData function
+	// Dependency variable, if true will fetchTopicData function
 	const [isTopicRefreshed, setIsTopicRefreshed] = useState(false);
 
-	// stores user photo URL fetched from firebase storage via fetchTopicData function
+	// Stores user photo URL fetched from firebase storage via fetchTopicData function
 	const [userPhoto, setUserPhoto] = useState("");
 
-	// displays numbers of replies (how many documents within "comments" subcollection)
+	// Displays numbers of replies (or how many documents within "comments" subcollection)
 	const [numOfComments, setNumOfComments] = useState("");
 
-	// stores user input from form
-	// const [commentInput, setCommentInput] = useState("");
-
-	// stores the formatted date
+	// Stores the formatted date
 	const [displayTimeStamp, setDisplayTimeStamp] = useState("");
 
-	// firebase storage method and reference (used for fetching user photo url based off of userId prop)
+	// Firebase storage method and reference (used for fetching user photo url based off of userId prop)
 	const storage = getStorage();
 	const storageRef = ref(storage);
 
-	// redux state properties of current user (used to set properties when posting a comment)
+	// Redux state properties of current user (used to set properties when posting a comment)
 	const currentUser = useSelector((state) => state.user);
 
 	const navigate = useNavigate();
 
+	// React hook form
 	const form = useForm();
 	const { register, handleSubmit, reset, formState } = form;
 	const { errors, isSubmitSuccessful } = formState;
@@ -102,7 +101,7 @@ export const TopicDetails = () => {
 		fetchComments();
 	}, [isCommentsRefreshed]);
 
-	// adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT)
+	// Adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT)
 	const handlePostCommentButton = async (data) => {
 		const myDate = new Date();
 		const postTimeStamp = Timestamp.fromDate(myDate);
@@ -117,7 +116,6 @@ export const TopicDetails = () => {
 				topicId: id,
 			});
 			setIsCommentsRefreshed((current) => !current);
-			// setCommentInput("");
 		} catch (error) {
 			console.log(error);
 		}
@@ -125,15 +123,14 @@ export const TopicDetails = () => {
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {
-			reset()
+			reset();
 		}
-	}, [isSubmitSuccessful, reset])
+	}, [isSubmitSuccessful, reset]);
 
-	// function returns the total number of documents within the "comments" subcollection
+	// Returns the total number of documents within the "comments" subcollection
 	useEffect(() => {
 		const getNumOfComments = async () => {
 			try {
-				// const coll = collection(db,"comments")
 				const commentsToQuery = query(
 					collection(db, "comments"),
 					where("topicId", "==", id)
@@ -147,22 +144,21 @@ export const TopicDetails = () => {
 		getNumOfComments();
 	}, [isCommentsRefreshed]);
 
-	// function deletes the entire topic including it's comments
-	const [show, setShow] = useState(false);
-	const handleShow = () => setShow(true);
-
+	// Deletes the entire topic including it's comments
+	const [isVisible, setIsVisible] = useState(false);
+	const handleShow = () => setIsVisible(true);
 	const handleDeleteTopic = async () => {
 		const documentRef = doc(db, "topics", id);
 		try {
 			await deleteDoc(documentRef);
 			navigate("/shoutboard");
-			setShow(false);
+			setIsVisible(false);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	// navigates user back to the shoutboard page
+	// Navigates user back to the shoutboard page
 	const handleCloseTopic = () => {
 		navigate("/shoutboard");
 	};
@@ -212,11 +208,11 @@ export const TopicDetails = () => {
 													<Dropdown.Item onClick={handleShow}>
 														Delete
 													</Dropdown.Item>
-													{show ? (
+													{isVisible ? (
 														<DeleteModal
 															handleDelete={handleDeleteTopic}
-															setShow={setShow}
-															show={show}
+															setIsVisible={setIsVisible}
+															isVisible={isVisible}
 															type={"topic"}
 														/>
 													) : null}
@@ -253,7 +249,11 @@ export const TopicDetails = () => {
 					</Card.Body>
 				</Card>
 
-				<Form className="mt-4" onSubmit={handleSubmit(handlePostCommentButton)} noValidate>
+				<Form
+					className="mt-4"
+					onSubmit={handleSubmit(handlePostCommentButton)}
+					noValidate
+				>
 					<Form.Group className="mb-3">
 						<Form.Label style={{ fontSize: "9px" }}>
 							comment as {currentUser.firstName} {currentUser.lastName}
@@ -268,11 +268,13 @@ export const TopicDetails = () => {
 							{...register("postcomment", {
 								required: {
 									value: true,
-									message: "Post cannot be empty!"
-								}
+									message: "Post cannot be empty!",
+								},
 							})}
 						/>
-						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.postcomment?.message}</p>
+						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+							{errors.postcomment?.message}
+						</p>
 					</Form.Group>
 
 					<Button
