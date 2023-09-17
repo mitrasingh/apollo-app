@@ -5,28 +5,26 @@ import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 
+// Props are from Shoutboard.jsx
 export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
-	//prop is from Shoutboard.jsx
 
+	// React Hook Form
 	const form = useForm();
 	const { register, handleSubmit, formState } = form;
-	const { errors } = formState
+	const { errors } = formState;
 
-	// retrieving data from redux state of user
 	const user = useSelector((state) => state.user);
 
-	// submits user created topic to database collection
 	const handleCreateTopic = async (data) => {
-		const myDate = new Date(); // javascript date object
-		const postTimeStamp = Timestamp.fromDate(myDate); // converting date object into a firestore timestamp
+		const myDate = new Date(); // Javascript date object
+		const postTimeStamp = Timestamp.fromDate(myDate); // Converts date object into a firestore timestamp
 		try {
-			const addTopic = await addDoc(collection(db, "topics"), {
-				//using firestore to generate task ID
+			const addTopic = await addDoc(collection(db, "topics"), { // Using firestore to generate task ID
 				title: data.title,
 				description: data.description,
-				userId: user.userId, // from redux state
-				firstName: user.firstName, // from redux state
-				lastName: user.lastName, // from redux state
+				userId: user.userId,
+				firstName: user.firstName,
+				lastName: user.lastName,
 				datePosted: postTimeStamp,
 			});
 			if (addTopic) {
@@ -44,7 +42,6 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 			className="mt-3 mb-3 pb-3"
 		>
 			<Container style={{ maxWidth: "85%" }} className="mt-3">
-
 				<Form onSubmit={handleSubmit(handleCreateTopic)} noValidate>
 					<Form.Group className="mb-3">
 						<Form.Control
@@ -55,11 +52,13 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 							{...register("title", {
 								required: {
 									value: true,
-									message: "Title is required"
-								}
+									message: "Title is required",
+								},
 							})}
 						/>
-						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.title?.message}</p>
+						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+							{errors.title?.message}
+						</p>
 					</Form.Group>
 
 					<Form.Group className="mb-3">
@@ -73,11 +72,13 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 							{...register("description", {
 								required: {
 									value: true,
-									message: "Description is required"
-								}
+									message: "Description is required",
+								},
 							})}
 						/>
-						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.description?.message}</p>
+						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+							{errors.description?.message}
+						</p>
 					</Form.Group>
 					<Button
 						style={{ fontSize: "10px", maxHeight: "30px" }}
@@ -103,7 +104,6 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 						Post
 					</Button>
 				</Form>
-
 			</Container>
 		</Container>
 	);
