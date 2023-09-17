@@ -16,10 +16,10 @@ export const SignIn = () => {
     const [alert, setAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
+    // React Hook Form
     const form = useForm();
     const { register, handleSubmit, formState } = form;
-    const { errors } = formState;
-
+    const { errors, isDirty } = formState;
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
     const navigate = useNavigate();
@@ -32,6 +32,7 @@ export const SignIn = () => {
 
             if (docSnap.exists()) {
                 const userData = docSnap.data();
+                // Assigns default values to Redux user state
                 dispatch(
                     loginUser({
                         userId: auth.currentUser.uid,
@@ -117,6 +118,7 @@ export const SignIn = () => {
                             variant="primary"
                             size="sm"
                             type="submit"
+                            disabled={!isDirty}
                         >
                             Login
                         </Button>
