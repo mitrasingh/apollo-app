@@ -8,21 +8,22 @@ import { Container } from "react-bootstrap"
 
 export const ForgotPassword = () => {
 
+    // React Hook Form
     const form = useForm();
     const { register, handleSubmit, formState } = form;
     const { errors } = formState;
-
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     const [modalAlertMessage, setModalAlertMessage] = useState("A link will be sent to your email");
 
     const auth = getAuth();
+
     const handleForgotPassword = async (data) => {
         try {
             await sendPasswordResetEmail(auth, data.email);
             setModalAlertMessage("Email has been sent!");
         } catch (error) {
-            setModalAlertMessage(error.message)
+            setModalAlertMessage(error.message);
         }
     };
 
@@ -34,20 +35,16 @@ export const ForgotPassword = () => {
                         <Modal.Title>Forgot your password?</Modal.Title>
                     </Modal.Header>
 
-                    {modalAlertMessage ? (
-                        <p
-                            style={{
-                                fontSize: "13px",
-                                display: "flex",
-                                justifyContent: "center",
-                                marginTop: "5px"
-                            }}
-                        >
-                            {modalAlertMessage}
-                        </p>
-                    ) : (
-                        ""
-                    )}
+                    <p
+                        style={{
+                            fontSize: "13px",
+                            display: "flex",
+                            justifyContent: "center",
+                            marginTop: "5px",
+                        }}
+                    >
+                        {modalAlertMessage}
+                    </p>
 
                     <Form.Group>
                         <Form.Control
@@ -57,12 +54,12 @@ export const ForgotPassword = () => {
                             {...register("email", {
                                 required: {
                                     value: true,
-                                    message: "Email is required to reset your password!"
+                                    message: "Email is required to reset your password!",
                                 },
                                 pattern: {
                                     value: emailRegex,
-                                    message: "Email is not valid!"
-                                }
+                                    message: "Email is not valid!",
+                                },
                             })}
                         />
                         <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.email?.message}</p>
@@ -70,7 +67,7 @@ export const ForgotPassword = () => {
 
                     <Modal.Footer>
                         <Stack>
-                            {modalAlertMessage === "Email has been sent!" ? null :
+                            {modalAlertMessage === "Email has been sent!" ? null : (
                                 <Button
                                     style={{ fontSize: "10px", maxHeight: "30px" }}
                                     className="ms-2"
@@ -80,9 +77,9 @@ export const ForgotPassword = () => {
                                 >
                                     Submit
                                 </Button>
-                            }
+                            )}
 
-                            {modalAlertMessage === "Email has been sent!" ?
+                            {modalAlertMessage === "Email has been sent!" ? (
                                 <Button
                                     style={{ fontSize: "10px", maxHeight: "30px" }}
                                     className="ms-2"
@@ -93,7 +90,7 @@ export const ForgotPassword = () => {
                                 >
                                     Back To Sign In
                                 </Button>
-                                :
+                            ) : (
                                 <Button
                                     style={{ fontSize: "10px", maxHeight: "30px" }}
                                     className="ms-2 mt-2"
@@ -104,10 +101,9 @@ export const ForgotPassword = () => {
                                 >
                                     Back To Sign In
                                 </Button>
-                            }
+                            )}
                         </Stack>
                     </Modal.Footer>
-
                 </Modal.Body>
             </Form>
         </Container>
