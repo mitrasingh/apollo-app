@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Row, Stack, Image } from 'react-bootstrap'
 import { useSelector } from "react-redux"
-// import { getStorage, ref } from "firebase/storage"
 import { useDispatch } from "react-redux"
 import { editUser } from "../features/user/userSlice"
 import { Link, useNavigate } from "react-router-dom"
@@ -12,46 +11,43 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { useForm } from "react-hook-form";
 
 export const Profile = () => {
-    // NEED TO REFACTOR UPDATE FUNCTIONALITY AS THERE IS SOME CONFUSION WITH REDUX/DATABASE UPDATING CONTENT
-    // HAVE TO INCLUDE IF STATEMENTS FOR FUNCTIONALITY TO WORK
 
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const auth = getAuth();
 
-    const form = useForm();
+    // React Hook Form
+    const form = useForm({
+        defaultValues: {
+            firstname: "",
+            lastname: "",
+            title: "",
+            email: ""
+        }
+    });
     const { register, handleSubmit, reset, formState } = form;
     const { errors } = formState;
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-    const [userUpdatedPhoto, setUserUpdatedPhoto] = useState(""); //allows user to see how photo is displayed before upload
+
+    const [userUpdatedPhoto, setUserUpdatedPhoto] = useState(""); // Display how photo is displayed before upload
     const [photoURL, setPhotoURL] = useState("");
-    // const [firstName, setFirstName] = useState("");
-    // const [lastName, setLastName] = useState("");
-    // const [title, setTitle] = useState("");
-    // const [email, setEmail] = useState("");
-
-    const [checkPhoto, setCheckPhoto] = useState(false);
+    const [checkPhoto, setCheckPhoto] = useState(false); // Check to see if a new photo exists from current photo
 
     const storage = getStorage();
     const storageRef = ref(storage);
 
-    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-
-    // updates useState values to user initial state from redux
+    // Updates form field values to Redux user slice initial state values
     useEffect(() => {
         const fetchUserRedux = () => {
-            let defaultValues = {};
+            let defaultValues = {}; // React Hook Form state values 
             defaultValues.firstname = user.firstName;
             defaultValues.lastname = user.lastName;
             defaultValues.title = user.title;
             defaultValues.email = user.email;
             reset({ ...defaultValues });
             setPhotoURL(user.userPhoto);
-            // setFirstName(user.firstName);
-            // setLastName(user.lastName);
-            // setTitle(user.title);
-            // setEmail(user.email);
         };
         fetchUserRedux();
     }, []);
@@ -92,6 +88,7 @@ export const Profile = () => {
             await updateEmail(auth.currentUser, data.email);
 
             if (updateProfile || checkPhoto || updateEmail || updateDoc) {
+                // Assigns updated values to Redux user state
                 dispatch(
                     editUser({
                         userId: user.userId,
@@ -123,7 +120,6 @@ export const Profile = () => {
                                         objectFit: "cover",
                                         borderRadius: "50%",
                                     }}
-                                    // adding timestamp to bypass browser cache on image reload
                                     src={photoURL}
                                     roundedCircle
                                 />
@@ -175,8 +171,6 @@ export const Profile = () => {
                                             message: "First name is required!"
                                         }
                                     })}
-                                // value={firstName}
-                                // onChange={(e) => setFirstName(e.target.value)}
                                 />
                                 <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.firstname?.message}</p>
                             </Form.Group>
@@ -198,8 +192,6 @@ export const Profile = () => {
                                             message: "Last name is required!"
                                         }
                                     })}
-                                // value={lastName}
-                                // onChange={(e) => setLastName(e.target.value)}
                                 />
                                 <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.lastname?.message}</p>
                             </Form.Group>
@@ -221,8 +213,6 @@ export const Profile = () => {
                                             message: "Company title is required!"
                                         }
                                     })}
-                                // value={title}
-                                // onChange={(e) => setTitle(e.target.value)}
                                 />
                                 <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.title?.message}</p>
                             </Form.Group>
@@ -248,8 +238,6 @@ export const Profile = () => {
                                             message: "Invalid email"
                                         }
                                     })}
-                                // value={email}
-                                // onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.email?.message}</p>
                             </Form.Group>
@@ -272,7 +260,6 @@ export const Profile = () => {
                         variant="primary"
                         size="sm"
                         type="submit"
-                    // onClick={handleUpdate}
                     >
                         Update
                     </Button>
