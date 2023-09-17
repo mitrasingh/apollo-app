@@ -5,16 +5,16 @@ import { db } from "../utils/firebase-config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useForm } from "react-hook-form"
 
-// props are from TaskCard.jsx
+// Props are from TaskCard.jsx
 export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creatorPhoto, creatorName, refreshTasksHandle, }) => {
 
+	// React Hook Form
 	const form = useForm();
 	const { register, handleSubmit, reset, formState } = form;
 	const { errors } = formState;
-
 	const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
 
-	// retrieving current content from database
+	// Fetch task content from database and assign values to the related form fields 
 	useEffect(() => {
 		const taskContent = async () => {
 			try {
@@ -39,7 +39,7 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 		}
 	}, [isEditModal]);
 
-	// updating new task content to database
+	// Update new task content to database
 	const handleUpdate = async (data) => {
 		try {
 			await updateDoc(doc(db, "tasks", taskId), {
@@ -51,7 +51,7 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 			});
 			if (updateDoc) {
 				handleEditModalClose();
-				refreshTasksHandle(); // from Home.jsx, updates display and current task being edited by retrieving new data from database
+				refreshTasksHandle();
 			}
 		} catch (error) {
 			console.log(error);
@@ -176,7 +176,7 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 									objectFit: "cover",
 									borderRadius: "50%",
 								}}
-								src={creatorPhoto} // user photo of task creator
+								src={creatorPhoto}
 								roundedCircle
 							/>
 							<p style={{ fontSize: "10px" }} className="mt-3 ms-2">
