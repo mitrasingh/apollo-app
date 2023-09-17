@@ -10,7 +10,7 @@ import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "re
 
 export const PhotoUpload = () => {
 	const [userPhoto, setUserPhoto] = useState(null);
-	const [photoURL, setPhotoURL] = useState(""); //allows user to see how photo is displayed before upload
+	const [photoURL, setPhotoURL] = useState(""); // Allows user to see how photo is displayed before upload
 	const [isAlert, isSetAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 
@@ -22,8 +22,8 @@ export const PhotoUpload = () => {
 	const storage = getStorage();
 	const storageRef = ref(storage);
 
-	// temporary upload to display photo which allows user to preview avatar
-	const uploadPhoto = async (e) => {
+	// Upload temporary image and set photo state for display preview
+	const handlePreviewPhoto = async (e) => {
 		e.preventDefault();
 		try {
 			if (userPhoto == null) return null;
@@ -38,7 +38,8 @@ export const PhotoUpload = () => {
 		}
 	};
 
-	const handleContinue = async (event) => {
+	// Confirm photo preview and make final by assigning photo to current user id
+	const handleAcceptPhoto = async (event) => {
 		event.preventDefault();
 		try {
 			const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`);
@@ -103,7 +104,9 @@ export const PhotoUpload = () => {
 											borderRadius: "50%",
 										}}
 										src={
-											photoURL === "" ? "public/img/default-profile.png" : photoURL
+											photoURL === ""
+												? "public/img/default-profile.png"
+												: photoURL
 										}
 										roundedCircle
 									/>
@@ -134,9 +137,9 @@ export const PhotoUpload = () => {
 								variant="secondary"
 								size="sm"
 								type="submit"
-								onClick={uploadPhoto}
+								onClick={handlePreviewPhoto}
 							>
-								Set Photo
+								Preview Photo
 							</Button>
 						</Row>
 
@@ -150,9 +153,9 @@ export const PhotoUpload = () => {
 								variant="primary"
 								className="mt-2"
 								size="sm"
-								onClick={handleContinue}
+								onClick={handleAcceptPhoto}
 							>
-								Continue
+								Accept and Continue
 							</Button>
 						</Row>
 					</Card>
