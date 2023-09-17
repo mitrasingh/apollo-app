@@ -1,7 +1,6 @@
 import { createUserWithEmailAndPassword, updateProfile, getAuth } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore"
 import { db } from "../utils/firebase-config"
-// import { useState } from "react"
 import { Container, Form, Card, Button } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { loginUser } from "../features/user/userSlice"
@@ -9,21 +8,12 @@ import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
 
 export const SignUp = () => {
-    // const [firstName, setFirstName] = useState("");
-    // const [lastName, setLastName] = useState("");
-    // const [title, setTitle] = useState("");
-    // const [email, setEmail] = useState("");
-    // const [password, setPassword] = useState("");
-    // const [verifyPassword, setVerifyPassword] = useState("");
 
-    // const [alert, setAlert] = useState(false);
-    // const [alertMessage, setAlertMessage] = useState("");
-
+    // React Hook Form
     const form = useForm({ mode: "onChange" });
     const { register, handleSubmit, watch, formState } = form;
-    const { errors, isDirty, isValid } = formState;
-
-    const watchPassword = watch("password")
+    const { errors, isDirty } = formState;
+    const watchPassword = watch("password") // Validate confirm password field matches password field
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
     const dispatch = useDispatch();
@@ -31,12 +21,7 @@ export const SignUp = () => {
 
     const auth = getAuth();
 
-    // const handleSignUp = (data) => {
-    //     console.log(data)
-    // }
-
     const handleSignUp = async (data) => {
-        // event.preventDefault();
         const { firstname, lastname, title, email, password } = data;
         try {
             await createUserWithEmailAndPassword(auth, email, password);
@@ -44,7 +29,7 @@ export const SignUp = () => {
                 displayName: firstname,
             });
             await setDoc(doc(db, "users", `${auth.currentUser.uid}`), {
-                firstname: firstname, // allows access for current auth user's name to be available throughout app
+                firstname: firstname,
                 lastname: lastname,
                 title: title,
             });
@@ -53,6 +38,7 @@ export const SignUp = () => {
             const docSnap = await getDoc(docRef);
             if (auth && docSnap.exists()) {
                 const fetchUserData = docSnap.data();
+                // Assigns default values to Redux user state
                 dispatch(
                     loginUser({
                         userId: auth.currentUser.uid,
@@ -72,13 +58,6 @@ export const SignUp = () => {
 
     return (
         <>
-            {/* {alert ? (
-                <Alert variant="danger" onClose={() => setAlert(false)} dismissible>
-                    <Alert.Heading>There is an error!</Alert.Heading>
-                    <p>Reason: {alertMessage}</p>
-                </Alert>
-            ) : null} */}
-
             <Container
                 style={{ fontSize: "10px", maxWidth: "400px" }}
                 className="mt-4"
@@ -114,7 +93,6 @@ export const SignUp = () => {
                                         message: "First name is required!"
                                     }
                                 })}
-                            // onChange={(e) => setFirstName(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.firstname?.message}</p>
                         </Form.Group>
@@ -136,7 +114,6 @@ export const SignUp = () => {
                                         message: "Last name is required!"
                                     }
                                 })}
-                            // onChange={(e) => setLastName(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.lastname?.message}</p>
                         </Form.Group>
@@ -158,7 +135,6 @@ export const SignUp = () => {
                                         message: "Title is required!"
                                     }
                                 })}
-                            // onChange={(e) => setTitle(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.title?.message}</p>
                         </Form.Group>
@@ -184,7 +160,6 @@ export const SignUp = () => {
                                         message: "Invalid email format!"
                                     }
                                 })}
-                            // onChange={(e) => setEmail(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.email?.message}</p>
                         </Form.Group>
@@ -210,7 +185,6 @@ export const SignUp = () => {
                                         message: "Password must have at least 6 characters"
                                     }
                                 })}
-                            // onChange={(e) => setPassword(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.password?.message}</p>
                         </Form.Group>
@@ -237,7 +211,6 @@ export const SignUp = () => {
                                         }
                                     }
                                 })}
-                            // onChange={(e) => setVerifyPassword(e.target.value)}
                             />
                             <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.passwordconfirm?.message}</p>
                         </Form.Group>
@@ -247,8 +220,7 @@ export const SignUp = () => {
                             variant="primary"
                             size="sm"
                             type="submit"
-                            disabled={!isDirty || !isValid}
-                        // onClick={handleSignUp}
+                            disabled={!isDirty}
                         >
                             Sign Up
                         </Button>
