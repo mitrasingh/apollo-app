@@ -7,23 +7,21 @@ import { useForm } from "react-hook-form"
 
 export const CreateTask = () => {
 
+  // React Hook Form
   const form = useForm()
   const { register, handleSubmit, formState } = form
   const { errors } = formState
-
   const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
 
-  // redirect user to home after submission via react router
   const navigate = useNavigate()
 
-  // accessing redux state for users current properties
+  // Access Redux state of user slice
   const user = useSelector((state) => state.user)
 
-  // uploads new task to database
+  // Firestore to generate task ID
   const handleCreateTask = async (data) => {
-    // e.preventDefault()
     try {
-      await addDoc(collection(db, "tasks"), { //using firestore to generate task ID
+      await addDoc(collection(db, "tasks"), {
         taskName: data.taskname,
         descriptionTask: data.taskdescription,
         statusProject: data.taskstatus,
