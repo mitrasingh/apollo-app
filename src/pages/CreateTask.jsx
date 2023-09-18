@@ -1,46 +1,48 @@
-import { Button, Container, Form } from 'react-bootstrap'
-import { useNavigate } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { collection, addDoc } from "firebase/firestore"
-import { db } from "../utils/firebase-config"
-import { useForm } from "react-hook-form"
+import { Button, Container, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../utils/firebase-config";
+import { useForm } from "react-hook-form";
+import { format } from "date-fns";
 
 export const CreateTask = () => {
-
   // React Hook Form
-  const form = useForm()
-  const { register, handleSubmit, formState } = form
-  const { errors } = formState
-  const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+  const form = useForm();
+  const { register, handleSubmit, formState } = form;
+  const { errors } = formState;
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Access Redux state of user slice
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user);
 
   // Firestore to generate task ID
   const handleCreateTask = async (data) => {
     try {
+      const date = data.taskduedate;
+      const dateFormatted = format(date, "MM/dd/yyyy");
       await addDoc(collection(db, "tasks"), {
         taskName: data.taskname,
         descriptionTask: data.taskdescription,
         statusProject: data.taskstatus,
         priorityLevel: data.taskpriority,
-        dueDate: data.taskduedate,
+        dueDate: dateFormatted,
         userId: user.userId,
-      })
-      navigate("/")
+      });
+      navigate("/");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <Container className="mt-4">
       <Form onSubmit={handleSubmit(handleCreateTask)} noValidate>
-
         <Form.Group className="mb-3">
-          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">Task name</Form.Label>
+          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">
+            Task name
+          </Form.Label>
           <Form.Control
             style={{ fontSize: "10px" }}
             maxLength={50}
@@ -48,16 +50,20 @@ export const CreateTask = () => {
             {...register("taskname", {
               required: {
                 value: true,
-                message: "Task name is required!"
-              }
+                message: "Task name is required!",
+              },
             })}
             placeholder="Enter the name of task"
           />
-          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskname?.message}</p>
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+            {errors.taskname?.message}
+          </p>
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">Description of task</Form.Label>
+          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">
+            Description of task
+          </Form.Label>
           <Form.Control
             style={{ fontSize: "10px", resize: "none" }}
             as="textarea"
@@ -67,24 +73,28 @@ export const CreateTask = () => {
             {...register("taskdescription", {
               required: {
                 value: true,
-                message: "Description of task is required!"
-              }
+                message: "Description of task is required!",
+              },
             })}
             placeholder="Give a short description of the task you are requesting."
           />
-          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskdescription?.message}</p>
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+            {errors.taskdescription?.message}
+          </p>
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">What is the status of this project?</Form.Label>
+          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">
+            What is the status of this project?
+          </Form.Label>
           <Form.Select
             style={{ fontSize: "10px" }}
             aria-label="Default select example"
             {...register("taskstatus", {
               required: {
                 value: true,
-                message: "Choosing a status is required!"
-              }
+                message: "Choosing a status is required!",
+              },
             })}
           >
             <option value="">Select status options</option>
@@ -93,19 +103,23 @@ export const CreateTask = () => {
             <option value="Done">Done</option>
             <option value="Cancelled">Cancelled</option>
           </Form.Select>
-          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskstatus?.message}</p>
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+            {errors.taskstatus?.message}
+          </p>
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">What is the priority level of this project?</Form.Label>
+          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">
+            What is the priority level of this project?
+          </Form.Label>
           <Form.Select
             style={{ fontSize: "10px" }}
             aria-label="Default select example"
             {...register("taskpriority", {
               required: {
                 value: true,
-                message: "Choosing a priority is required!"
-              }
+                message: "Choosing a priority is required!",
+              },
             })}
           >
             <option value="">Select priority level options</option>
@@ -114,43 +128,51 @@ export const CreateTask = () => {
             <option value="Medium">Medium</option>
             <option value="Low">Low</option>
           </Form.Select>
-          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskpriority?.message}</p>
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+            {errors.taskpriority?.message}
+          </p>
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">Due date</Form.Label>
+          <Form.Label style={{ fontSize: "10px" }} className="fw-bold">
+            Due date
+          </Form.Label>
           <Form.Control
             style={{ fontSize: "10px" }}
-            type="text"
+            type="date"
             {...register("taskduedate", {
+              valueAsDate: true,
               required: {
                 value: true,
-                message: "Due date is required!"
+                message: "Due date is required!",
               },
-              pattern: {
-                value: dateRegex,
-                message: "Invalid date format"
-              }
             })}
             placeholder="mm/dd/yyyy"
           />
-          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.taskduedate?.message}</p>
+          <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+            {errors.taskduedate?.message}
+          </p>
         </Form.Group>
 
-        <Button style={{ fontSize: "10px", maxHeight: "30px" }} variant="secondary" size="sm" href="/">
+        <Button
+          style={{ fontSize: "10px", maxHeight: "30px" }}
+          variant="secondary"
+          size="sm"
+          href="/"
+        >
           Cancel
         </Button>
 
         <Button
           style={{ fontSize: "10px", maxHeight: "30px" }}
-          className="ms-2" variant="primary"
+          className="ms-2"
+          variant="primary"
           size="sm"
           type="submit"
         >
           Submit
         </Button>
-
       </Form>
     </Container>
-  )
-}
+  );
+};
