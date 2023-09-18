@@ -26,11 +26,10 @@ export const ProtectedRoute = ({ children }) => {
         signOut(auth);
       }
       try {
-        const userPhotoURL = user.uid ? await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) : null;
-        const docRef = doc(db, "users", user.uid)
-        const docSnap = await getDoc(docRef)
-
-        if (user && docSnap.exists()) {
+        const userPhotoURL = user ? await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) : null;
+        if (user) {
+          const docRef = doc(db, "users", user.uid)
+          const docSnap = await getDoc(docRef)
           const data = docSnap.data()
           dispatch(loginUser({
             userId: user.uid,
