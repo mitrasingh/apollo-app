@@ -17,24 +17,27 @@ import { useForm } from "react-hook-form";
 
 export const TopicDetails = () => {
 
-	// React Router method, useParams, will create a dynamic page address based off of the topicId property from the "topics" collection in firestore database
-	// This shared id also specifies the document to query that is within the "topics" collection of the firestore database
+	// useParams, creates a dynamic page using the topicId property from its fetched document within the "topics" collection in database
+	// This shared id also specifies the specific document to query within the "topics" collection of the database
 	const { id } = useParams();
 
-	// Stores the document data fetched from firestore database via fetchTopicData function
+	// Stores document data fetched from database via fetchTopicData function
 	const [topic, setTopic] = useState([]);
 
-	// Stores the fetched data from firestore database "comments" sub-collection of document id via fetchComments function
+	// Stores fetched data from database "comments" sub-collection of document id via fetchComments function
 	const [comments, setComments] = useState([]);
 
-	// Displays edit fields for the topic description when set to true
+	// Display edit fields for the topic description when set to true
 	const [isEditTopicDisplayed, setIsEditTopicDisplayed] = useState(false);
 
-	// Refreshes CommentCard.jsx list when user posts a new comment
+	// Triggers refresh of all comments
 	const [isCommentsRefreshed, setIsCommentsRefreshed] = useState(false);
 
-	// Dependency variable, if true will fetchTopicData function
+	// Triggers refresh of fetchTopicData function
 	const [isTopicRefreshed, setIsTopicRefreshed] = useState(false);
+
+	//  Confirms user submitted change to topic when set to true
+	const [isTopicEdited, setIsTopicEdited] = useState(false)
 
 	// Stores user photo URL fetched from firebase storage via fetchTopicData function
 	const [userPhoto, setUserPhoto] = useState("");
@@ -49,7 +52,7 @@ export const TopicDetails = () => {
 	const storage = getStorage();
 	const storageRef = ref(storage);
 
-	// Redux state properties of current user (used to set properties when posting a comment)
+	// Redux state properties of current user (sets default properties when posting a comment)
 	const currentUser = useSelector((state) => state.user);
 
 	const navigate = useNavigate();
@@ -59,7 +62,7 @@ export const TopicDetails = () => {
 	const { register, handleSubmit, reset, formState } = form;
 	const { errors, isSubmitSuccessful } = formState;
 
-	// fetch data of specific document id (via useParams()) from "topics" collection in firestore database
+	// Fetch data of specific document id (via useParams()) from "topics" collection in firestore database
 	useEffect(() => {
 		const fetchTopicData = async () => {
 			try {
@@ -82,7 +85,7 @@ export const TopicDetails = () => {
 		fetchTopicData();
 	}, [isTopicRefreshed]);
 
-	// maps out the "comments" collection
+	// Maps out the "comments" collection
 	useEffect(() => {
 		const fetchComments = async () => {
 			try {
@@ -229,8 +232,8 @@ export const TopicDetails = () => {
 					<Card.Body>
 						<h5>{topic.title}</h5>
 						<p style={{ fontSize: "9px" }}>
-							posted on: {displayTimeStamp} | {numOfComments}{" "}
-							{numOfComments === 1 ? "Reply" : "Replies"}
+							{isTopicEdited ? `Updated post on:` : `Posted on:`} {displayTimeStamp}  |  {numOfComments}
+							{numOfComments === 1 ? " Reply" : " Replies"}
 						</p>
 
 						{isEditTopicDisplayed ? (
@@ -239,6 +242,7 @@ export const TopicDetails = () => {
 								description={topic.description}
 								id={id}
 								setIsTopicRefreshed={setIsTopicRefreshed}
+								setIsTopicEdited={setIsTopicEdited}
 							/>
 						) : (
 							<p style={{ fontSize: "12px" }} className="mt-4">
