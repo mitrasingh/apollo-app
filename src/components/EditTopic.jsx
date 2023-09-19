@@ -1,10 +1,10 @@
 import { Form, Stack, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { db } from "../utils/firebase-config";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 
-export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopicRefreshed }) => { // Props from TopicDetails.jsx
+export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopicRefreshed, setIsTopicEdited }) => { // Props from TopicDetails.jsx
 
 	// React Hook Form
 	const form = useForm({
@@ -15,15 +15,18 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 	const { register, handleSubmit, formState } = form;
 	const { errors } = formState;
 
-	// Update the topic's description and refreshes the topic data for immediate update
 	const handleEditTopic = async (data) => {
 		try {
+			const myDate = new Date();
+			const postTimeStamp = Timestamp.fromDate(myDate);
 			await updateDoc(doc(db, "topics", id), {
 				description: data.newdescription,
+				datePosted: postTimeStamp
 			});
 			if (updateDoc) {
 				setIsEditTopicDisplayed(false);
-				setIsTopicRefreshed((current) => !current);
+				setIsTopicRefreshed((current) => !current); // Refreshes topic for immediate update
+				setIsTopicEdited((current) => !current); // Updates timestamp
 			}
 		} catch (error) {
 			console.log(error);
@@ -86,4 +89,5 @@ EditTopic.propTypes = {
 	id: PropTypes.string,
 	setIsEditTopicDisplayed: PropTypes.func,
 	setIsTopicRefreshed: PropTypes.func,
+	setIsTopicEdited: PropTypes.func
 };
