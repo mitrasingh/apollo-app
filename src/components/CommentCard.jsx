@@ -7,44 +7,30 @@ import { useContext, useState } from "react";
 import { TopicIdContext } from "../utils/TopicIdContext";
 import { EditComment } from "../components/EditComment";
 import { Like } from "../components/Like";
-import {
-	Container,
-	Row,
-	Col,
-	Stack,
-	Image,
-	Card,
-	Dropdown,
-} from "react-bootstrap";
+import { Container, Row, Col, Stack, Image, Card, Dropdown } from "react-bootstrap";
 import { DeleteModal } from "../components/DeleteModal";
 
 export const CommentCard = (props) => {
-	// props from the parent TopicDetails.jsx
-	const {
-		userPhoto,
-		userId,
-		firstName,
-		lastName,
-		userComment,
-		datePosted,
-		commentId,
-	} = props.comment;
 
-	// data of currently logged in user from redux
+	// Props from parent TopicDetails.jsx
+	const { userPhoto, userId, firstName, lastName, userComment, datePosted, commentId } = props.comment;
+
+	// Data of currently logged in user from Redux state
 	const currentUser = useSelector((state) => state.user);
 
-	// data from useContext (id and setCommentsRefreshList from TopicDetails.jsx)
-	const { setIsCommentsRefreshed } = useContext(TopicIdContext);
+	// Data from useContext from TopicDetails.jsx
+	const { setIsCommentsRefreshed } = useContext(TopicIdContext); // TopicIdContext consists of id and setIsCommentsRefreshed
 
-	// displays edit fields for the comment when set to true
+	// Display edit field for the comment when set to true
 	const [isEditComment, setIsEditComment] = useState(false);
 
-	const [isVisible, setIsVisible] = useState(false);
-	const handleShow = () => setIsVisible(true);
+	// Confirms user submitted change to comment when set to true
+	const [isCommentUpdated, setIsCommentUpdated] = useState(false)
 
-	// function deletes the comment
+	// Delete comment functionality
+	const [isVisible, setIsVisible] = useState(false); // Modal display state to confirm delete
+	const handleShow = () => setIsVisible(true); // Renders modal display if true
 	const handleDeleteComment = async () => {
-		// const documentRef = doc(db,"topics",id,"comments",commentId)
 		try {
 			const commentRef = doc(db, "comments", commentId);
 			await deleteDoc(commentRef);
@@ -75,7 +61,7 @@ export const CommentCard = (props) => {
 								{firstName} {lastName}
 							</p>
 							<p style={{ fontSize: "8px", marginTop: "12px" }}>
-								posted at: {formatDate(datePosted)}
+								{isCommentUpdated ? `post edited on:` : `posted on:`} {formatDate(datePosted)}
 							</p>
 
 							{userId === currentUser.userId ? (
@@ -113,6 +99,7 @@ export const CommentCard = (props) => {
 								userComment={userComment}
 								setIsEditComment={setIsEditComment}
 								commentId={commentId}
+								setIsCommentUpdated={setIsCommentUpdated}
 							/>
 						) : (
 							<Stack className="mt-2">
@@ -132,7 +119,7 @@ export const CommentCard = (props) => {
 };
 
 CommentCard.propTypes = {
-	comment: PropTypes.any,
+	comment: PropTypes.object,
 	userId: PropTypes.string,
 	userPhoto: PropTypes.string,
 	firstName: PropTypes.string,
