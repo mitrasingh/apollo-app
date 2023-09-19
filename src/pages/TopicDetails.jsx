@@ -295,11 +295,9 @@ export const TopicDetails = () => {
 			{/* {comments &&  */}
 			{comments.map((comment) => {
 				return (
-					<>
-						<TopicIdContext.Provider value={{ id, setIsCommentsRefreshed }}>
-							<CommentCard comment={comment} key={comment.commentId} />
-						</TopicIdContext.Provider>
-					</>
+					<TopicIdContext.Provider value={{ id, setIsCommentsRefreshed }} key={comment.commentId}>
+						<CommentCard comment={comment} />
+					</TopicIdContext.Provider>
 				);
 			})}
 		</>
