@@ -7,29 +7,31 @@ import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
 
 export const Shoutboard = () => {
-	// current state of data retrieved from getTopics function
-	const [topics, setTopics] = useState([]);
+	// Current state of data fetched from getTopics function
+	const [topicArray, setTopicArray] = useState([]);
 
-	// boolean state displaying the component CreateTopicForm.jsx when user invokes an action
+	// Triggers the display component of CreateTopicForm.jsx when user invokes an action
 	const [isCreateTopic, setIsCreateTopic] = useState(false);
 
-	// boolean state which refreshes topic list when user posts a new topic via CreateTopicForm.jsx
+	// Triggers refresh topic list when user posts a new topic via CreateTopicForm.jsx
 	const [isTopicsRefreshed, setIsTopicsRefreshed] = useState(false);
 
-	// function that retrieves data from firestore database by querying "topics" collection
+	// Function that fetches data from database by querying "topics" collection
 	useEffect(() => {
-		const getTopics = async () => {
+		const fetchTopics = async () => {
 			try {
-				const data = await getDocs(query(collection(db, "topics")));
-				setTopics(data.docs.map((doc) => ({ ...doc.data(), topicId: doc.id })));
+				const dbRef = collection(db, "topics")
+				const topicsData = await getDocs(query(dbRef))
+				const topicsMap = topicsData.docs.map((doc) => ({ ...doc.data(), topicId: doc.id }))
+				setTopicArray(topicsMap);
 			} catch (error) {
 				console.log(error);
 			}
 		};
-		getTopics();
+		fetchTopics();
 	}, [isTopicsRefreshed]);
 
-	// button that handles boolean behavior for the display of component CreateTopicForm.jsx
+	// onClick function for displaying component CreateTopicForm.jsx
 	const handleCreateTopic = () => {
 		!isCreateTopic ? setIsCreateTopic(true) : setIsCreateTopic(false);
 	};
@@ -52,7 +54,7 @@ export const Shoutboard = () => {
 				/>
 			) : null}
 
-			{topics.map((topic) => {
+			{topicArray.map((topic) => {
 				return <TopicCard topic={topic} key={topic.topicId} />;
 			})}
 		</Container>
