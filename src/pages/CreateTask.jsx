@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 
 export const CreateTask = () => {
-
   // React Hook Form
   const form = useForm();
   const { register, handleSubmit, formState } = form;
@@ -23,14 +22,24 @@ export const CreateTask = () => {
     try {
       const date = data.taskduedate;
       const dateFormatted = format(date, "MM/dd/yyyy");
-      await addDoc(collection(db, "tasks"), {
+      const dbRef = collection(db, "tasks");
+      const taskData = {
         taskName: data.taskname,
         descriptionTask: data.taskdescription,
         statusProject: data.taskstatus,
         priorityLevel: data.taskpriority,
         dueDate: dateFormatted,
         userId: user.userId,
-      });
+      };
+      await addDoc(dbRef, taskData)
+      // await addDoc(collection(db, "tasks"), {
+      // 	taskName: data.taskname,
+      // 	descriptionTask: data.taskdescription,
+      // 	statusProject: data.taskstatus,
+      // 	priorityLevel: data.taskpriority,
+      // 	dueDate: dateFormatted,
+      // 	userId: user.userId,
+      // });
       navigate("/");
     } catch (error) {
       console.log(error);
