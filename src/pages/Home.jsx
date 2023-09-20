@@ -8,66 +8,81 @@ import { db } from "../utils/firebase-config";
 import { Row, Col, Container } from "react-bootstrap";
 
 export const Home = () => {
-	// initial state for task data from database
-	const [tasks, setTasks] = useState([]);
-	const [tasksFiltered, setTasksFiltered] = useState([])
-	const [isClearFilterDisplayed, setIsClearFilterDisplayed] = useState(false)
+	// Initial state for task data from database
+	const [taskArray, setTaskArray] = useState([]);
+	const [taskArrayFilter, setTaskArrayFilter] = useState([]);
+	const [isClearFilterDisplayed, setIsClearFilterDisplayed] = useState(false);
 
-	//user input for SearchBar
+	// User input for SearchBar
 	const [userInput, setUserInput] = useState("");
 
-	// pulling data from database and mapping each task into the tasks variable
+	// Fetch data and map each task into state variables
 	const fetchTasks = async () => {
 		try {
-			const data = await getDocs(query(collection(db, "tasks")));
-			setTasks(data.docs.map((doc) => ({ ...doc.data(), taskId: doc.id })));
-			setTasksFiltered(data.docs.map((doc) => ({ ...doc.data(), taskId: doc.id })));
+			const dbRef = collection(db, "tasks");
+			const fetchTasks = await getDocs(query(dbRef));
+			const tasksMap = fetchTasks.docs.map((doc) => ({
+				...doc.data(),
+				taskId: doc.id,
+			}));
+			setTaskArray(tasksMap);
+			setTaskArrayFilter(tasksMap);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	useEffect(() => {
-		fetchTasks()
-	}, [])
+		fetchTasks();
+	}, []);
 
-	// refreshes tasks state by retrieving any new data from database, clears displays to original list, clears user search value
+	// Refreshes task state by fetching data from db, clears filters, clears user search value
 	const refreshTasksHandle = () => {
-		fetchTasks()
-		setIsClearFilterDisplayed(false)
+		fetchTasks();
+		setIsClearFilterDisplayed(false);
 	};
 
-	// receiving user input from SearchBar component
+	// Receive user input from SearchBar component
 	const userInputSearchBar = (formInput) => {
 		setUserInput(formInput);
 	};
 
-	// filter options fuctionality for the dropdown filter button
+	// Filter options fuctionality for the dropdown filter button
 	const filterNewestHandle = () => {
-		const sortNew = [...tasks].sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
-		setTasksFiltered(sortNew)
-		setIsClearFilterDisplayed((current) => !current)
+		const sortNew = [...taskArray].sort(
+			(a, b) => new Date(b.dueDate) - new Date(a.dueDate)
+		);
+		taskArrayFilter(sortNew);
+		setIsClearFilterDisplayed((current) => !current);
 	};
 
 	const filterOldestHandle = () => {
-		const sortOld = [...tasks].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-		setTasksFiltered(sortOld)
-		setIsClearFilterDisplayed((current) => !current)
+		const sortOld = [...taskArray].sort(
+			(a, b) => new Date(a.dueDate) - new Date(b.dueDate)
+		);
+		taskArrayFilter(sortOld);
+		setIsClearFilterDisplayed((current) => !current);
 	};
 
 	const filterPriorityHandle = (priority) => {
-		setTasksFiltered(tasks.filter((task) => task.priorityLevel === priority));
+		taskArrayFilter(
+			taskArray.filter((task) => task.priorityLevel === priority)
+		);
 	};
 
 	const filterStatusHandle = (status) => {
-		setTasksFiltered(tasks.filter((task) => task.statusProject === status));
-		setIsClearFilterDisplayed((current) => !current)
+		taskArrayFilter(taskArray.filter((task) => task.statusProject === status));
+		setIsClearFilterDisplayed((current) => !current);
 	};
 
 	const filterSearchHandle = () => {
-		setTasksFiltered(tasks.filter((task) => task.taskName.toLowerCase().includes(userInput.toLowerCase())));
-		setIsClearFilterDisplayed((current) => !current)
-	}
+		taskArrayFilter(
+			taskArray.filter((task) =>
+				task.taskName.toLowerCase().includes(userInput.toLowerCase())
+			)
+		);
+		setIsClearFilterDisplayed((current) => !current);
+	};
 
 	return (
 		<>
@@ -94,18 +109,19 @@ export const Home = () => {
 					</Col>
 				</Row>
 
-				{tasksFiltered.length === 0 && <p className="mt-4 d-flex justify-content-center">No tasks found</p>}
+				{taskArrayFilter.length === 0 && (
+					<p className="mt-4 d-flex justify-content-center">No tasks found</p>
+				)}
 
-				{tasksFiltered.map((task) => {
+				{taskArrayFilter.map((task) => {
 					return (
 						<TaskCard
 							refreshTasksHandle={refreshTasksHandle}
 							task={task}
 							key={task.taskId}
 						/>
-					)
+					);
 				})}
-
 			</Container>
 		</>
 	);
