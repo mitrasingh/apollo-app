@@ -32,14 +32,6 @@ export const CreateTask = () => {
         userId: user.userId,
       };
       await addDoc(dbRef, taskData)
-      // await addDoc(collection(db, "tasks"), {
-      // 	taskName: data.taskname,
-      // 	descriptionTask: data.taskdescription,
-      // 	statusProject: data.taskstatus,
-      // 	priorityLevel: data.taskpriority,
-      // 	dueDate: dateFormatted,
-      // 	userId: user.userId,
-      // });
       navigate("/");
     } catch (error) {
       console.log(error);
