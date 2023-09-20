@@ -1,26 +1,25 @@
-import { getAuth, sendPasswordResetEmail } from "firebase/auth"
-import { Stack, Form, Modal, Button } from "react-bootstrap"
-import { useState } from "react"
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { Stack, Form, Modal, Button } from "react-bootstrap";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom"
-import { Container } from "react-bootstrap"
-
+import { Link } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
 export const ForgotPassword = () => {
-
     // React Hook Form
     const form = useForm();
     const { register, handleSubmit, formState } = form;
     const { errors } = formState;
-    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     const [modalAlertMessage, setModalAlertMessage] = useState("A link will be sent to your email");
 
     const auth = getAuth();
-
     const handleForgotPassword = async (data) => {
         try {
-            await sendPasswordResetEmail(auth, data.email);
+            const inputEmailData = data.email;
+            await sendPasswordResetEmail(auth, inputEmailData);
             setModalAlertMessage("Email has been sent!");
         } catch (error) {
             setModalAlertMessage(error.message);
@@ -62,7 +61,9 @@ export const ForgotPassword = () => {
                                 },
                             })}
                         />
-                        <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>{errors.email?.message}</p>
+                        <p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+                            {errors.email?.message}
+                        </p>
                     </Form.Group>
 
                     <Modal.Footer>
