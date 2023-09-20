@@ -31,14 +31,14 @@ export const Profile = () => {
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 
-    const [userUpdatedPhoto, setUserUpdatedPhoto] = useState(""); // Display how photo is displayed before upload
-    const [photoURL, setPhotoURL] = useState("");
-    const [checkPhoto, setCheckPhoto] = useState(false); // Check to see if a new photo exists from current photo
+    const [userUpdatedPhoto, setUserUpdatedPhoto] = useState(""); // Displays photo before final upload
+    const [photoURL, setPhotoURL] = useState(""); // Photo URL for HTML display
+    const [checkPhoto, setCheckPhoto] = useState(false); // If a new photo exists from previous photo
 
     const storage = getStorage();
     const storageRef = ref(storage);
 
-    // Updates form field values to Redux user slice initial state values
+    // Updates form field values to Redux user state values
     useEffect(() => {
         const fetchUserRedux = () => {
             let defaultValues = {}; // React Hook Form state values 
@@ -80,9 +80,7 @@ export const Profile = () => {
             if (checkPhoto) {
                 const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`);
                 await uploadBytes(imageRef, userUpdatedPhoto);
-                await getDownloadURL(
-                    ref(storageRef, `user-photo/${auth.currentUser.uid}`)
-                );
+                await getDownloadURL(imageRef);
             }
 
             await updateEmail(auth.currentUser, data.email);
