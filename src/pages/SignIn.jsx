@@ -9,10 +9,7 @@ import { db } from "../utils/firebase-config";
 import { useForm } from "react-hook-form";
 
 export const SignIn = () => {
-
-    const auth = getAuth();
-    const dispatch = useDispatch();
-
+    // Invokes error message if login fails
     const [alert, setAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
@@ -22,27 +19,25 @@ export const SignIn = () => {
     const { errors, isDirty } = formState;
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
+    const auth = getAuth();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-
     const handleLogin = async (data) => {
         try {
             await signInWithEmailAndPassword(auth, data.email, data.password);
             const docRef = doc(db, "users", auth.currentUser.uid);
             const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                const userData = docSnap.data();
-                // Assigns default values to Redux user state
-                dispatch(
-                    loginUser({
-                        userId: auth.currentUser.uid,
-                        firstName: auth.currentUser.displayName,
-                        lastName: userData.lastname,
-                        title: userData.title,
-                        email: auth.currentUser.email,
-                    })
-                );
-            }
+            const userData = docSnap.data();
+            // Assigns default values to Redux user state
+            dispatch(
+                loginUser({
+                    userId: auth.currentUser.uid,
+                    firstName: auth.currentUser.displayName,
+                    lastName: userData.lastname,
+                    title: userData.title,
+                    email: auth.currentUser.email,
+                })
+            );
             navigate("/");
         } catch (error) {
             setAlert(true);
