@@ -1,5 +1,6 @@
 import { createUserWithEmailAndPassword, updateProfile, getAuth } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore"
+import { getStorage, ref, getDownloadURL } from "firebase/storage"
 import { db } from "../utils/firebase-config"
 import { Container, Form, Card, Button } from "react-bootstrap"
 import { useDispatch } from "react-redux"
@@ -13,28 +14,29 @@ export const SignUp = () => {
     const form = useForm({ mode: "onChange" });
     const { register, handleSubmit, watch, formState } = form;
     const { errors, isDirty } = formState;
-    const watchPassword = watch("password") // Validate confirm password field matches password field
+    const watchPassword = watch("password") // Observes password field (to match confirm password)
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const auth = getAuth();
-
+    const storage = getStorage()
+    const storageRef = ref(storage)
     const handleSignUp = async (data) => {
-        const { firstname, lastname, title, email, password } = data;
+        console.log(data)
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            await createUserWithEmailAndPassword(auth, data.email, data.password);
             await updateProfile(auth.currentUser, {
-                displayName: firstname,
+                displayName: data.firstname,
             });
-            await setDoc(doc(db, "users", `${auth.currentUser.uid}`), {
-                firstname: firstname,
-                lastname: lastname,
-                title: title,
-            });
-
-            const docRef = doc(db, "users", auth.currentUser.uid);
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
+                firstname: data.firstname, // allows access for current auth user's name to be available throughout app
+                lastname: data.lastname,
+                title: data.title,
+            })
+            const userTempPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/temporaryphoto.jpeg`))
+            const docRef = doc(db, "users", auth.currentUser.uid)
             const docSnap = await getDoc(docRef);
             if (auth && docSnap.exists()) {
                 const fetchUserData = docSnap.data();
@@ -42,7 +44,7 @@ export const SignUp = () => {
                 dispatch(
                     loginUser({
                         userId: auth.currentUser.uid,
-                        userPhoto: null,
+                        userPhoto: userTempPhotoURL,
                         firstName: auth.currentUser.displayName,
                         lastName: fetchUserData.lastname,
                         title: fetchUserData.title,
@@ -55,6 +57,7 @@ export const SignUp = () => {
             console.log(error.message)
         }
     };
+
 
     return (
         <>
