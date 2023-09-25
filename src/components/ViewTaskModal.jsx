@@ -5,13 +5,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import { useState } from "react";
 
-export const ViewTaskModal = ({
-	isViewModal,
-	handleClose,
-	taskId,
-	creatorPhoto,
-	creatorName,
-}) => {
+export const ViewTaskModal = ({ isViewModal, handleClose, taskId, creatorPhoto, creatorName }) => {
+
 	const [taskName, setTaskName] = useState("");
 	const [descriptionTask, setDescriptionTask] = useState("");
 	const [statusProject, setStatusProject] = useState("");
