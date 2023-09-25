@@ -15,14 +15,15 @@ export const ForgotPassword = () => {
 
     const [modalAlertMessage, setModalAlertMessage] = useState("A link will be sent to your email");
 
-    const auth = getAuth();
     const handleForgotPassword = async (data) => {
+        const auth = getAuth();
         try {
             const inputEmailData = data.email;
             await sendPasswordResetEmail(auth, inputEmailData);
             setModalAlertMessage("Email has been sent!");
         } catch (error) {
             setModalAlertMessage(error.message);
+            console.log(error);
         }
     };
 
