@@ -11,6 +11,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage"
 import { loginUser } from "../features/user/userSlice"
 import { useDispatch } from 'react-redux';
 
+
 export const ProtectedRoute = ({ children }) => {
   const location = useLocation();
   const authUser = getAuth();
@@ -26,8 +27,9 @@ export const ProtectedRoute = ({ children }) => {
         signOut(auth);
       }
       try {
-        const userPhotoURL = user ? await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`)) : null;
         if (user) {
+          const photoRef = ref(storageRef, `user-photo/${user.uid}`);
+          const userPhotoURL = await getDownloadURL(photoRef);
           const docRef = doc(db, "users", user.uid)
           const docSnap = await getDoc(docRef)
           const data = docSnap.data()
