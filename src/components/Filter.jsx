@@ -2,6 +2,7 @@ import { Button, ButtonGroup, Container, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
+// Props from Home.jsx
 export const Filter = ({ filterNewestHandle, filterOldestHandle, filterPriorityHandle, filterStatusHandle }) => {
   return (
     <Container>
