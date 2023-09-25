@@ -21,22 +21,26 @@ export const SignUp = () => {
     const navigate = useNavigate();
 
     const auth = getAuth();
-    const storage = getStorage()
-    const storageRef = ref(storage)
+    const storage = getStorage();
+    const storageRef = ref(storage);
     const handleSignUp = async (data) => {
-        console.log(data)
         try {
             await createUserWithEmailAndPassword(auth, data.email, data.password);
             await updateProfile(auth.currentUser, {
                 displayName: data.firstname,
             });
-            await setDoc(doc(db, "users", auth.currentUser.uid), {
-                firstname: data.firstname, // allows access for current auth user's name to be available throughout app
+
+            const docRef = doc(db, "users", auth.currentUser.uid);
+            await setDoc(docRef, {
+                firstname: data.firstname, // Allows access for current auth user's name to be available throughout app
                 lastname: data.lastname,
                 title: data.title,
             })
-            const userTempPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/temporaryphoto.jpeg`))
-            const docRef = doc(db, "users", auth.currentUser.uid)
+
+            const photoRef = ref(storageRef, `user-photo/temporaryphoto.jpeg`);
+            const userTempPhotoURL = await getDownloadURL(photoRef);
+            // const docRef = doc(db, "users", auth.currentUser.uid)
+
             const docSnap = await getDoc(docRef);
             if (auth && docSnap.exists()) {
                 const fetchUserData = docSnap.data();
