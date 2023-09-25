@@ -19,7 +19,8 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 		const myDate = new Date(); // Javascript date object
 		const postTimeStamp = Timestamp.fromDate(myDate); // Converts date object into a firestore timestamp
 		try {
-			const addTopic = await addDoc(collection(db, "topics"), { // Using firestore to generate task ID
+			const dbRef = collection(db, "topics");
+			const addTopic = await addDoc(dbRef, { // Firestore will auto generate task ID
 				title: data.title,
 				description: data.description,
 				userId: user.userId,
