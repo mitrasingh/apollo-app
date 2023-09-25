@@ -36,7 +36,7 @@ export const Home = () => {
 		fetchTasks();
 	}, []);
 
-	// Refreshes task state by fetching data from db, clears filters, clears user search value
+	// Refresh task state by fetching data, clears filters, clears user search value
 	const refreshTasksHandle = () => {
 		fetchTasks();
 		setIsClearFilterDisplayed(false);
@@ -47,40 +47,33 @@ export const Home = () => {
 		setUserInput(formInput);
 	};
 
-	// Filter options fuctionality for the dropdown filter button
+	// Options for filter fuctionality 
 	const filterNewestHandle = () => {
-		const sortNew = [...taskArray].sort(
-			(a, b) => new Date(b.dueDate) - new Date(a.dueDate)
-		);
-		taskArrayFilter(sortNew);
+		const sortNew = [...taskArray].sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+		setTaskArrayFilter(sortNew);
 		setIsClearFilterDisplayed((current) => !current);
 	};
 
 	const filterOldestHandle = () => {
-		const sortOld = [...taskArray].sort(
-			(a, b) => new Date(a.dueDate) - new Date(b.dueDate)
-		);
-		taskArrayFilter(sortOld);
+		const sortOld = [...taskArray].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+		setTaskArrayFilter(sortOld);
 		setIsClearFilterDisplayed((current) => !current);
 	};
 
 	const filterPriorityHandle = (priority) => {
-		taskArrayFilter(
-			taskArray.filter((task) => task.priorityLevel === priority)
-		);
+		const filterPriority = [...taskArray.filter((task) => task.priorityLevel === priority)]
+		setTaskArrayFilter(filterPriority)
 	};
 
 	const filterStatusHandle = (status) => {
-		taskArrayFilter(taskArray.filter((task) => task.statusProject === status));
+		const filterStatus = [...taskArray.filter((task) => task.statusProject === status)];
+		setTaskArrayFilter(filterStatus);
 		setIsClearFilterDisplayed((current) => !current);
 	};
 
 	const filterSearchHandle = () => {
-		taskArrayFilter(
-			taskArray.filter((task) =>
-				task.taskName.toLowerCase().includes(userInput.toLowerCase())
-			)
-		);
+		const filterUserInput = [...taskArray.filter((task) => task.taskName.toLowerCase().includes(userInput.toLowerCase()))];
+		setTaskArrayFilter(filterUserInput);
 		setIsClearFilterDisplayed((current) => !current);
 	};
 
