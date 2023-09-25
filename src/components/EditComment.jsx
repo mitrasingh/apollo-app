@@ -31,8 +31,8 @@ export const EditComment = ({ userComment, setIsEditComment, commentId, setIsCom
 				datePosted: postTimeStamp
 			});
 			setIsEditComment(false); // Hides display of edit component
-			setIsCommentsRefreshed((current) => !current);
-			setIsCommentUpdated((current) => !current);
+			setIsCommentsRefreshed((current) => !current); // Refreshes topic for immediate update
+			setIsCommentUpdated((current) => !current); // Updates timestamp
 		} catch (error) {
 			console.log(error);
 		}
