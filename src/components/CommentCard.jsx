@@ -11,9 +11,16 @@ import { Container, Row, Col, Stack, Image, Card, Dropdown } from "react-bootstr
 import { DeleteModal } from "../components/DeleteModal";
 
 export const CommentCard = (props) => {
-
 	// Props from parent TopicDetails.jsx
-	const { userPhoto, userId, firstName, lastName, userComment, datePosted, commentId } = props.comment;
+	const {
+		userPhoto,
+		userId,
+		firstName,
+		lastName,
+		userComment,
+		datePosted,
+		commentId,
+	} = props.comment;
 
 	// Data of currently logged in user from Redux state
 	const currentUser = useSelector((state) => state.user);
@@ -25,7 +32,7 @@ export const CommentCard = (props) => {
 	const [isEditComment, setIsEditComment] = useState(false);
 
 	// Confirms user submitted change to comment when set to true
-	const [isCommentUpdated, setIsCommentUpdated] = useState(false)
+	const [isCommentUpdated, setIsCommentUpdated] = useState(false);
 
 	// Delete comment functionality
 	const [isVisible, setIsVisible] = useState(false); // Modal display state to confirm delete
@@ -57,15 +64,16 @@ export const CommentCard = (props) => {
 								src={userPhoto}
 								roundedCircle
 							/>
-							<p style={{ fontSize: "9px", marginTop: "12px" }}>
-								{firstName} {lastName}
-							</p>
+							<p style={{ fontSize: "9px", marginTop: "12px" }}>{firstName} {lastName}</p>
 							<p style={{ fontSize: "8px", marginTop: "12px" }}>
-								{isCommentUpdated ? `post edited on:` : `posted on:`} {formatDate(datePosted)}
+								{isCommentUpdated
+									? `post edited on: `
+									: `posted on: `}{formatDate(datePosted)}
 							</p>
 
-							{userId === currentUser.userId ? (
-								<>
+							{/* Code below is a ternary operator nested into another ternary operator */}
+							{userId === currentUser.userId
+								? (
 									<Dropdown>
 										<Dropdown.Toggle
 											style={{ maxHeight: "20px" }}
@@ -80,28 +88,29 @@ export const CommentCard = (props) => {
 												Edit
 											</Dropdown.Item>
 											<Dropdown.Item onClick={handleShow}>Delete</Dropdown.Item>
-											{isVisible ? (
-												<DeleteModal
+											{isVisible
+												? <DeleteModal
 													handleDelete={handleDeleteComment}
 													setIsVisible={setIsVisible}
 													isVisible={isVisible}
 													type={"comment"}
 												/>
-											) : null}
+												: null}
 										</Dropdown.Menu>
 									</Dropdown>
-								</>
-							) : null}
+								)
+								: null}
 						</Stack>
 
-						{isEditComment ? (
+						{isEditComment
+							?
 							<EditComment
 								userComment={userComment}
 								setIsEditComment={setIsEditComment}
 								commentId={commentId}
 								setIsCommentUpdated={setIsCommentUpdated}
 							/>
-						) : (
+							:
 							<Stack className="mt-2">
 								<Row>
 									<Col>
@@ -109,7 +118,7 @@ export const CommentCard = (props) => {
 									</Col>
 								</Row>
 							</Stack>
-						)}
+						}
 						<Like docId={commentId} />
 					</Col>
 				</Row>
