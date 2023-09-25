@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 export const EditComment = ({ userComment, setIsEditComment, commentId, setIsCommentUpdated }) => { // Props from CommentCard.jsx
 
 	// Data from useContext from TopicDetails.jsx
-	const { setIsCommentsRefreshed } = useContext(TopicIdContext); // TopicIdContext consists of id and setIsCommentsRefreshed
+	const { setIsCommentsRefreshed } = useContext(TopicIdContext); // TopicIdContext also has a prop of id
 
 	// React Hook Form
 	const form = useForm({
@@ -20,15 +20,17 @@ export const EditComment = ({ userComment, setIsEditComment, commentId, setIsCom
 	const { register, handleSubmit, formState } = form;
 	const { errors } = formState;
 
+	// Updates comment document in database and refreshes comment card
 	const handleUpdateButton = async (data) => {
 		const myDate = new Date();
 		const postTimeStamp = Timestamp.fromDate(myDate);
 		try {
-			await updateDoc(doc(db, "comments", commentId), {
+			const docRef = doc(db, "comments", commentId);
+			await updateDoc(docRef, {
 				userComment: data.editcomment,
 				datePosted: postTimeStamp
 			});
-			setIsEditComment(false);
+			setIsEditComment(false); // Hides display of edit component
 			setIsCommentsRefreshed((current) => !current);
 			setIsCommentUpdated((current) => !current);
 		} catch (error) {
