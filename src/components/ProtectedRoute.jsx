@@ -28,8 +28,7 @@ export const ProtectedRoute = ({ children }) => {
       }
       try {
         if (user) {
-          const photoRef = ref(storageRef, `user-photo/${user.uid}`);
-          const userPhotoURL = await getDownloadURL(photoRef);
+          const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`));
           const docRef = doc(db, "users", user.uid)
           const docSnap = await getDoc(docRef)
           const data = docSnap.data()
