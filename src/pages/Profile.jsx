@@ -144,7 +144,7 @@ export const Profile = () => {
                                     type="file"
                                     onClick={setPhotoHandle}
                                 >
-                                    Set Photo
+                                    Update Photo
                                 </Button>
                             </Stack>
                         </Col>
@@ -259,7 +259,7 @@ export const Profile = () => {
                         size="sm"
                         type="submit"
                     >
-                        Update
+                        Save Updates
                     </Button>
                 </Form>
             </Container>
