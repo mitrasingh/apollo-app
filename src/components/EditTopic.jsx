@@ -4,7 +4,8 @@ import { db } from "../utils/firebase-config";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 
-export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopicRefreshed, setIsTopicEdited }) => { // Props from TopicDetails.jsx
+// Props from TopicDetails.jsx
+export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopicRefreshed, setIsTopicEdited }) => {
 
 	// React Hook Form
 	const form = useForm({
@@ -15,16 +16,18 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 	const { register, handleSubmit, formState } = form;
 	const { errors } = formState;
 
+	// Updates topic document in database and refreshes topic description
 	const handleEditTopic = async (data) => {
 		try {
 			const myDate = new Date();
 			const postTimeStamp = Timestamp.fromDate(myDate);
-			await updateDoc(doc(db, "topics", id), {
+			const docRef = doc(db, "topics", id);
+			await updateDoc(docRef, {
 				description: data.newdescription,
 				datePosted: postTimeStamp
 			});
 			if (updateDoc) {
-				setIsEditTopicDisplayed(false);
+				setIsEditTopicDisplayed(false); // Hides display of edit component
 				setIsTopicRefreshed((current) => !current); // Refreshes topic for immediate update
 				setIsTopicEdited((current) => !current); // Updates timestamp
 			}
