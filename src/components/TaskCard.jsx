@@ -10,27 +10,34 @@ import { useSelector } from "react-redux";
 import { DeleteModal } from "./DeleteModal";
 
 export const TaskCard = (props) => {
-	//retrieving prop data from Home.jsx
-	const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } =
-		props.task;
+
+	// Props from Home.jsx
+	const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task;
 	const { refreshTasksHandle } = props;
 
-	const currentUser = useSelector((state) => state.user);
+	const currentUser = useSelector((state) => state.user); // Redux user state data
 
-	const [isViewModal, setIsViewModal] = useState(false);
-	const [isEditModal, setIsEditModal] = useState(false);
 	const [creatorPhoto, setCreatorPhoto] = useState("");
 	const [creatorName, setCreatorName] = useState("");
 
-	// visibility functionality for modals
-	const handleClose = () => setIsViewModal(false);
+	// Delete task functionality
+	// DELETE MODAL AND PROPS ARE ALSO USED IN COMMENTCARD.JSX AVOID MAKING ANY EDITS
+	const [isVisible, setIsVisible] = useState(false);
+	const handleShow = () => setIsVisible(true);
+
+	// Edit modal functionality
+	const [isEditModal, setIsEditModal] = useState(false);
 	const handleEditModalClose = () => setIsEditModal(false);
 
-	// routing for database
+	// Details modal functionality
+	const [isViewModal, setIsViewModal] = useState(false);
+	const handleClose = () => setIsViewModal(false);
+
+	// Reference for firebase database
 	const storage = getStorage();
 	const storageRef = ref(storage);
 
-	// retrieving users information from database
+	// Retrieving users information from database
 	useEffect(() => {
 		const fetchCreatorInfo = async () => {
 			try {
@@ -52,9 +59,6 @@ export const TaskCard = (props) => {
 		};
 		fetchCreatorInfo();
 	}, []);
-
-	const [isVisible, setIsVisible] = useState(false);
-	const handleShow = () => setIsVisible(true);
 
 	const handleDeleteTaskCard = async () => {
 		try {
@@ -81,12 +85,13 @@ export const TaskCard = (props) => {
 									<NavLink onClick={handleShow}>Delete Task</NavLink>
 								</Col>
 							) : null}
+							{/* DELETE MODAL AND PROPS USED IN COMMENTCARD, AVOID ANY NAME CHANGES */}
 							{isVisible ? (
 								<DeleteModal
 									handleDelete={handleDeleteTaskCard}
 									setIsVisible={setIsVisible}
 									isVisible={isVisible}
-									type={"task"}
+									type={"task"} // Allowed to edit type prop name etc: "task" => "comment"
 								/>
 							) : null}
 						</Row>
@@ -162,7 +167,7 @@ export const TaskCard = (props) => {
 									</>
 								)}
 
-								{/* IF VIEW BUTTON IS CLICKED MODAL IS SHOWN */}
+								{/* IF DETAILS BUTTON IS CLICKED MODAL IS SHOWN */}
 								<ViewTaskModal
 									isViewModal={isViewModal}
 									handleClose={handleClose}
