@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 export const DeleteModal = ({ handleDelete, setIsVisible, isVisible, type, }) => {
 
-	const handleClose = () => setIsVisible(false);
+	const handleClose = () => setIsVisible(false); // Closes modal component
 
 	return (
 		<>
