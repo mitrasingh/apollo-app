@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
@@ -9,7 +9,7 @@ import { loginUser } from "../features/user/userSlice";
 import { Container, Form, Card, Button, Alert, Row, Col, Stack, Image } from "react-bootstrap";
 
 export const PhotoUpload = () => {
-	const [userPhoto, setUserPhoto] = useState(null);
+	const [userPhoto, setUserPhoto] = useState(null); // Users' chosen file to upload
 	const [photoURL, setPhotoURL] = useState(""); // Allows user to see how photo is displayed before upload
 	const [isAlert, isSetAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
@@ -22,12 +22,20 @@ export const PhotoUpload = () => {
 	const storage = getStorage();
 	const storageRef = ref(storage);
 
+	useEffect(() => {
+		const loadUserImage = async () => {
+			const userTempPhotoURL = await getDownloadURL(ref(storageRef, "user-photo/temporaryphoto.jpeg"));
+			setPhotoURL(userTempPhotoURL);
+		};
+		loadUserImage();
+	}, []);
+
 	// Upload temporary image and set photo state for display preview
 	const handlePreviewPhoto = async (e) => {
 		e.preventDefault();
 		try {
-			if (userPhoto == null) return null;
-			const imageRef = ref(storageRef, "user-photo/temp");
+			// if (userPhoto == null) return null;
+			const imageRef = ref(storageRef, "user-photo/temp.jpeg");
 			await uploadBytes(imageRef, userPhoto);
 			const getURL = await getDownloadURL(imageRef);
 			setPhotoURL(getURL);
@@ -42,31 +50,32 @@ export const PhotoUpload = () => {
 	const handleAcceptPhoto = async (event) => {
 		event.preventDefault();
 		try {
-			const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`);
-			await uploadBytes(imageRef, userPhoto);
-			const userPhotoURL = await getDownloadURL(
-				ref(storageRef, `user-photo/${auth.currentUser.uid}`)
-			);
-
-			const docRef = doc(db, "users", auth.currentUser.uid);
-			const docSnap = await getDoc(docRef);
-
-			if (auth && userPhotoURL && docSnap) {
-				const data = docSnap.data();
-				dispatch(
-					loginUser({
-						userId: auth.currentUser.uid,
-						userPhoto: userPhotoURL,
-						firstName: auth.currentUser.displayName,
-						lastName: data.lastname,
-						title: data.title,
-						email: auth.currentUser.email,
-					})
-				);
+			if (!userPhoto) {
+				setAlertMessage("Photo upload is required.");
+				isSetAlert((current) => !current);
+			} else {
+				const imageRef = ref(storageRef, `user-photo/${auth.currentUser.uid}`);
+				await uploadBytes(imageRef, userPhoto);
+				const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${auth.currentUser.uid}`));
+				const docRef = doc(db, "users", auth.currentUser.uid);
+				const docSnap = await getDoc(docRef);
+				if (auth && userPhotoURL && docSnap) {
+					const data = docSnap.data();
+					dispatch(
+						loginUser({
+							userId: auth.currentUser.uid,
+							userPhoto: userPhotoURL,
+							firstName: auth.currentUser.displayName,
+							lastName: data.lastname,
+							title: data.title,
+							email: auth.currentUser.email,
+						})
+					);
+				}
+				navigate("/");
 			}
-			navigate("/");
 		} catch (error) {
-			isSetAlert(true);
+			isSetAlert((current) => !current);
 			setAlertMessage(error.code);
 			console.log(error.code);
 		}
@@ -103,11 +112,12 @@ export const PhotoUpload = () => {
 											objectFit: "cover",
 											borderRadius: "50%",
 										}}
-										src={
-											photoURL === ""
-												? "public/img/default-profile.png"
-												: photoURL
-										}
+										src={photoURL}
+										// src={
+										// 	photoURL === ""
+										// 		? "public/img/default-profile.png"
+										// 		: photoURL
+										// }
 										roundedCircle
 									/>
 								</Stack>
