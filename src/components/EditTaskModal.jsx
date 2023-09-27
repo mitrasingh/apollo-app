@@ -12,7 +12,14 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 	const form = useForm();
 	const { register, handleSubmit, reset, formState } = form;
 	const { errors } = formState;
-	const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+
+	const convertDate = (fetchDate) => {
+		const date = new Date(fetchDate);
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0'); // Add 1 to month because months are zero-based
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
 
 	// Fetch task content from database and assign values to the related form fields 
 	useEffect(() => {
@@ -22,12 +29,14 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 				const docSnap = await getDoc(docRef);
 				if (docSnap.exists()) {
 					const taskData = docSnap.data();
+					const taskDueDate = taskData.dueDate;
+					const convertDateData = convertDate(taskDueDate);
 					let defaultValues = {};
 					defaultValues.taskname = taskData.taskName;
 					defaultValues.taskdescription = taskData.descriptionTask;
 					defaultValues.taskstatus = taskData.statusProject;
 					defaultValues.taskpriority = taskData.priorityLevel;
-					defaultValues.taskduedate = taskData.dueDate;
+					defaultValues.taskduedate = convertDateData;
 					reset({ ...defaultValues });
 				}
 			} catch (error) {
@@ -42,12 +51,13 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 	// Update new task content to database
 	const handleUpdate = async (data) => {
 		try {
+			const dateFormatted = data.taskduedate.toLocaleDateString();
 			await updateDoc(doc(db, "tasks", taskId), {
 				taskName: data.taskname,
 				descriptionTask: data.taskdescription,
 				statusProject: data.taskstatus,
 				priorityLevel: data.taskpriority,
-				dueDate: data.taskduedate
+				dueDate: dateFormatted
 			});
 			if (updateDoc) {
 				handleEditModalClose();
@@ -153,15 +163,12 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 							</Form.Label>
 							<Form.Control
 								style={{ fontSize: "10px" }}
-								type="text"
+								type="date"
 								{...register("taskduedate", {
+									valueAsDate: true,
 									required: {
 										value: true,
 										message: "Due date is required!"
-									},
-									pattern: {
-										value: dateRegex,
-										message: "Invalid date format"
 									}
 								})}
 							/>
