@@ -4,12 +4,16 @@ import { useSelector } from "react-redux";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
 import { useForm } from "react-hook-form";
+import * as dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 
 export const CreateTask = () => {
 	// React Hook Form
 	const form = useForm();
 	const { register, handleSubmit, formState } = form;
 	const { errors } = formState;
+
+	dayjs.extend(utc); // Converts date to UTC ensuring dates match from user input to display via database
 
 	const navigate = useNavigate();
 
@@ -19,14 +23,14 @@ export const CreateTask = () => {
 	// Firestore to generate task ID
 	const handleCreateTask = async (data) => {
 		try {
-			const dateFormatted = data.taskduedate.toLocaleDateString();
+			const formattedDueDate = dayjs.utc(data.taskduedate).format("MM/DD/YYYY")
 			const dbRef = collection(db, "tasks");
 			const taskData = {
 				taskName: data.taskname,
 				descriptionTask: data.taskdescription,
 				statusProject: data.taskstatus,
 				priorityLevel: data.taskpriority,
-				dueDate: dateFormatted,
+				dueDate: formattedDueDate,
 				userId: user.userId,
 			};
 			await addDoc(dbRef, taskData)
