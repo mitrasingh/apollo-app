@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { db } from "../utils/firebase-config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useForm } from "react-hook-form"
+import * as dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 
 // Props are from TaskCard.jsx
 export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creatorPhoto, creatorName, refreshTasksHandle, }) => {
@@ -13,13 +15,7 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 	const { register, handleSubmit, reset, formState } = form;
 	const { errors } = formState;
 
-	const convertDate = (fetchDate) => {
-		const date = new Date(fetchDate);
-		const year = date.getFullYear();
-		const month = String(date.getMonth() + 1).padStart(2, '0'); // Add 1 to month because months are zero-based
-		const day = String(date.getDate()).padStart(2, '0');
-		return `${year}-${month}-${day}`;
-	}
+	dayjs.extend(utc);
 
 	// Fetch task content from database and assign values to the related form fields 
 	useEffect(() => {
@@ -30,13 +26,13 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 				if (docSnap.exists()) {
 					const taskData = docSnap.data();
 					const taskDueDate = taskData.dueDate;
-					const convertDateData = convertDate(taskDueDate);
+					const formattedTaskDueDate = dayjs.utc(taskDueDate).format("YYYY-MM-DD");
 					let defaultValues = {};
 					defaultValues.taskname = taskData.taskName;
 					defaultValues.taskdescription = taskData.descriptionTask;
 					defaultValues.taskstatus = taskData.statusProject;
 					defaultValues.taskpriority = taskData.priorityLevel;
-					defaultValues.taskduedate = convertDateData;
+					defaultValues.taskduedate = formattedTaskDueDate;
 					reset({ ...defaultValues });
 				}
 			} catch (error) {
@@ -51,13 +47,13 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 	// Update new task content to database
 	const handleUpdate = async (data) => {
 		try {
-			const dateFormatted = data.taskduedate.toLocaleDateString();
+			const formattedDueDate = dayjs.utc(data.taskduedate).format("MM/DD/YYYY")
 			await updateDoc(doc(db, "tasks", taskId), {
 				taskName: data.taskname,
 				descriptionTask: data.taskdescription,
 				statusProject: data.taskstatus,
 				priorityLevel: data.taskpriority,
-				dueDate: dateFormatted
+				dueDate: formattedDueDate
 			});
 			if (updateDoc) {
 				handleEditModalClose();
