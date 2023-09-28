@@ -15,7 +15,7 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 	const { register, handleSubmit, reset, formState } = form;
 	const { errors } = formState;
 
-	dayjs.extend(utc);
+	dayjs.extend(utc); // Converts date to UTC ensuring dates match from user input to display via database
 
 	// Fetch task content from database and assign values to the related form fields 
 	useEffect(() => {
@@ -47,7 +47,7 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 	// Update new task content to database
 	const handleUpdate = async (data) => {
 		try {
-			const formattedDueDate = dayjs.utc(data.taskduedate).format("MM/DD/YYYY")
+			const formattedDueDate = dayjs.utc(data.taskduedate).format("MM/DD/YYYY");
 			await updateDoc(doc(db, "tasks", taskId), {
 				taskName: data.taskname,
 				descriptionTask: data.taskdescription,
@@ -216,10 +216,10 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 };
 
 EditTaskModal.propTypes = {
-	isEditModal: PropTypes.any,
+	isEditModal: PropTypes.bool,
 	handleEditModalClose: PropTypes.func,
-	creatorPhoto: PropTypes.any,
-	creatorName: PropTypes.any,
-	taskId: PropTypes.any,
+	creatorPhoto: PropTypes.string,
+	creatorName: PropTypes.string,
+	taskId: PropTypes.string,
 	refreshTasksHandle: PropTypes.func,
 };
