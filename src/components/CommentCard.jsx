@@ -12,15 +12,7 @@ import { DeleteModal } from "../components/DeleteModal";
 
 export const CommentCard = (props) => {
 	// Props from parent TopicDetails.jsx
-	const {
-		userPhoto,
-		userId,
-		firstName,
-		lastName,
-		userComment,
-		datePosted,
-		commentId,
-	} = props.comment;
+	const { comment } = props;
 
 	// Data of currently logged in user from Redux state
 	const currentUser = useSelector((state) => state.user);
@@ -39,7 +31,7 @@ export const CommentCard = (props) => {
 	const handleShow = () => setIsVisible(true); // Renders modal display if true
 	const handleDeleteComment = async () => {
 		try {
-			const commentRef = doc(db, "comments", commentId);
+			const commentRef = doc(db, "comments", comment.commentId);
 			await deleteDoc(commentRef);
 			setIsCommentsRefreshed((current) => !current);
 			setIsVisible(false);
@@ -61,18 +53,18 @@ export const CommentCard = (props) => {
 									objectFit: "cover",
 									borderRadius: "50%",
 								}}
-								src={userPhoto}
+								src={comment.userPhoto}
 								roundedCircle
 							/>
-							<p style={{ fontSize: "9px", marginTop: "12px" }}>{firstName} {lastName}</p>
+							<p style={{ fontSize: "9px", marginTop: "12px" }}>{comment.firstName} {comment.lastName}</p>
 							<p style={{ fontSize: "8px", marginTop: "12px" }}>
 								{isCommentUpdated
 									? `post edited on: `
-									: `posted on: `}{formatDate(datePosted)}
+									: `posted on: `}{formatDate(comment.datePosted)}
 							</p>
 
 							{/* Code below is a ternary operator nested into another ternary operator */}
-							{userId === currentUser.userId
+							{comment.userId === currentUser.userId
 								? (
 									<Dropdown>
 										<Dropdown.Toggle
@@ -105,21 +97,21 @@ export const CommentCard = (props) => {
 						{isEditComment
 							?
 							<EditComment
-								userComment={userComment}
+								userComment={comment.userComment}
 								setIsEditComment={setIsEditComment}
-								commentId={commentId}
+								commentId={comment.commentId}
 								setIsCommentUpdated={setIsCommentUpdated}
 							/>
 							:
 							<Stack className="mt-2">
 								<Row>
 									<Col>
-										<p style={{ fontSize: "11px" }}>{userComment}</p>
+										<p style={{ fontSize: "11px" }}>{comment.userComment}</p>
 									</Col>
 								</Row>
 							</Stack>
 						}
-						<Like docId={commentId} />
+						<Like docId={comment.commentId} />
 					</Col>
 				</Row>
 			</Card>
@@ -128,13 +120,14 @@ export const CommentCard = (props) => {
 };
 
 CommentCard.propTypes = {
-	comment: PropTypes.object.isRequired,
-	userId: PropTypes.object.isRequired,
-	userPhoto: PropTypes.object.isRequired,
-	firstName: PropTypes.object.isRequired,
-	lastName: PropTypes.object.isRequired,
-	userComment: PropTypes.object.isRequired,
-	datePosted: PropTypes.object.isRequired,
-	topicId: PropTypes.object.isRequired,
-	commentId: PropTypes.object.isRequired
+	comment: PropTypes.shape({
+		userId: PropTypes.string.isRequired,
+		userPhoto: PropTypes.string.isRequired,
+		firstName: PropTypes.string.isRequired,
+		lastName: PropTypes.string.isRequired,
+		userComment: PropTypes.string.isRequired,
+		datePosted: PropTypes.string.isRequired,
+		topicId: PropTypes.string.isRequired,
+		commentId: PropTypes.string.isRequired
+	})
 };
