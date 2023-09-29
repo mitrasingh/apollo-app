@@ -30,6 +30,6 @@ export const DeleteModal = ({ handleDelete, setIsVisible, isVisible, type, }) =>
 DeleteModal.propTypes = {
 	setIsVisible: PropTypes.func.isRequired,
 	isVisible: PropTypes.bool.isRequired,
-	type: PropTypes.object.isRequired,
+	type: PropTypes.string.isRequired,
 	handleDelete: PropTypes.func.isRequired,
 };
