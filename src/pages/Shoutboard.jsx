@@ -36,6 +36,7 @@ export const Shoutboard = () => {
 		!isCreateTopic ? setIsCreateTopic(true) : setIsCreateTopic(false);
 	};
 
+	// console.log(typeof topicArray[0].datePosted)
 	return (
 		<Container className="mt-4">
 			<Button
