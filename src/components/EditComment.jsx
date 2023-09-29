@@ -87,9 +87,9 @@ export const EditComment = ({ userComment, setIsEditComment, commentId, setIsCom
 };
 
 EditComment.propTypes = {
-	userComment: PropTypes.string,
-	commentId: PropTypes.string,
-	setIsEditComment: PropTypes.func,
-	setIsCommentUpdated: PropTypes.func,
-	datePosted: PropTypes.string
+	userComment: PropTypes.string.isRequired,
+	commentId: PropTypes.object.isRequired,
+	setIsEditComment: PropTypes.func.isRequired,
+	setIsCommentUpdated: PropTypes.func.isRequired,
+	// datePosted: PropTypes.object.isRequired
 };
