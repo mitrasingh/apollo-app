@@ -9,8 +9,7 @@ import { collection, getCountFromServer, query, where } from "firebase/firestore
 
 export const TopicCard = (props) => {
 	// receiving prop data from Shoutboard.jsx
-	const { title, firstName, lastName, userId, topicId, datePosted } =
-		props.topic;
+	const { topic } = props;
 
 	// retrieving photo url of user and saving it in a state
 	const [creatorPhoto, setCreatorPhoto] = useState("");
@@ -27,7 +26,7 @@ export const TopicCard = (props) => {
 		const fetchUserPhoto = async () => {
 			try {
 				const creatorPhotoURL = await getDownloadURL(
-					ref(storageRef, `user-photo/${userId}`)
+					ref(storageRef, `user-photo/${topic.userId}`)
 				);
 				if (creatorPhotoURL) {
 					setCreatorPhoto(creatorPhotoURL);
@@ -45,7 +44,7 @@ export const TopicCard = (props) => {
 				// const coll = collection(db,"comments")
 				const commentsToQuery = query(
 					collection(db, "comments"),
-					where("topicId", "==", topicId)
+					where("topicId", "==", topic.topicId)
 				);
 				const snapshot = await getCountFromServer(commentsToQuery);
 				setNumOfComments(snapshot.data().count);
@@ -76,16 +75,16 @@ export const TopicCard = (props) => {
 
 						<Col xs lg="9">
 							<Row style={{ fontSize: "13px" }} className="fw-bold">
-								<Col xs lg="5" as={Link} to={topicId.toString()}>
-									{title}
+								<Col xs lg="5" as={Link} to={topic.topicId.toString()}>
+									{topic.title}
 								</Col>
 							</Row>
 							<Row style={{ fontSize: "9px" }}>
 								<Col xs lg="5">
-									by {firstName} {lastName}
+									by {topic.firstName} {topic.lastName}
 								</Col>
 								<Col xs lg="5">
-									posted on: {formatDate(datePosted)}
+									posted on: {formatDate(topic.datePosted)}
 								</Col>
 							</Row>
 						</Col>
@@ -110,12 +109,13 @@ export const TopicCard = (props) => {
 };
 
 TopicCard.propTypes = {
-	topic: PropTypes.object.isRequired,
-	title: PropTypes.string.isRequired,
-	description: PropTypes.string.isRequired,
-	firstName: PropTypes.string.isRequired,
-	lastName: PropTypes.string.isRequired,
-	userId: PropTypes.string.isRequired,
-	topicId: PropTypes.string.isRequired,
-	datePosted: PropTypes.string.isRequired,
+	topic: PropTypes.shape({
+		title: PropTypes.string.isRequired,
+		description: PropTypes.string.isRequired,
+		firstName: PropTypes.string.isRequired,
+		lastName: PropTypes.string.isRequired,
+		userId: PropTypes.string.isRequired,
+		topicId: PropTypes.string.isRequired,
+		datePosted: PropTypes.object.isRequired
+	})
 };
