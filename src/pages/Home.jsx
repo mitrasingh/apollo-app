@@ -51,30 +51,31 @@ export const Home = () => {
 	const filterNewestHandle = () => {
 		const sortNew = [...taskArray].sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
 		setTaskArrayFilter(sortNew);
-		setIsClearFilterDisplayed((current) => !current);
+		setIsClearFilterDisplayed(true);
 	};
 
 	const filterOldestHandle = () => {
 		const sortOld = [...taskArray].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 		setTaskArrayFilter(sortOld);
-		setIsClearFilterDisplayed((current) => !current);
+		setIsClearFilterDisplayed(true);
 	};
 
 	const filterPriorityHandle = (priority) => {
 		const filterPriority = [...taskArray.filter((task) => task.priorityLevel === priority)]
 		setTaskArrayFilter(filterPriority)
+		setIsClearFilterDisplayed(true);
 	};
 
 	const filterStatusHandle = (status) => {
 		const filterStatus = [...taskArray.filter((task) => task.statusProject === status)];
 		setTaskArrayFilter(filterStatus);
-		setIsClearFilterDisplayed((current) => !current);
+		setIsClearFilterDisplayed(true);
 	};
 
 	const filterSearchHandle = () => {
 		const filterUserInput = [...taskArray.filter((task) => task.taskName.toLowerCase().includes(userInput.toLowerCase()))];
 		setTaskArrayFilter(filterUserInput);
-		setIsClearFilterDisplayed((current) => !current);
+		setIsClearFilterDisplayed(true);
 	};
 
 	return (
