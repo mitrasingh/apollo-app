@@ -111,6 +111,6 @@ export const CreateTopicForm = ({ setIsCreateTopic, setIsTopicsRefreshed }) => {
 };
 
 CreateTopicForm.propTypes = {
-	setIsCreateTopic: PropTypes.func,
-	setIsTopicsRefreshed: PropTypes.func,
+	setIsCreateTopic: PropTypes.func.isRequired,
+	setIsTopicsRefreshed: PropTypes.func.isRequired,
 };

@@ -128,13 +128,13 @@ export const CommentCard = (props) => {
 };
 
 CommentCard.propTypes = {
-	comment: PropTypes.object,
-	userId: PropTypes.string,
-	userPhoto: PropTypes.string,
-	firstName: PropTypes.string,
-	lastName: PropTypes.string,
-	userComment: PropTypes.string,
-	datePosted: PropTypes.string,
-	topicId: PropTypes.string,
-	commentId: PropTypes.string,
+	comment: PropTypes.object.isRequired,
+	userId: PropTypes.object.isRequired,
+	userPhoto: PropTypes.object.isRequired,
+	firstName: PropTypes.object.isRequired,
+	lastName: PropTypes.object.isRequired,
+	userComment: PropTypes.object.isRequired,
+	datePosted: PropTypes.object.isRequired,
+	topicId: PropTypes.object.isRequired,
+	commentId: PropTypes.object.isRequired
 };
