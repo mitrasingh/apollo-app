@@ -216,10 +216,10 @@ export const EditTaskModal = ({ isEditModal, handleEditModalClose, taskId, creat
 };
 
 EditTaskModal.propTypes = {
-	isEditModal: PropTypes.bool,
-	handleEditModalClose: PropTypes.func,
-	creatorPhoto: PropTypes.string,
-	creatorName: PropTypes.string,
-	taskId: PropTypes.string,
-	refreshTasksHandle: PropTypes.func,
+	isEditModal: PropTypes.bool.isRequired,
+	handleEditModalClose: PropTypes.func.isRequired,
+	creatorPhoto: PropTypes.string.isRequired,
+	creatorName: PropTypes.string.isRequired,
+	taskId: PropTypes.string.isRequired,
+	refreshTasksHandle: PropTypes.func.isRequired,
 };
