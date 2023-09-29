@@ -12,8 +12,9 @@ import { DeleteModal } from "./DeleteModal";
 export const TaskCard = (props) => {
 
 	// Props from Home.jsx
-	const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task;
-	const { refreshTasksHandle } = props;
+	// const { taskName, statusProject, priorityLevel, dueDate, userId, taskId } = props.task;
+	// const { taskName, statusProject, priorityLevel, dueDate, userId, taskId, refreshTasksHandle } = props;
+	const { task, refreshTasksHandle } = props;
 
 	const currentUser = useSelector((state) => state.user); // Redux user state data
 
@@ -42,12 +43,12 @@ export const TaskCard = (props) => {
 		const fetchCreatorInfo = async () => {
 			try {
 				const creatorPhotoURL = await getDownloadURL(
-					ref(storageRef, `user-photo/${userId}`)
+					ref(storageRef, `user-photo/${task.userId}`)
 				);
 				if (creatorPhotoURL) {
 					setCreatorPhoto(creatorPhotoURL);
 				}
-				const docRef = doc(db, "users", userId);
+				const docRef = doc(db, "users", task.userId);
 				const docSnap = await getDoc(docRef);
 				if (docSnap.exists()) {
 					const data = docSnap.data();
@@ -62,7 +63,7 @@ export const TaskCard = (props) => {
 
 	const handleDeleteTaskCard = async () => {
 		try {
-			const documentRef = doc(db, "tasks", taskId);
+			const documentRef = doc(db, "tasks", task.taskId);
 			await deleteDoc(documentRef);
 			refreshTasksHandle();
 		} catch (error) {
@@ -76,8 +77,8 @@ export const TaskCard = (props) => {
 				<Card>
 					<Card.Header style={{ fontSize: "9px", height: "30px" }}>
 						<Row>
-							<Col>Task ID: {taskId}</Col>
-							{userId === currentUser.userId ? (
+							<Col>Task ID: {task.taskId}</Col>
+							{task.userId === currentUser.userId ? (
 								<Col
 									style={{ fontSize: "10px", color: "red" }}
 									className="fw-bold"
@@ -113,16 +114,16 @@ export const TaskCard = (props) => {
 						</Row>
 						<Row style={{ fontSize: "12px" }}>
 							<Col xs lg="5">
-								{taskName}
+								{task.taskName}
 							</Col>
 							<Col xs lg="3">
-								{statusProject}
+								{task.statusProject}
 							</Col>
 							<Col xs lg="2">
-								{priorityLevel}
+								{task.priorityLevel}
 							</Col>
 							<Col xs lg="2">
-								{dueDate}
+								{task.dueDate}
 							</Col>
 						</Row>
 						<Row style={{ height: "55px" }}>
@@ -144,12 +145,12 @@ export const TaskCard = (props) => {
 							</Col>
 							<Col xs lg="2" className="d-flex mt-1">
 								{/* IF EDIT BUTTON IS CLICKED AND MATCHES LOGGED IN USER - MODAL IS SHOWN */}
-								{currentUser.userId !== userId ? null : (
+								{currentUser.userId !== task.userId ? null : (
 									<>
 										<EditTaskModal
 											isEditModal={isEditModal}
 											handleEditModalClose={handleEditModalClose}
-											taskId={taskId}
+											taskId={task.taskId}
 											creatorPhoto={creatorPhoto}
 											creatorName={creatorName}
 											refreshTasksHandle={refreshTasksHandle}
@@ -171,7 +172,7 @@ export const TaskCard = (props) => {
 								<ViewTaskModal
 									isViewModal={isViewModal}
 									handleClose={handleClose}
-									taskId={taskId}
+									taskId={task.taskId}
 									creatorPhoto={creatorPhoto}
 									creatorName={creatorName}
 								/>
@@ -194,12 +195,13 @@ export const TaskCard = (props) => {
 };
 
 TaskCard.propTypes = {
-	task: PropTypes.object.isRequired,
-	taskName: PropTypes.string.isRequired,
-	statusProject: PropTypes.string.isRequired,
-	priorityLevel: PropTypes.string.isRequired,
-	dueDate: PropTypes.string.isRequired,
-	userId: PropTypes.object.isRequired,
-	taskId: PropTypes.object.isRequired,
 	refreshTasksHandle: PropTypes.func.isRequired,
+	task: PropTypes.shape({
+		taskName: PropTypes.string.isRequired,
+		statusProject: PropTypes.string.isRequired,
+		priorityLevel: PropTypes.string.isRequired,
+		dueDate: PropTypes.string.isRequired,
+		userId: PropTypes.string.isRequired,
+		taskId: PropTypes.string.isRequired
+	})
 };
