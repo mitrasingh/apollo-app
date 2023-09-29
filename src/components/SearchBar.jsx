@@ -46,6 +46,6 @@ export const SearchBar = ({ userInputSearchBar, filterSearchHandle }) => { // Pr
 }
 
 SearchBar.propTypes = {
-    userInputSearchBar: PropTypes.func,
-    filterSearchHandle: PropTypes.func,
+    userInputSearchBar: PropTypes.func.isRequired,
+    filterSearchHandle: PropTypes.func.isRequired,
 }

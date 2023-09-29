@@ -194,12 +194,12 @@ export const TaskCard = (props) => {
 };
 
 TaskCard.propTypes = {
-	task: PropTypes.object,
-	taskName: PropTypes.any,
-	statusProject: PropTypes.any,
-	priorityLevel: PropTypes.any,
-	dueDate: PropTypes.any,
-	userId: PropTypes.any,
-	taskId: PropTypes.any,
-	refreshTasksHandle: PropTypes.func,
+	task: PropTypes.object.isRequired,
+	taskName: PropTypes.string.isRequired,
+	statusProject: PropTypes.string.isRequired,
+	priorityLevel: PropTypes.string.isRequired,
+	dueDate: PropTypes.string.isRequired,
+	userId: PropTypes.object.isRequired,
+	taskId: PropTypes.object.isRequired,
+	refreshTasksHandle: PropTypes.func.isRequired,
 };

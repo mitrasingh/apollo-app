@@ -5,12 +5,7 @@ import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { Link } from "react-router-dom";
 import formatDate from ".././utils/format-date";
 import { db } from "../utils/firebase-config";
-import {
-	collection,
-	getCountFromServer,
-	query,
-	where,
-} from "firebase/firestore";
+import { collection, getCountFromServer, query, where } from "firebase/firestore";
 
 export const TopicCard = (props) => {
 	// receiving prop data from Shoutboard.jsx
@@ -115,12 +110,12 @@ export const TopicCard = (props) => {
 };
 
 TopicCard.propTypes = {
-	topic: PropTypes.any,
-	title: PropTypes.string,
-	description: PropTypes.string,
-	firstName: PropTypes.string,
-	lastName: PropTypes.string,
-	userId: PropTypes.string,
-	topicId: PropTypes.string,
-	datePosted: PropTypes.any,
+	topic: PropTypes.object.isRequired,
+	title: PropTypes.string.isRequired,
+	description: PropTypes.string.isRequired,
+	firstName: PropTypes.string.isRequired,
+	lastName: PropTypes.string.isRequired,
+	userId: PropTypes.string.isRequired,
+	topicId: PropTypes.string.isRequired,
+	datePosted: PropTypes.string.isRequired,
 };

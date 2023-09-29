@@ -99,9 +99,9 @@ export const ViewTaskModal = ({ isViewModal, handleClose, taskId, creatorPhoto, 
 };
 
 ViewTaskModal.propTypes = {
-	isViewModal: PropTypes.bool,
-	handleClose: PropTypes.func,
-	taskId: PropTypes.any,
-	creatorPhoto: PropTypes.any,
-	creatorName: PropTypes.any,
+	isViewModal: PropTypes.bool.isRequired,
+	handleClose: PropTypes.func.isRequired,
+	taskId: PropTypes.string.isRequired,
+	creatorPhoto: PropTypes.string.isRequired,
+	creatorName: PropTypes.string.isRequired,
 };
