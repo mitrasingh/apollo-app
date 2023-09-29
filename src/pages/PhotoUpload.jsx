@@ -34,7 +34,6 @@ export const PhotoUpload = () => {
 	const handlePreviewPhoto = async (e) => {
 		e.preventDefault();
 		try {
-			// if (userPhoto == null) return null;
 			const imageRef = ref(storageRef, "user-photo/temp.jpeg");
 			await uploadBytes(imageRef, userPhoto);
 			const getURL = await getDownloadURL(imageRef);
@@ -113,11 +112,6 @@ export const PhotoUpload = () => {
 											borderRadius: "50%",
 										}}
 										src={photoURL}
-										// src={
-										// 	photoURL === ""
-										// 		? "public/img/default-profile.png"
-										// 		: photoURL
-										// }
 										roundedCircle
 									/>
 								</Stack>
