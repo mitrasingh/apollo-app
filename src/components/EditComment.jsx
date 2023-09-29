@@ -91,5 +91,4 @@ EditComment.propTypes = {
 	commentId: PropTypes.object.isRequired,
 	setIsEditComment: PropTypes.func.isRequired,
 	setIsCommentUpdated: PropTypes.func.isRequired,
-	// datePosted: PropTypes.object.isRequired
 };
