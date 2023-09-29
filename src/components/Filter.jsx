@@ -85,8 +85,8 @@ export const Filter = ({ filterNewestHandle, filterOldestHandle, filterPriorityH
 };
 
 Filter.propTypes = {
-  filterNewestHandle: PropTypes.func,
-  filterOldestHandle: PropTypes.func,
-  filterPriorityHandle: PropTypes.func,
-  filterStatusHandle: PropTypes.func,
+  filterNewestHandle: PropTypes.func.isRequired,
+  filterOldestHandle: PropTypes.func.isRequired,
+  filterPriorityHandle: PropTypes.func.isRequired,
+  filterStatusHandle: PropTypes.func.isRequired,
 };

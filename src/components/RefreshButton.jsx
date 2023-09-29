@@ -19,6 +19,6 @@ export const RefreshButton = ({ refreshTasksHandle, isClearFilterDisplayed }) =>
 };
 
 RefreshButton.propTypes = {
-  refreshTasksHandle: PropTypes.func,
-  isClearFilterDisplayed: PropTypes.bool
+  refreshTasksHandle: PropTypes.func.isRequired,
+  isClearFilterDisplayed: PropTypes.bool.isRequired
 }

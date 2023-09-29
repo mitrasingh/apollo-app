@@ -88,9 +88,9 @@ export const EditTopic = ({ setIsEditTopicDisplayed, description, id, setIsTopic
 };
 
 EditTopic.propTypes = {
-	description: PropTypes.string,
-	id: PropTypes.string,
-	setIsEditTopicDisplayed: PropTypes.func,
-	setIsTopicRefreshed: PropTypes.func,
-	setIsTopicEdited: PropTypes.func
+	description: PropTypes.string.isRequired,
+	id: PropTypes.string.isRequired,
+	setIsEditTopicDisplayed: PropTypes.func.isRequired,
+	setIsTopicRefreshed: PropTypes.func.isRequired,
+	setIsTopicEdited: PropTypes.func.isRequired
 };
