@@ -126,7 +126,7 @@ CommentCard.propTypes = {
 		firstName: PropTypes.string.isRequired,
 		lastName: PropTypes.string.isRequired,
 		userComment: PropTypes.string.isRequired,
-		datePosted: PropTypes.string.isRequired,
+		datePosted: PropTypes.object.isRequired,
 		topicId: PropTypes.string.isRequired,
 		commentId: PropTypes.string.isRequired
 	})
