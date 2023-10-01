@@ -23,7 +23,7 @@ export const CreateTask = () => {
 	// Firestore to generate task ID
 	const handleCreateTask = async (data) => {
 		try {
-			const formattedDueDate = dayjs.utc(data.taskduedate).format("MM/DD/YYYY")
+			const formattedDueDate = dayjs.utc(data.taskduedate).format("MM/DD/YYYY");
 			const dbRef = collection(db, "tasks");
 			const taskData = {
 				taskName: data.taskname,
@@ -33,7 +33,7 @@ export const CreateTask = () => {
 				dueDate: formattedDueDate,
 				userId: user.userId,
 			};
-			await addDoc(dbRef, taskData)
+			await addDoc(dbRef, taskData);
 			navigate("/");
 		} catch (error) {
 			console.log(error);
