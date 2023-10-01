@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import formatDate from ".././utils/format-date";
 import { useSelector } from "react-redux";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
@@ -9,6 +8,8 @@ import { EditComment } from "../components/EditComment";
 import { Like } from "../components/Like";
 import { Container, Row, Col, Stack, Image, Card, Dropdown } from "react-bootstrap";
 import { DeleteModal } from "../components/DeleteModal";
+import * as dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 export const CommentCard = (props) => {
 	// Props from parent TopicDetails.jsx
@@ -40,6 +41,11 @@ export const CommentCard = (props) => {
 		}
 	};
 
+	// Conversion of firestore timestamp to dayjs fromNow method
+	dayjs.extend(relativeTime);
+	const convertTimeStamp = comment.datePosted.toDate();
+	const dateRelativeTime = dayjs(convertTimeStamp).fromNow();
+
 	return (
 		<Container className="mt-4">
 			<Card style={{ padding: "10px" }}>
@@ -59,8 +65,8 @@ export const CommentCard = (props) => {
 							<p style={{ fontSize: "9px", marginTop: "12px" }}>{comment.firstName} {comment.lastName}</p>
 							<p style={{ fontSize: "8px", marginTop: "12px" }}>
 								{isCommentUpdated
-									? `post edited on: `
-									: `posted on: `}{formatDate(comment.datePosted)}
+									? `post edited `
+									: `posted `}{dateRelativeTime}
 							</p>
 
 							{/* Code below is a ternary operator nested into another ternary operator */}

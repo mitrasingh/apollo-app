@@ -7,13 +7,14 @@ import { useSelector } from "react-redux";
 import { Container, Card, Row, Col, Image, Stack, Form, Button, Dropdown } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 import { CommentCard } from "../components/CommentCard";
-import formatDate from ".././utils/format-date";
 import { useNavigate } from "react-router-dom";
 import { TopicIdContext } from ".././utils/TopicIdContext";
 import { EditTopic } from "../components/EditTopic";
 import { Like } from "../components/Like";
 import { DeleteModal } from "../components/DeleteModal";
 import { useForm } from "react-hook-form";
+import * as dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 export const TopicDetails = () => {
 
@@ -76,7 +77,12 @@ export const TopicDetails = () => {
 					);
 					setUserPhoto(userPhotoURL);
 					setTopic(data);
-					setDisplayTimeStamp(formatDate(data.datePosted)); // immediately convert timestamp with formatDate to state during fetch to avoid errors
+
+					// Conversion of firestore timestamp to dayjs fromNow method
+					dayjs.extend(relativeTime);
+					const convertTimeStamp = data.datePosted.toDate();
+					const dateRelativeTime = dayjs(convertTimeStamp).fromNow();
+					setDisplayTimeStamp(dateRelativeTime);
 				}
 			} catch (error) {
 				console.log(error);
@@ -232,7 +238,7 @@ export const TopicDetails = () => {
 					<Card.Body>
 						<h5>{topic.title}</h5>
 						<p style={{ fontSize: "9px" }}>
-							{isTopicEdited ? `Updated post on:` : `Posted on:`} {displayTimeStamp}  |  {numOfComments}
+							{isTopicEdited ? `Updated post` : `Posted`} {displayTimeStamp}  |  {numOfComments}
 							{numOfComments === 1 ? " Reply" : " Replies"}
 						</p>
 

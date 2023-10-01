@@ -3,9 +3,10 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { Link } from "react-router-dom";
-import formatDate from ".././utils/format-date";
 import { db } from "../utils/firebase-config";
 import { collection, getCountFromServer, query, where } from "firebase/firestore";
+import * as dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 export const TopicCard = (props) => {
 	// receiving prop data from Shoutboard.jsx
@@ -55,6 +56,11 @@ export const TopicCard = (props) => {
 		getNumOfComments();
 	}, [numOfComments]);
 
+	// Conversion of firestore timestamp to dayjs fromNow method
+	dayjs.extend(relativeTime);
+	const convertTimeStamp = topic.datePosted.toDate();
+	const dateRelativeTime = dayjs(convertTimeStamp).fromNow();
+
 	return (
 		<Container className="mt-2">
 			<Card style={{ maxHeight: "65px" }}>
@@ -84,7 +90,7 @@ export const TopicCard = (props) => {
 									by {topic.firstName} {topic.lastName}
 								</Col>
 								<Col xs lg="5">
-									posted on: {formatDate(topic.datePosted)}
+									posted {dateRelativeTime}
 								</Col>
 							</Row>
 						</Col>
