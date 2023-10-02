@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
+import { SyncLoader } from 'react-spinners';
 
 export const Shoutboard = () => {
 	// Current state of data fetched from getTopics function
@@ -16,16 +17,30 @@ export const Shoutboard = () => {
 	// Triggers refresh topic list when user posts a new topic via CreateTopicForm.jsx
 	const [isTopicsRefreshed, setIsTopicsRefreshed] = useState(false);
 
+	const [isLoading, setIsLoading] = useState(false);
+	const spinnerStyle = {
+		height: "90vh",
+		width: "100%",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+	}
+
 	// Function that fetches data from database by querying "topics" collection
 	useEffect(() => {
 		const fetchTopics = async () => {
 			try {
+				setIsLoading(true);
 				const dbRef = collection(db, "topics")
 				const topicsData = await getDocs(query(dbRef))
 				const topicsMap = topicsData.docs.map((doc) => ({ ...doc.data(), topicId: doc.id }))
 				setTopicArray(topicsMap);
 			} catch (error) {
 				console.log(error);
+			} finally {
+				setTimeout(() => {
+					setIsLoading(false);
+				}, 2000)
 			}
 		};
 		fetchTopics();
@@ -36,28 +51,33 @@ export const Shoutboard = () => {
 		!isCreateTopic ? setIsCreateTopic(true) : setIsCreateTopic(false);
 	};
 
-	// console.log(typeof topicArray[0].datePosted)
 	return (
-		<Container className="mt-4">
-			<Button
-				style={{ fontSize: "9px", maxHeight: "20px" }}
-				className="d-flex align-items-center"
-				variant="dark"
-				onClick={handleCreateTopic}
-			>
-				{!isCreateTopic ? "+ Create Topic" : "- Close"}
-			</Button>
+		<>
+			{isLoading ?
+				<SyncLoader size={10} cssOverride={spinnerStyle} />
+				:
+				<Container className="mt-4">
+					<Button
+						style={{ fontSize: "9px", maxHeight: "20px" }}
+						className="d-flex align-items-center"
+						variant="dark"
+						onClick={handleCreateTopic}
+					>
+						{!isCreateTopic ? "+ Create Topic" : "- Close"}
+					</Button>
 
-			{isCreateTopic ? (
-				<CreateTopicForm
-					setIsCreateTopic={setIsCreateTopic}
-					setIsTopicsRefreshed={setIsTopicsRefreshed}
-				/>
-			) : null}
+					{isCreateTopic ? (
+						<CreateTopicForm
+							setIsCreateTopic={setIsCreateTopic}
+							setIsTopicsRefreshed={setIsTopicsRefreshed}
+						/>
+					) : null}
 
-			{topicArray.map((topic) => {
-				return <TopicCard topic={topic} key={topic.topicId} />;
-			})}
-		</Container>
+					{topicArray.map((topic) => {
+						return <TopicCard topic={topic} key={topic.topicId} />;
+					})}
+				</Container>
+			}
+		</>
 	);
 };
