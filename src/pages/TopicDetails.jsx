@@ -15,6 +15,7 @@ import { DeleteModal } from "../components/DeleteModal";
 import { useForm } from "react-hook-form";
 import * as dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { SyncLoader } from 'react-spinners';
 
 export const TopicDetails = () => {
 
@@ -56,6 +57,15 @@ export const TopicDetails = () => {
 	// Redux state properties of current user (sets default properties when posting a comment)
 	const currentUser = useSelector((state) => state.user);
 
+	const [isLoading, setIsLoading] = useState(false);
+	const spinnerStyle = {
+		height: "90vh",
+		width: "100%",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+	}
+
 	const navigate = useNavigate();
 
 	// React hook form
@@ -67,6 +77,7 @@ export const TopicDetails = () => {
 	useEffect(() => {
 		const fetchTopicData = async () => {
 			try {
+				setIsLoading(true);
 				const docRef = doc(db, "topics", id);
 				const docSnap = await getDoc(docRef);
 
@@ -86,6 +97,10 @@ export const TopicDetails = () => {
 				}
 			} catch (error) {
 				console.log(error);
+			} finally {
+				setTimeout(() => {
+					setIsLoading(false);
+				}, 1000)
 			}
 		};
 		fetchTopicData();
@@ -130,6 +145,7 @@ export const TopicDetails = () => {
 		}
 	};
 
+	// Resets form field values
 	useEffect(() => {
 		if (isSubmitSuccessful) {
 			reset();
@@ -174,142 +190,145 @@ export const TopicDetails = () => {
 
 	return (
 		<>
-			<Container className="mt-4">
-				<Card>
-					<Card.Header style={{ fontSize: "9px", height: "45px" }}>
-						<Row>
-							<Col xs lg="10">
-								<Stack direction="horizontal" gap={2}>
-									<Image
-										style={{
-											height: "25px",
-											width: "25px",
-											objectFit: "cover",
-											borderRadius: "50%",
-										}}
-										src={userPhoto}
-										roundedCircle
-									/>
-									<p>
-										Posted by: {topic.firstName} {topic.lastName}
-									</p>
-								</Stack>
-							</Col>
-							<Col>
-								<Stack direction="horizontal" gap={4}>
-									{topic.userId === currentUser.userId ? (
-										<>
-											<Dropdown>
-												<Dropdown.Toggle
-													style={{ maxHeight: "20px" }}
-													className="d-flex align-items-center"
-													split
-													variant="dark"
-													id="dropdown-split-basic"
-												></Dropdown.Toggle>
+			{isLoading ?
+				<SyncLoader size={10} cssOverride={spinnerStyle} />
+				:
+				<Container className="mt-4">
+					<Card>
+						<Card.Header style={{ fontSize: "9px", height: "45px" }}>
+							<Row>
+								<Col xs lg="10">
+									<Stack direction="horizontal" gap={2}>
+										<Image
+											style={{
+												height: "25px",
+												width: "25px",
+												objectFit: "cover",
+												borderRadius: "50%",
+											}}
+											src={userPhoto}
+											roundedCircle
+										/>
+										<p>
+											Posted by: {topic.firstName} {topic.lastName}
+										</p>
+									</Stack>
+								</Col>
+								<Col>
+									<Stack direction="horizontal" gap={4}>
+										{topic.userId === currentUser.userId ? (
+											<>
+												<Dropdown>
+													<Dropdown.Toggle
+														style={{ maxHeight: "20px" }}
+														className="d-flex align-items-center"
+														split
+														variant="dark"
+														id="dropdown-split-basic"
+													></Dropdown.Toggle>
 
-												<Dropdown.Menu style={{ fontSize: "10px" }}>
-													<Dropdown.Item
-														onClick={() => setIsEditTopicDisplayed(true)}
-													>
-														Edit
-													</Dropdown.Item>
-													<Dropdown.Item onClick={handleShow}>
-														Delete
-													</Dropdown.Item>
-													{isVisible ? (
-														<DeleteModal
-															handleDelete={handleDeleteTopic}
-															setIsVisible={setIsVisible}
-															isVisible={isVisible}
-															type={"topic"}
-														/>
-													) : null}
-												</Dropdown.Menu>
-											</Dropdown>
-										</>
-									) : null}
-									<CloseButton onClick={handleCloseTopic} />
-								</Stack>
-							</Col>
-						</Row>
-					</Card.Header>
+													<Dropdown.Menu style={{ fontSize: "10px" }}>
+														<Dropdown.Item
+															onClick={() => setIsEditTopicDisplayed(true)}
+														>
+															Edit
+														</Dropdown.Item>
+														<Dropdown.Item onClick={handleShow}>
+															Delete
+														</Dropdown.Item>
+														{isVisible ? (
+															<DeleteModal
+																handleDelete={handleDeleteTopic}
+																setIsVisible={setIsVisible}
+																isVisible={isVisible}
+																type={"topic"}
+															/>
+														) : null}
+													</Dropdown.Menu>
+												</Dropdown>
+											</>
+										) : null}
+										<CloseButton onClick={handleCloseTopic} />
+									</Stack>
+								</Col>
+							</Row>
+						</Card.Header>
 
-					<Card.Body>
-						<h5>{topic.title}</h5>
-						<p style={{ fontSize: "9px" }}>
-							{isTopicEdited ? `Updated post` : `Posted`} {displayTimeStamp}  |  {numOfComments}
-							{numOfComments === 1 ? " Reply" : " Replies"}
-						</p>
-
-						{isEditTopicDisplayed ? (
-							<EditTopic
-								setIsEditTopicDisplayed={setIsEditTopicDisplayed}
-								description={topic.description}
-								id={id}
-								setIsTopicRefreshed={setIsTopicRefreshed}
-								setIsTopicEdited={setIsTopicEdited}
-							/>
-						) : (
-							<p style={{ fontSize: "12px" }} className="mt-4">
-								{topic.description}
+						<Card.Body>
+							<h5>{topic.title}</h5>
+							<p style={{ fontSize: "9px" }}>
+								{isTopicEdited ? `Updated post` : `Posted`} {displayTimeStamp}  |  {numOfComments}
+								{numOfComments === 1 ? " Reply" : " Replies"}
 							</p>
-						)}
-						<Like docId={id} />
-					</Card.Body>
-				</Card>
 
-				<Form
-					className="mt-4"
-					onSubmit={handleSubmit(handlePostCommentButton)}
-					noValidate
-				>
-					<Form.Group className="mb-3">
-						<Form.Label style={{ fontSize: "9px" }}>
-							comment as {currentUser.firstName} {currentUser.lastName}
-						</Form.Label>
-						<Form.Control
-							style={{ fontSize: "10px" }}
-							maxLength={100000}
-							rows={5}
-							type="text"
-							as="textarea"
-							placeholder="What are your thoughts?"
-							{...register("postcomment", {
-								required: {
-									value: true,
-									message: "Post cannot be empty!",
-								},
-							})}
-						/>
-						<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
-							{errors.postcomment?.message}
-						</p>
-					</Form.Group>
+							{isEditTopicDisplayed ? (
+								<EditTopic
+									setIsEditTopicDisplayed={setIsEditTopicDisplayed}
+									description={topic.description}
+									id={id}
+									setIsTopicRefreshed={setIsTopicRefreshed}
+									setIsTopicEdited={setIsTopicEdited}
+								/>
+							) : (
+								<p style={{ fontSize: "12px" }} className="mt-4">
+									{topic.description}
+								</p>
+							)}
+							<Like docId={id} />
+						</Card.Body>
+					</Card>
 
-					<Button
-						style={{
-							fontSize: "10px",
-							maxHeight: "30px",
-							MozColumnWidth: "40px",
-						}}
-						className="ms-2"
-						variant="primary"
-						size="sm"
-						type="submit"
+					<Form
+						className="mt-4"
+						onSubmit={handleSubmit(handlePostCommentButton)}
+						noValidate
 					>
-						Post
-					</Button>
-				</Form>
-			</Container>
-			{/* {comments &&  */}
-			{comments.map((comment) => {
-				return (
-					<TopicIdContext.Provider value={{ id, setIsCommentsRefreshed }} key={comment.commentId}>
-						<CommentCard comment={comment} />
-					</TopicIdContext.Provider>
-				);
-			})}
+						<Form.Group className="mb-3">
+							<Form.Label style={{ fontSize: "9px" }}>
+								comment as {currentUser.firstName} {currentUser.lastName}
+							</Form.Label>
+							<Form.Control
+								style={{ fontSize: "10px" }}
+								maxLength={100000}
+								rows={5}
+								type="text"
+								as="textarea"
+								placeholder="What are your thoughts?"
+								{...register("postcomment", {
+									required: {
+										value: true,
+										message: "Post cannot be empty!",
+									},
+								})}
+							/>
+							<p style={{ marginTop: "5px", fontSize: "10px", color: "red" }}>
+								{errors.postcomment?.message}
+							</p>
+						</Form.Group>
+
+						<Button
+							style={{
+								fontSize: "10px",
+								maxHeight: "30px",
+								MozColumnWidth: "40px",
+							}}
+							className="ms-2"
+							variant="primary"
+							size="sm"
+							type="submit"
+						>
+							Post
+						</Button>
+					</Form>
+					{comments.map((comment) => {
+						return (
+							<TopicIdContext.Provider value={{ id, setIsCommentsRefreshed }} key={comment.commentId}>
+								<CommentCard comment={comment} />
+							</TopicIdContext.Provider>
+						);
+					})}
+				</Container>
+			}
 		</>
 	);
 };
