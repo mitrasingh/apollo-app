@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../utils/firebase-config";
 import { Row, Col, Container } from "react-bootstrap";
+import { SyncLoader } from 'react-spinners';
 
 export const Home = () => {
 	// Initial state for task data from database
@@ -16,9 +17,19 @@ export const Home = () => {
 	// User input for SearchBar
 	const [userInput, setUserInput] = useState("");
 
+	const [isLoading, setIsLoading] = useState(false);
+	const spinnerStyle = {
+		height: "90vh",
+		width: "100%",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+	}
+
 	// Fetch data and map each task into state variables
 	const fetchTasks = async () => {
 		try {
+			setIsLoading(true);
 			const dbRef = collection(db, "tasks");
 			const fetchTasks = await getDocs(query(dbRef));
 			const tasksMap = fetchTasks.docs.map((doc) => ({
@@ -29,6 +40,10 @@ export const Home = () => {
 			setTaskArrayFilter(tasksMap);
 		} catch (error) {
 			console.log(error);
+		} finally {
+			setTimeout(() => {
+				setIsLoading(false);
+			}, 1000)
 		}
 	};
 
@@ -80,43 +95,47 @@ export const Home = () => {
 
 	return (
 		<>
-			<SearchBar
-				userInputSearchBar={userInputSearchBar}
-				filterSearchHandle={filterSearchHandle}
-			/>
-			<Container className="mt-2">
-				<Row>
-					<Col xs lg="1">
-						<Filter
-							filterNewestHandle={filterNewestHandle}
-							filterOldestHandle={filterOldestHandle}
-							filterPriorityHandle={filterPriorityHandle}
-							filterStatusHandle={filterStatusHandle}
-						/>
-					</Col>
-					<Col xs lg="2" className="mt-1 px-3">
-						<RefreshButton
-							refreshTasksHandle={refreshTasksHandle}
-							filterSearchHandle={filterSearchHandle}
-							isClearFilterDisplayed={isClearFilterDisplayed}
-						/>
-					</Col>
-				</Row>
+			{isLoading ?
+				<SyncLoader size={10} cssOverride={spinnerStyle} />
+				:
+				<Container className="mt-4">
+					<SearchBar
+						userInputSearchBar={userInputSearchBar}
+						filterSearchHandle={filterSearchHandle}
+					/>
+					<Row>
+						<Col xs lg="1">
+							<Filter
+								filterNewestHandle={filterNewestHandle}
+								filterOldestHandle={filterOldestHandle}
+								filterPriorityHandle={filterPriorityHandle}
+								filterStatusHandle={filterStatusHandle}
+							/>
+						</Col>
+						<Col xs lg="2" className="mt-1 px-3">
+							<RefreshButton
+								refreshTasksHandle={refreshTasksHandle}
+								filterSearchHandle={filterSearchHandle}
+								isClearFilterDisplayed={isClearFilterDisplayed}
+							/>
+						</Col>
+					</Row>
 
-				{taskArrayFilter.length === 0 && (
-					<p className="mt-4 d-flex justify-content-center">No tasks found</p>
-				)}
+					{taskArrayFilter.length === 0 && (
+						<p className="mt-4 d-flex justify-content-center">No tasks found</p>
+					)}
 
-				{taskArrayFilter.map((task) => {
-					return (
-						<TaskCard
-							refreshTasksHandle={refreshTasksHandle}
-							task={task}
-							key={task.taskId}
-						/>
-					);
-				})}
-			</Container>
+					{taskArrayFilter.map((task) => {
+						return (
+							<TaskCard
+								refreshTasksHandle={refreshTasksHandle}
+								task={task}
+								key={task.taskId}
+							/>
+						);
+					})}
+				</Container>
+			}
 		</>
 	);
 };
