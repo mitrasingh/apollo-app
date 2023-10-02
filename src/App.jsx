@@ -9,6 +9,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { PhotoUpload } from "./pages/PhotoUpload";
 import { TopicDetails } from "./pages/TopicDetails";
 import { ForgotPassword } from "./pages/ForgotPassword";
+import { NotFound } from "./pages/NotFound";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
       <Route path="signup" element={<SignUp />} />
       <Route path="forgotpassword" element={<ForgotPassword />} />
       <Route path="photoupload" element={<PhotoUpload />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
