@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { doc, getDoc, collection, addDoc, query, Timestamp, getCountFromServer, deleteDoc, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, query, Timestamp, getCountFromServer, deleteDoc, where, getDocs, orderBy } from "firebase/firestore";
 import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { db } from "../utils/firebase-config";
 import { useSelector } from "react-redux";
@@ -27,7 +27,8 @@ export const TopicDetails = () => {
 	const [topic, setTopic] = useState([]);
 
 	// Stores fetched data from database "comments" sub-collection of document id via fetchComments function
-	const [comments, setComments] = useState([]);
+	const [commentsArray, setCommentsArray] = useState([]);
+	const sortComments = commentsArray.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 	// Display edit fields for the topic description when set to true
 	const [isEditTopicDisplayed, setIsEditTopicDisplayed] = useState(false);
@@ -112,10 +113,11 @@ export const TopicDetails = () => {
 			try {
 				const commentsToQuery = query(
 					collection(db, "comments"),
-					where("topicId", "==", id)
+					where("topicId", "==", id),
+					orderBy("datePosted", "desc")
 				);
 				const data = await getDocs(commentsToQuery);
-				setComments(
+				setCommentsArray(
 					data.docs.map((doc) => ({ ...doc.data(), commentId: doc.id }))
 				);
 			} catch (error) {
@@ -124,6 +126,7 @@ export const TopicDetails = () => {
 		};
 		fetchComments();
 	}, [isCommentsRefreshed]);
+
 
 	// Adds a document to "comments" subcollection within firestore database ("topics"/specific ID/"comments"/ADDED DOCUMENT)
 	const handlePostCommentButton = async (data) => {
@@ -320,10 +323,10 @@ export const TopicDetails = () => {
 							Post
 						</Button>
 					</Form>
-					{comments.map((comment) => {
+					{sortComments.map((sortedComment) => {
 						return (
-							<TopicIdContext.Provider value={{ id, setIsCommentsRefreshed }} key={comment.commentId}>
-								<CommentCard comment={comment} />
+							<TopicIdContext.Provider value={{ id, setIsCommentsRefreshed }} key={sortedComment.commentId}>
+								<CommentCard comment={sortedComment} />
 							</TopicIdContext.Provider>
 						);
 					})}
