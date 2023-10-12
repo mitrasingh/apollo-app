@@ -1,26 +1,22 @@
-import { getAuth, signOut } from 'firebase/auth';
-import { useAuthState } from "react-firebase-hooks/auth"
-import { Navigate, useLocation } from 'react-router';
-import PropTypes from 'prop-types';
-import { Navigation } from "./Navigation";
-import { LoadAnimation } from "./LoadAnimation"
+import { Outlet, useLocation, Navigate } from "react-router-dom";
+import { auth, db } from "../utils/firebase-config";
+import { Navigation } from "../components/Navigation";
 import { useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore'
-import { db, auth } from '../utils/firebase-config';
+import { getAuth, signOut } from 'firebase/auth';
 import { getStorage, ref, getDownloadURL } from "firebase/storage"
-import { loginUser } from "../features/user/userSlice"
 import { useDispatch } from 'react-redux';
+import { doc, getDoc } from 'firebase/firestore';
+import { loginUser } from "../features/user/userSlice";
 
+export const ProtectedRoute = () => {
 
-export const ProtectedRoute = ({ children }) => {
   const location = useLocation();
-  const authUser = getAuth();
-  const [user, loading] = useAuthState(authUser)
 
   const dispatch = useDispatch()
   const storage = getStorage()
   const storageRef = ref(storage)
 
+  // Loads user information to Redux user state
   useEffect(() => {
     getAuth().onAuthStateChanged(async (user) => {
       if (!user) {
@@ -28,7 +24,9 @@ export const ProtectedRoute = ({ children }) => {
       }
       try {
         if (user) {
-          const userPhotoURL = await getDownloadURL(ref(storageRef, `user-photo/${user.uid}`));
+          const userCustomPhotoRef = `user-photo/${user.uid}`;
+          const photoRefCondition = userCustomPhotoRef ? userCustomPhotoRef : "user-photo/temporaryphoto.jpeg";
+          const userPhotoURL = await getDownloadURL(ref(storageRef, photoRefCondition));
           const docRef = doc(db, "users", user.uid)
           const docSnap = await getDoc(docRef)
           const data = docSnap.data()
@@ -48,14 +46,13 @@ export const ProtectedRoute = ({ children }) => {
     )
   }, [])
 
-
-  if (loading) {
-    return <LoadAnimation />
-  }
-  return user ? (<><Navigation />{children}</>) : (<Navigate to="/signin" state={{ from: location }} />)
-}
-
-ProtectedRoute.propTypes = {
-  children: PropTypes.node
-}
-
+  return auth.currentUser ? (
+    <>
+      <Navigation />
+      <Outlet />
+    </>
+  ) : (
+    // Keep the previous navigation stack
+    <Navigate to="/signin" state={{ from: location }} replace />
+  );
+};
